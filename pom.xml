@@ -8,7 +8,8 @@
     <packaging>grails-app</packaging>
     <version>0.1</version>
     <name>openlrs</name>
-    <description>openlrs</description>
+    <description>Open Learning Resource Store</description>
+    <inceptionYear>2013</inceptionYear>
 
     <properties>
         <grails.version>2.2.2</grails.version>
@@ -192,4 +193,34 @@
             </dependencies>
         </profile>
     </profiles>
+
+  <developers>
+    <developer>
+      <id>azeckoski</id>
+      <name>Aaron Zeckoski</name>
+      <email>azeckoski@vt.edu</email>
+      <url>http://tinyurl.com/azprofile</url>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>ECL 2.0</name>
+      <distribution>repo</distribution>
+      <url>http://www.osedu.org/licenses/ECL-2.0/</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/Unicon/OpenLRS.git</connection>
+    <developerConnection>scm:git:git@github.com:Unicon/OpenLRS.git</developerConnection>
+    <url>https://github.com/Unicon/OpenLRS</url>
+  </scm>
+
+
 </project>
