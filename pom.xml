@@ -182,6 +182,10 @@
             <exclude>**/*.md</exclude>
             <exclude>**/*.sql</exclude>
             <exclude>**/javascript/jquery/**</exclude>
+	    <exclude>**/plugins/**</exclude>
+	    <exclude>**/conf/**</exclude>
+	    <exclude>**/WEB-INF/**</exclude>
+	    <exclude>**/*.tld</exclude>
           </excludes>
           <mapping>
             <tag>DYNASCRIPT_STYLE</tag>
