@@ -33,6 +33,10 @@ This is a grails application (http://grails.org/) which means it will run in the
     http://www.springsource.org/sts
     * Make sure you install the version with Grails support
 * Import the grails project into your IDE
+	* Generally works best to create a new project and point it at the existing source code
+* Run the project using the typical:
+
+	grails run-app
 * TODO more tips here
 
 
