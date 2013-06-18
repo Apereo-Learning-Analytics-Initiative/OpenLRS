@@ -2,10 +2,11 @@ OpenLRS
 =======
 Open source Java based Learning Record Store (http://en.wikipedia.org/wiki/Learning_Record_Store, http://tincanapi.com/learning-record-store/) which is compatible with TinCanAPI (http://tincanapi.com/) and Experience API (http://www.adlnet.gov/tla/experience-api).
 
-***
-* WORK IN PROGRESS *
+*************************************************************************************
+WORK IN PROGRESS
+----------------
 This project is still being developed and is not in a usable state yet but we welcome contributions, questions, and contributors.
-***
+*************************************************************************************
 
 ### Getting started #
 * Download the source code (use the Download zip or a git/svn checkout)
