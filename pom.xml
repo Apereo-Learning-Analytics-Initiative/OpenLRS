@@ -107,6 +107,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.name}</finalName>
         <pluginManagement />
 
         <plugins>
