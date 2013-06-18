@@ -25,7 +25,7 @@ This is a grails application (http://grails.org/) which means it will run in the
     http://grails.org/doc/latest/guide/gettingStarted.html
 * Install SpringToolsSuite (or some other IDE with grails support):
     http://www.springsource.org/sts
-* * Make sure you install the version with Grails support
+    * Make sure you install the version with Grails support
 * Import the grails project into your IDE
 * TODO more tips here
 
