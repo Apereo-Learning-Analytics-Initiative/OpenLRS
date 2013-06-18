@@ -1,5 +1,7 @@
 package openlrs
 
+import org.apereo.openlrs.SampleService;
+
 import grails.converters.JSON;
 
 /**
@@ -33,14 +35,22 @@ Returns: 200 OK, Statement or Statement Result (See section 4.2 for details)
  */
 class StatementsController {
 
-    static defaultAction = "index";
+    static defaultAction = "index"; // don't show the /index on the end
+
+    SampleService sampleService; // this is auto-injected
 
     def index() {
+        // process the request
         makeHeaders();
         def method = findMethod();
         if (method == 'PUT') {
-            // TODO actually implement this
-            response.status = 204;
+            if (params.containsKey("statementId")) {
+                // TODO actually implement this
+                response.status = 204;
+            } else {
+                response.status = 400;
+                data = ["error":"missing the statementId"];
+            }
         } else if (method == 'POST') {
             // TODO actually implement this
             // this MIGHT be a GET so need to differentiate on inputs
@@ -64,21 +74,23 @@ class StatementsController {
 
     private Map handleStatementFetch(String id) {
         // TODO go get this data from a service
+        // sample call to sample service
+        sampleService.process();
         return [
             "id": id,
             "actor": [
                 "objectType":"Agent",
                 "name":"Aaron Zeckoski",
                 "mbox":"mailto:azeckoski@fake.email.com"
-                ], 
+            ],
             "verb": [
                 "id":"http://adlnet.gov/expapi/verbs/created",
                 "display":[ "en-US":"created" ]
-                ], 
+            ],
             "object": [
                 "id":"http://example.adlnet.gov/xapi/example/activity"
-                ], 
-            ]
+            ],
+        ]
     }
 
     private void makeHeaders() {
