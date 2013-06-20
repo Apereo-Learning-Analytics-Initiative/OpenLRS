@@ -14,10 +14,12 @@
  */
 package openlrs
 
-
-
+import grails.converters.JSON;
 import grails.test.mixin.*
+
+import org.codehaus.groovy.grails.web.json.JSONObject;
 import org.junit.*
+
 
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
@@ -25,7 +27,13 @@ import org.junit.*
 @TestFor(AboutController)
 class AboutControllerTests {
 
-    void testSomething() {
-      assert true;
+    void testIndex() {
+        request.method = "GET";
+        controller.index();
+        assert response.status == 200;
+        assert response.text.contains("version");
+        def jso = JSON.parse(response.text);
+        assert jso instanceof JSONObject
     }
+
 }
