@@ -17,6 +17,7 @@ package openlrs
 import org.apereo.openlrs.SampleService;
 
 import grails.converters.JSON;
+import grails.util.Holders;
 
 /**
  * Handles statements
@@ -50,8 +51,11 @@ Returns: 200 OK, Statement or Statement Result (See section 4.2 for details)
 class StatementsController {
 
     static defaultAction = "index"; // don't show the /index on the end
+    static config = Holders.config; // this allows static access to the grails config values
 
-    SampleService sampleService; // this is auto-injected
+    // INJECTED
+    def grailsApplication; // this is a map of grails app data: config has all the config values
+    def SampleService sampleService; // this is auto-injected
 
     def index() {
         // process the request
@@ -108,7 +112,7 @@ class StatementsController {
     }
 
     private void makeHeaders() {
-        response.setHeader('X-Experience-API-Version', '1.0.0');
+        response.setHeader('X-Experience-API-Version', grailsApplication.config.tincan.version);
         def now = new Date(System.currentTimeMillis());
         def now8601 = now.format("yyyy-MM-dd'T'HH:mm'Z'");
         response.setHeader('X-Experience-API-Consistent-Through', now8601);
