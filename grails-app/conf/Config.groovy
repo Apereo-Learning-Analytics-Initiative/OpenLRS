@@ -2,9 +2,10 @@
 tincan {
     // current version
     version = "1.0.0"
-    versions {
+    // supported versions
+    versions = [
         "1.0.0"
-    }
+    ]
 }
 
 
