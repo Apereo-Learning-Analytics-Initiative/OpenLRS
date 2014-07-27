@@ -5,7 +5,7 @@ Open source Java based Learning Record Store (http://en.wikipedia.org/wiki/Learn
 *************************************************************************************
 WORK IN PROGRESS
 ----------------
-This project is still being developed and is not in a usable state yet but we welcome contributions, questions, and contributors.
+This project is still being developed and is not in a usable state yet but we welcome contributions, questions, and contributors (we are especially looking for any funding or resources to help move things forward more quickly).
 *************************************************************************************
 
 ### Getting started #
@@ -42,7 +42,7 @@ This is a grails application (http://grails.org/) which means it will run in the
 
 License
 -------
-ECL (a slightly more permissive ACL2)
+ECL (a slightly less permissive Apache2)
 http://opensource.org/licenses/ECL-2.0
 
 Contacts
