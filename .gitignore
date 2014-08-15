@@ -20,3 +20,4 @@ stacktrace.log
 /.link_to_grails_plugins/
 /target-eclipse/
 plugins/
+.buildpath
