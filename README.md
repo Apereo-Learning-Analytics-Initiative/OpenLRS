@@ -45,6 +45,8 @@ License
 ECL (a slightly less permissive Apache2)
 http://opensource.org/licenses/ECL-2.0
 
-Contacts
---------
-Aaron Zeckoski (azeckoski @ vt.edu) (azeckoski @ unicon.net)
+Contact
+-------
+Developed in the Apereo Learning Analytics (https://confluence.sakaiproject.org/display/LAI/) community.
+
+Send questions or comments to the mailing list: analytics@apereo.org
