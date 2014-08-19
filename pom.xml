@@ -54,6 +54,13 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.apereo.openlrs.Application</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

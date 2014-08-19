@@ -10,13 +10,12 @@ This project is still being developed and is not in a usable state yet but we we
 
 ### Getting started #
 * Download the source code (use the Download zip or a git/svn checkout)
-    https://github.com/Unicon/OpenLRS
+   * https://github.com/Unicon/OpenLRS
 * Build with maven 3 (http://maven.apache.org/download.cgi):
 
-    cd openLRS
-    mvn clean install
+    1. cd OpenLRS
+    2. mvn -e clean install exec:java
 
-* Copy the war file (from target/openlrs.war) into tomcat or other servlet container
 * TODO more useful info here
 
 
