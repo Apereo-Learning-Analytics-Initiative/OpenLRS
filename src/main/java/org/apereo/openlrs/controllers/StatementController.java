@@ -15,6 +15,8 @@
  */
 package org.apereo.openlrs.controllers;
 
+import org.apereo.openlrs.services.StatementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,13 +34,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/xAPI/statements")
 public class StatementController {
 
+    private final StatementService statementService;
+
+    @Autowired
+    public StatementController(StatementService statementService) {
+        this.statementService = statementService;
+    }
+
     /**
      * Get all statements
      * @return JSON string of all statement objects
      */
     @RequestMapping(value={"", "/", "*"}, method=RequestMethod.GET, produces="application/json")
     public String getAllStatements() {
-        return "{\"GET all statements\": true}";
+        return statementService.getAllStatements();
     }
 
     /**
@@ -48,7 +57,7 @@ public class StatementController {
      */
     @RequestMapping(value="/{statementId}", method=RequestMethod.GET, produces="application/json")
     public String getStatement(@PathVariable String statementId) {
-        return "{\"GET statementId\": \"" + statementId + "\"}";
+        return statementService.getStatement(statementId);
     }
 
     /**
@@ -58,7 +67,7 @@ public class StatementController {
      */
     @RequestMapping(value={"", "/"}, method=RequestMethod.POST, consumes="application/json", produces="application/json")
     public String postStatement(@RequestBody String requestBody) {
-        return "{\"POST request body\": " + requestBody + "}";
+        return statementService.postStatement(requestBody);
     }
 
 }
