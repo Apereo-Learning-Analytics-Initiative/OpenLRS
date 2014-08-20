@@ -33,7 +33,7 @@ public class JsonUtils {
      * @param jsonMap the map holding the objects to be converted to JSON the JSON string representing the map
      * @return
      */
-    public static String parseJsonMapToString(Map<String, Object> jsonMap) {
+    public static String parseJsonMapToString(Map<String, ?> jsonMap) {
         assert jsonMap != null;
 
         Gson gson = new Gson();

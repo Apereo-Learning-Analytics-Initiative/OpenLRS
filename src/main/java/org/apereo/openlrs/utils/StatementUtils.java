@@ -1,5 +1,6 @@
 package org.apereo.openlrs.utils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
@@ -55,4 +56,32 @@ public class StatementUtils {
         return true;
     }
 
+    /**
+     * Creates a map of the statement filter criteria. If a value is not set, it is not added to the map/
+     * 
+     * @param statementId the UUID of the statement
+     * @param actor the ID of the actor
+     * @param activity the activity
+     * @return the HashMap containing the filter criteria
+     */
+    public static Map<String, String> createStatementFilterMap(String statementId, String actor, String activity) {
+        Map<String, String> filterMap = new HashMap<String, String>(3);
+
+        // statementId
+        if (!StringUtils.isEmpty(statementId)) {
+            filterMap.put("statementId", statementId);
+        }
+
+        // actor
+        if (!StringUtils.isEmpty(actor)) {
+            filterMap.put("actor", actor);
+        }
+
+        // activity
+        if (!StringUtils.isEmpty(activity)) {
+            filterMap.put("activity", activity);
+        }
+
+        return filterMap;
+    }
 }

@@ -36,22 +36,27 @@ public class StatementControllerTest {
     private StatementController statementController;
 
     @Test
-    public void getAllStatementsTest() {
-        String response = statementController.getAllStatements();
+    public void getFilteredStatementTest() {
+        String statementId = "1234-TEST-5678-UUID";
+        String actor = "actor1";
+        String activity = "activity1";
+        String response = statementController.getStatement(statementId, actor, activity);
         Assert.assertNotNull(response);
     }
 
     @Test
-    public void getSingleStatementTest() {
-        String statementId = "1234-TEST-5678-UUID";
-        String response = statementController.getStatement(statementId);
+    public void getAllStatementTest() {
+        String statementId = "";
+        String actor = "";
+        String activity = "";
+        String response = statementController.getStatement(statementId, actor, activity);
         Assert.assertNotNull(response);
     }
 
     @Test
     public void postStatementTest() {
         String requestBody = "{\"id\":\"UNIQUE_UUID\",\"actor\":\"actor1\",\"verb\":\"read\",\"object\":\"Little House on the Prairie\"}";
-        String response = statementController.getStatement(requestBody);
+        String response = statementController.postStatement(requestBody);
         Assert.assertNotNull(response);
     }
 

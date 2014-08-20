@@ -10,22 +10,15 @@ import org.springframework.stereotype.Service;
 public class StatementService {
 
     /**
-     * Get all the statements that exist in the database
+     * Gets statement objects for the specified criteria
      * 
-     * @return JSON string of statement objects
+     * @param filterMap a hashmap of the filtering criteria
+     * @return JSON string of the statement objects
      */
-    public String getAllStatements() {
-        return "{\"GET all statements\": true}";
-    }
+    public String getStatement(Map<String, String> filterMap) {
+        String json = JsonUtils.parseJsonMapToString(filterMap);
 
-    /**
-     * Gets a statement object for a given UUID
-     * 
-     * @param statementId the statement object ID
-     * @return JSON string of the statement object
-     */
-    public String getStatement(String statementId) {
-        return "{\"GET statementId\": \"" + statementId + "\"}";
+        return "{\"GET statement filter\": \"" + json + "\"}";
     }
 
     /**
