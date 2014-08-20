@@ -17,6 +17,10 @@ package org.apereo.openlrs.model;
 
 import java.io.Serializable;
 
+import org.apereo.openlrs.model.statement.Actor;
+import org.apereo.openlrs.model.statement.StatementObject;
+import org.apereo.openlrs.model.statement.Verb;
+
 /**
  * The statement model represents all the available properties of a learning event
  * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#stmtprops
@@ -41,7 +45,7 @@ public class Statement implements Serializable {
      * 
      * Required
      */
-    private String actor;
+    private Actor actor;
 
     /**
      * Action between actor and activity
@@ -49,7 +53,7 @@ public class Statement implements Serializable {
      * 
      * Required
      */
-    private String verb;
+    private Verb verb;
 
     /**
      * an Activity, Agent/Group, Sub-Statement, or Statement Reference. It is the "this" part of the Statement, i.e. "I did this"
@@ -57,7 +61,7 @@ public class Statement implements Serializable {
      * 
      * Required
      */
-    private String object;
+    private StatementObject object;
 
     /**
      * optional field that represents a measured outcome related to the Statement in which it is included
@@ -140,7 +144,7 @@ public class Statement implements Serializable {
      * @param version
      * @param attachments
      */
-    public Statement(String id, String actor, String verb, String object, String result, String context, String timestamp,
+    public Statement(String id, Actor actor, Verb verb, StatementObject object, String result, String context, String timestamp,
             String version, Object[] attachments) {
         this.id = id;
         this.actor = actor;
@@ -160,7 +164,7 @@ public class Statement implements Serializable {
      * @param verb
      * @param object
      */
-    public Statement(String id, String actor, String verb, String object) {
+    public Statement(String id, Actor actor, Verb verb, StatementObject object) {
         this.id = id;
         this.actor = actor;
         this.verb = verb;
@@ -173,7 +177,7 @@ public class Statement implements Serializable {
      * @param verb
      * @param object
      */
-    public Statement(String actor, String verb, String object) {
+    public Statement(Actor actor, Verb verb, StatementObject object) {
         this.actor = actor;
         this.verb = verb;
         this.object = object;
@@ -187,27 +191,27 @@ public class Statement implements Serializable {
         this.id = id;
     }
 
-    public String getActor() {
+    public Actor getActor() {
         return actor;
     }
 
-    public void setActor(String actor) {
+    public void setActor(Actor actor) {
         this.actor = actor;
     }
 
-    public String getVerb() {
+    public Verb getVerb() {
         return verb;
     }
 
-    public void setVerb(String verb) {
+    public void setVerb(Verb verb) {
         this.verb = verb;
     }
 
-    public String getObject() {
+    public StatementObject getObject() {
         return object;
     }
 
-    public void setObject(String object) {
+    public void setObject(StatementObject object) {
         this.object = object;
     }
 
