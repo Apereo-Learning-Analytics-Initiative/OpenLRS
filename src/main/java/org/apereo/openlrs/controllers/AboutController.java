@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author ggilbert
+ * @author ggilbert (ggilbert @ unicon.net)
  *
  */
 @RestController
@@ -31,7 +31,7 @@ public class AboutController {
 	@Value("${xapi.version}")
 	private String version;
 	
-	@RequestMapping(value="/xAPI/about", method=RequestMethod.GET)
+	@RequestMapping(value="/xAPI/about", method=RequestMethod.GET, produces = "application/json;charset=utf-8")
 	public About about() {
 		About about = new About(version);
 		return about;

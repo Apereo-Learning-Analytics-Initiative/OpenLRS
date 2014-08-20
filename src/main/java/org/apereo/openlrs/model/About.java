@@ -16,16 +16,29 @@
 package org.apereo.openlrs.model;
 
 import java.io.Serializable;
+import java.net.URI;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * @author ggilbert
+ * Information about the LRS
+ * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#aboutresource
+ * 
+ * @author ggilbert (ggilbert @ unicon.net)
  *
  */
+@JsonInclude(Include.NON_NULL)
 public class About implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * required
+	 */
 	private String version;
+	private Map<URI, String> extensions;
 	
 	public About (String version) {
 		this.version = version;
@@ -36,6 +49,20 @@ public class About implements Serializable {
 	 */
 	public String getVersion() {
 		return version;
+	}
+
+	/**
+	 * @return the extensions
+	 */
+	public Map<URI, String> getExtensions() {
+		return extensions;
+	}
+
+	/**
+	 * @param extensions the extensions to set
+	 */
+	public void setExtensions(Map<URI, String> extensions) {
+		this.extensions = extensions;
 	}
 
 }
