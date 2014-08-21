@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apereo.openlrs.model.statement.LRSActor;
+import org.apereo.openlrs.model.statement.LRSContext;
 import org.apereo.openlrs.model.statement.LRSObject;
 import org.apereo.openlrs.model.statement.LRSResult;
 import org.apereo.openlrs.model.statement.LRSVerb;
@@ -99,7 +100,7 @@ public class Statement implements Serializable {
      * 
      * Optional
      */
-    private String context;
+    private LRSContext context;
 
     /**
      *  time at which the experience occurred
@@ -172,7 +173,7 @@ public class Statement implements Serializable {
             LRSVerb verb,
             LRSObject object,
             LRSResult result,
-            String context,
+            LRSContext context,
             String timestamp,
             String version,
             Object[] attachments) {
@@ -352,11 +353,11 @@ public class Statement implements Serializable {
         this.result = result;
     }
 
-    public String getContext() {
+    public LRSContext getContext() {
         return context;
     }
 
-    public void setContext(String context) {
+    public void setContext(LRSContext context) {
         this.context = context;
     }
 
