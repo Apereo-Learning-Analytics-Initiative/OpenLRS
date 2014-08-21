@@ -2,14 +2,14 @@ package org.apereo.openlrs.model.statement;
 
 import java.util.Map;
 
+import org.apereo.openlrs.Constants;
+
 /**
  * Holds a representation of a statement object
  *
  * @author Robert E. Long (rlong @ unicon.net)
  */
 public class LRSObject {
-
-    private static String XAPI_ACTIVITIES_PREFIX = "http://adlnet.gov/expapi/activities/";
 
     /*
      * NOTE: For our use, objectType will always be "Activity" and we will only use a limited set of the detail fields
@@ -31,14 +31,14 @@ public class LRSObject {
      * If a URL, the URL should refer to metadata for this activity
      * Example: http://example.adlnet.gov/xapi/example/simpleCBT
      */
-    String id;
+    private String id;
 
     /**
      * URI, the type of activity. (e.g. http://sakaiproject.org/expapi/activity/assessment)
      * Note, URI fragments (sometimes called relative URLs) are not valid URIs. 
      * Similar to verbs, we recommend that Learning Activity Providers look for and use established, widely adopted, activity types.
      */
-    String activityType;
+    private String activityType;
 
     /**
      * OPTIONAL: 
@@ -48,19 +48,16 @@ public class LRSObject {
      * of the meaning already determined by the chosen verb.
      * Example: { "en-US" => "ran", "es" => "corrió" }
      */
-    Map<String, String> activityName;
+    private Map<String, String> activityName;
 
     /**
      * OPTIONAL:
      * A language map containing the human readable description of the Activity.
      * Example: { "en-US" => "User completed quiz 1" }
      */
-    Map<String, String> descMap;
-    
-    /**
-     * use of the empty constructor is restricted
-     */
-    protected LRSObject() {
+    private Map<String, String> descMap;
+
+    public LRSObject() {
     }
 
     /**
@@ -86,7 +83,7 @@ public class LRSObject {
         if (activityType == null) {
             throw new IllegalArgumentException("LRSObject type cannot be null");
         }
-        this.activityType = (activityType.indexOf("://") == -1 ? XAPI_ACTIVITIES_PREFIX + activityType : activityType);
+        this.activityType = (activityType.indexOf("://") == -1 ? Constants.XAPI_ACTIVITIES_PREFIX + activityType : activityType);
     }
 
     /**

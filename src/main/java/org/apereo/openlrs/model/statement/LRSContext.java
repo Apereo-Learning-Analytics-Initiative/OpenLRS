@@ -22,7 +22,7 @@ public class LRSContext {
      * Instructor that the statement relates to, 
      * if not included as the actor or object of the overall statement.
      */
-    LRSActor instructor;
+    private LRSActor instructor;
 
     /**
      * OPTIONAL
@@ -32,7 +32,7 @@ public class LRSContext {
      * or assets associated with an activity, a new activity ID should be used.
      * Revision format is up to the owner of the associated activity.
      */
-    String revision;
+    private String revision;
 
     /**
      * A map of the types of context to learning activities “activity” this statement is related to.
@@ -50,12 +50,12 @@ public class LRSContext {
      *   "grouping" : {"id" : "http://example.adlnet.gov/xapi/example/Algebra1"}
      * }
      */
-    Map<String, Map<String, String>> activitiesMap;
+    private Map<String, Map<String, String>> activitiesMap;
 
     /**
      * Platform used in the experience of this learning activity.
      */
-    String platform = "Sakai";
+    private String platform = "Sakai";
 
     // TODO include fields like team, platform, language, statement, and extensions
 

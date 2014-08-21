@@ -433,4 +433,9 @@ public class Statement implements Serializable {
         this.rawJSON = rawJSON;
     }
 
+    @Override
+    public String toString() {
+        return "Statement:: actor: "+actor.toString()+", verb: "+verb.toString()+", object: "+object.toString();
+        
+    }
 }

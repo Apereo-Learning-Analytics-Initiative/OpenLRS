@@ -55,7 +55,10 @@ public class StatementControllerTest {
 
     @Test
     public void postStatementTest() {
-        String requestBody = "{\"id\":\"UNIQUE_UUID\",\"actor\":\"actor1\",\"verb\":\"read\",\"object\":\"Little House on the Prairie\"}";
+        String requestBody = "{\"actor\" : {\"objectType\": \"Agent\",\"mbox\":\"mailto:test@example.com\"}," +
+                    "\"verb\" : {\"id\":\"http://example.com/commented\",\"display\": {\"en-US\":\"commented\"}}," +
+                    "\"object\": {\"id\":\"http://example.com/website\",\"definition\": {\"name\" : {\"en-US\":\"Some Awesome Website\"}}}," +
+                    "\"result\" : {\"response\" : \"Wow, nice work!\"}}";
         String response = statementController.postStatement(requestBody);
         Assert.assertNotNull(response);
     }

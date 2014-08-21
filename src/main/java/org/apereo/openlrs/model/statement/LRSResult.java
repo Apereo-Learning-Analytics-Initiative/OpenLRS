@@ -15,22 +15,22 @@ public class LRSResult {
     /**
      * Score from -1.0 to 1.0 where 0=0% and 1.0=100%
      */
-    Float scaled;
+    private Float scaled;
 
     /**
      * Raw score - any number
      */
-    Number raw;
+    private Number raw;
 
     /**
      * Minimum score (range) - any number
      */
-    Number min;
+    private Number min;
 
     /**
      * Maximum score (range) - any number
      */
-    Number max;
+    private Number max;
 
     /**
      * string representation of the grade (e.g. A, B, C, D, F, pass, fail, first, second, etc.)
@@ -56,34 +56,34 @@ public class LRSResult {
      *     }
      * }
      */
-    String grade;
+    private String grade;
 
     /**
      * true if successful, false if not, or null for unknown
      */
-    Boolean success;
+    private Boolean success;
 
     /**
      * true if completed, false if not, or null for unknown
      */
-    Boolean completion;
+    private Boolean completion;
 
     /**
      * Duration of the activity in seconds
      * Have to convert this to https://en.wikipedia.org/wiki/ISO_8601#Durations for sending to the Experience API,
      * ignore the value if it is less than 0
      */
-    int duration = -1;
+    private int duration = -1;
 
     /**
      * A string response appropriately formatted for the given activity.
      */
-    String response;
+    private String response;
 
     /**
-     * use of the empty constructor is restricted
+     * empty constructor
      */
-    protected LRSResult() {
+    public LRSResult() {
     }
 
     /**
@@ -94,6 +94,16 @@ public class LRSResult {
     public LRSResult(boolean completion) {
         this();
         this.completion = completion;
+    }
+
+    /**
+     * Simplest possible result, only indicates if it was completed or not,
+     * generally should be used only when nothing else will fit
+     * @param completion true if completed, false if not (cannot be null)
+     */
+    public LRSResult(String response) {
+        this();
+        this.response = response;
     }
 
     /**
@@ -305,6 +315,22 @@ public class LRSResult {
         return grade;
     }
 
+    public void setScaled(Float scaled) {
+        this.scaled = scaled;
+    }
+
+    public void setRaw(Number raw) {
+        this.raw = raw;
+    }
+
+    public void setMin(Number min) {
+        this.min = min;
+    }
+
+    public void setMax(Number max) {
+        this.max = max;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -320,6 +346,7 @@ public class LRSResult {
         if (min != null && max != null) {
             points += ",min=" + min + ",max=" + max;
         }
+
         return "Result["+points+(grade!=null?" "+grade:"")+(response!=null?" response="+response:"")+(success!=null?(success?" success":" fail"):"")+(completion!=null?(completion?" complete":" incomplete"):"")+ "]";
     }
 

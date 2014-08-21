@@ -139,4 +139,8 @@ public class LRSActor {
         this.objectType = objectType;
     }
 
+    @Override
+    public String toString() {
+        return "Actor[type: "+ objectType.getClass() + ", ifi: " + objectType.getInverseFunctionalIdentifier() + ", name: " + (objectType.getName() != null ? objectType.getName() : "NONE") + "]";
+    }
 }

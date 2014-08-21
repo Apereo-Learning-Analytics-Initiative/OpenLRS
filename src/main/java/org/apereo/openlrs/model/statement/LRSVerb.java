@@ -74,4 +74,8 @@ public class LRSVerb {
         this.display = display;
     }
 
+    @Override
+    public String toString() {
+        return "Verb[id: " + id + ", display: " + display + "]";
+    }
 }
