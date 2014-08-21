@@ -16,10 +16,13 @@
 package org.apereo.openlrs.model;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.apereo.openlrs.model.statement.Actor;
-import org.apereo.openlrs.model.statement.StatementObject;
-import org.apereo.openlrs.model.statement.Verb;
+import org.apereo.openlrs.model.statement.LRSActor;
+import org.apereo.openlrs.model.statement.LRSObject;
+import org.apereo.openlrs.model.statement.LRSResult;
+import org.apereo.openlrs.model.statement.LRSVerb;
 
 /**
  * The statement model represents all the available properties of a learning event
@@ -30,6 +33,25 @@ import org.apereo.openlrs.model.statement.Verb;
 public class Statement implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * if true then this LRS_Statement is populated with all required fields (actor, verb, and object),
+     * if false then check the raw data fields instead: {@link #rawMap} first and if null or empty then {@link #rawJSON},
+     * it should be impossible for object to have none of these fields populated
+     */
+    private boolean populated = false;
+
+    /**
+     * A raw map of the keys and values which should be able to basically be converted directly into a JSON statement,
+     * MUST contain at least actor, verb, and object keys and the values for those cannot be null or empty
+     */
+    private Map<String, Object> rawMap;
+
+    /**
+     * The raw JSON string to send as a statement
+     * WARNING: this will not be validated
+     */
+    private String rawJSON;
 
     /**
      * UUID
@@ -45,7 +67,7 @@ public class Statement implements Serializable {
      * 
      * Required
      */
-    private Actor actor;
+    private LRSActor actor;
 
     /**
      * Action between actor and activity
@@ -53,7 +75,7 @@ public class Statement implements Serializable {
      * 
      * Required
      */
-    private Verb verb;
+    private LRSVerb verb;
 
     /**
      * an Activity, Agent/Group, Sub-Statement, or Statement Reference. It is the "this" part of the Statement, i.e. "I did this"
@@ -61,7 +83,7 @@ public class Statement implements Serializable {
      * 
      * Required
      */
-    private StatementObject object;
+    private LRSObject object;
 
     /**
      * optional field that represents a measured outcome related to the Statement in which it is included
@@ -69,7 +91,7 @@ public class Statement implements Serializable {
      * 
      * Optional
      */
-    private String result;
+    private LRSResult result;
 
     /**
      * optional field that provides a place to add contextual information to a Statement. All properties are optional
@@ -144,8 +166,27 @@ public class Statement implements Serializable {
      * @param version
      * @param attachments
      */
-    public Statement(String id, Actor actor, Verb verb, StatementObject object, String result, String context, String timestamp,
-            String version, Object[] attachments) {
+    public Statement(
+            String id,
+            LRSActor actor,
+            LRSVerb verb,
+            LRSObject object,
+            LRSResult result,
+            String context,
+            String timestamp,
+            String version,
+            Object[] attachments) {
+        this();
+        if (actor == null) {
+            throw new IllegalArgumentException("LRSActor cannot be null");
+        }
+        if (verb == null) {
+            throw new IllegalArgumentException("LRSVerb cannot be null");
+        }
+        if (object == null) {
+            throw new IllegalArgumentException("LRSObject cannot be null");
+        }
+
         this.id = id;
         this.actor = actor;
         this.verb = verb;
@@ -155,6 +196,7 @@ public class Statement implements Serializable {
         this.timestamp = timestamp;
         this.version = version;
         this.attachments = attachments;
+        this.populated = true;
     }
 
     /**
@@ -164,11 +206,23 @@ public class Statement implements Serializable {
      * @param verb
      * @param object
      */
-    public Statement(String id, Actor actor, Verb verb, StatementObject object) {
+    public Statement(String id, LRSActor actor, LRSVerb verb, LRSObject object) {
+        this();
+        if (actor == null) {
+            throw new IllegalArgumentException("LRSActor cannot be null");
+        }
+        if (verb == null) {
+            throw new IllegalArgumentException("LRSVerb cannot be null");
+        }
+        if (object == null) {
+            throw new IllegalArgumentException("LRSObject cannot be null");
+        }
+
         this.id = id;
         this.actor = actor;
         this.verb = verb;
         this.object = object;
+        this.populated = true;
     }
 
     /**
@@ -177,12 +231,87 @@ public class Statement implements Serializable {
      * @param verb
      * @param object
      */
-    public Statement(Actor actor, Verb verb, StatementObject object) {
+    public Statement(LRSActor actor, LRSVerb verb, LRSObject object) {
+        this();
+        if (actor == null) {
+            throw new IllegalArgumentException("LRSActor cannot be null");
+        }
+        if (verb == null) {
+            throw new IllegalArgumentException("LRSVerb cannot be null");
+        }
+        if (object == null) {
+            throw new IllegalArgumentException("LRSObject cannot be null");
+        }
+
         this.actor = actor;
         this.verb = verb;
         this.object = object;
+        this.populated = true;
     }
 
+    /**
+     * Construct a simple LRS statement
+     * 
+     * @param actorEmail the user email address, "I"
+     * @param verbStr a string indicating the action, "did"
+     * @param objectURI URI indicating the object of the statement, "this"
+     */
+    public Statement(String actorEmail, String verbStr, String objectURI) {
+        this(new LRSActor(actorEmail), new LRSVerb(verbStr), new LRSObject(objectURI));
+    }
+
+    /**
+     * Construct a simple LRS statement with Result
+     * 
+     * @param actorEmail the user email address, "I"
+     * @param verbStr a string indicating the action, "did"
+     * @param objectURI URI indicating the object of the statement, "this"
+     * @param resultSuccess true if the result was successful (pass) or false if not (fail), "well"
+     * @param resultScaledScore Score from -1.0 to 1.0 where 0=0% and 1.0=100%
+     */
+    public Statement(String actorEmail, String verbStr, String objectURI, boolean resultSuccess, float resultScaledScore) {
+        this(new LRSActor(actorEmail), new LRSVerb(verbStr), new LRSObject(objectURI));
+        this.result = new LRSResult(resultScaledScore, resultSuccess);
+    }
+    /**
+     * EXPERT USE ONLY
+     * @param rawData map of the keys and values which MUST contain at least actor, verb, and object keys and the values for those cannot be null or empty
+     * @throws IllegalArgumentException if any required keys are missing
+     * @see #rawMap
+     */
+    public Statement(Map<String, Object> rawData) {
+        this();
+        this.populated = false;
+        this.rawMap = rawData;
+        if (rawData != null) {
+            if (!rawData.containsKey("actor") || rawData.get("actor") == null) {
+                throw new IllegalArgumentException("actor key MUST be set and NOT null");
+            }
+            if (!rawData.containsKey("verb") || rawData.get("verb") == null) {
+                throw new IllegalArgumentException("verb key MUST be set and NOT null");
+            }
+            if (!rawData.containsKey("object") || rawData.get("object") == null) {
+                throw new IllegalArgumentException("object key MUST be set and NOT null");
+            }
+            this.rawMap = new LinkedHashMap<String, Object>(rawData);
+            this.rawJSON = null;
+        }
+    }
+    /**
+     * INTERNAL USE ONLY
+     * Probably will not work for anything that is NOT the Experience API
+     * @param rawJSON JSON string to send as a statement
+     *          WARNING: this will NOT be validated!
+     * @see #rawJSON
+     */
+    public Statement(String rawJSON) {
+        this();
+        this.populated = false;
+        this.rawJSON = rawJSON;
+        if (rawJSON != null) {
+            this.rawMap = null;
+        }
+    }
     public String getId() {
         return id;
     }
@@ -191,35 +320,35 @@ public class Statement implements Serializable {
         this.id = id;
     }
 
-    public Actor getActor() {
+    public LRSActor getActor() {
         return actor;
     }
 
-    public void setActor(Actor actor) {
+    public void setActor(LRSActor actor) {
         this.actor = actor;
     }
 
-    public Verb getVerb() {
+    public LRSVerb getVerb() {
         return verb;
     }
 
-    public void setVerb(Verb verb) {
+    public void setVerb(LRSVerb verb) {
         this.verb = verb;
     }
 
-    public StatementObject getObject() {
+    public LRSObject getObject() {
         return object;
     }
 
-    public void setObject(StatementObject object) {
+    public void setObject(LRSObject object) {
         this.object = object;
     }
 
-    public String getResult() {
+    public LRSResult getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(LRSResult result) {
         this.result = result;
     }
 
@@ -277,6 +406,30 @@ public class Statement implements Serializable {
 
     public void setDataConstraints(String dataConstraints) {
         this.dataConstraints = dataConstraints;
+    }
+
+    public boolean isPopulated() {
+        return populated;
+    }
+
+    public void setPopulated(boolean populated) {
+        this.populated = populated;
+    }
+
+    public Map<String, Object> getRawMap() {
+        return rawMap;
+    }
+
+    public void setRawMap(Map<String, Object> rawMap) {
+        this.rawMap = rawMap;
+    }
+
+    public String getRawJSON() {
+        return rawJSON;
+    }
+
+    public void setRawJSON(String rawJSON) {
+        this.rawJSON = rawJSON;
     }
 
 }

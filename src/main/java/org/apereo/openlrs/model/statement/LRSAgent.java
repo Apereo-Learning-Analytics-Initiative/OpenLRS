@@ -1,6 +1,6 @@
 package org.apereo.openlrs.model.statement;
 
-public class Agent extends BaseActorObjectType {
+public class LRSAgent extends BaseActorObjectType {
 
     public String getObjectType() {
         return "Agent";

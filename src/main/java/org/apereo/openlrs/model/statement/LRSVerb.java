@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author Robert E. Long (rlong @ unicon.net)
  */
-public class Verb {
+public class LRSVerb {
 
     /**
      * Corresponds to a Verb definition. Each Verb definition corresponds to the meaning of a Verb, not the word. 
@@ -33,7 +33,7 @@ public class Verb {
      * Constructor to create an empty verb
      * If used, an id and (optional) display language map must be set in order to use this object
      */
-    public Verb() {
+    public LRSVerb() {
         this("", new HashMap<String, String>());
     }
 
@@ -43,7 +43,17 @@ public class Verb {
      * @param id
      * @param display
      */
-    public Verb(String id, Map<String, String> display) {
+    public LRSVerb(String id) {
+        this(id, new HashMap<String, String>());
+    }
+
+    /**
+     * Constructor to create a full verb object with an id and (optional) display language map
+     * 
+     * @param id
+     * @param display
+     */
+    public LRSVerb(String id, Map<String, String> display) {
         this.id = id;
         this.display = display;
     }

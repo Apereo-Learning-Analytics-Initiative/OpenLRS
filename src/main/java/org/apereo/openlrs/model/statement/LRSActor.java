@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Robert E. Long (rlong @ unicon.net)
  */
-public class Actor {
+public class LRSActor {
 
     private BaseActorObjectType objectType;
 
@@ -37,11 +37,11 @@ public class Actor {
      * Default constructor
      * Creates an Agent Actor
      */
-    public Actor() {
+    public LRSActor() {
         this(null, null);
     }
 
-    public Actor(String objectType) {
+    public LRSActor(String objectType) {
         this(objectType, null);
     }
 
@@ -51,7 +51,7 @@ public class Actor {
      * @param objectType
      * @param name
      */
-    public Actor(String objectType, String name) {
+    public LRSActor(String objectType, String name) {
         this(objectType, name, null, "");
     }
 
@@ -63,7 +63,7 @@ public class Actor {
      * @param inverseFunctionalIdentifier
      * @param ifiValue
      */
-    public Actor(String objectType, String name, String inverseFunctionalIdentifier, String ifiValue) {
+    public LRSActor(String objectType, String name, String inverseFunctionalIdentifier, String ifiValue) {
         determineObjectType(objectType);
         this.objectType.setName(name);
         if (StringUtils.isNotEmpty(inverseFunctionalIdentifier)) {
@@ -124,10 +124,10 @@ public class Actor {
      */
     private void determineObjectType(String objectType) {
         // default to Agent
-        this.objectType = new Agent();
+        this.objectType = new LRSAgent();
 
         if (StringUtils.equalsIgnoreCase(objectType, "Group")) {
-            this.objectType = new Group();
+            this.objectType = new LRSGroup();
         }
     }
 

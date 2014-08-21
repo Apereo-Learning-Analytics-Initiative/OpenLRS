@@ -5,19 +5,19 @@ package org.apereo.openlrs.model.statement;
  *
  * @author Robert E. Long (rlong @ unicon.net)
  */
-public class Group extends BaseActorObjectType {
+public class LRSGroup extends BaseActorObjectType {
 
-    private Agent[] member;
+    private LRSAgent[] member;
 
     public String getObjectType() {
         return "Group";
     }
 
-    public Agent[] getMember() {
+    public LRSAgent[] getMember() {
         return member;
     }
 
-    public void setMember(Agent[] member) {
+    public void setMember(LRSAgent[] member) {
         this.member = member;
     }
 
