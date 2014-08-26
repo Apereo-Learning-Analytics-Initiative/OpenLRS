@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Configuration;
 public class Application {
 	
 	@Autowired private OpenLRSAuthenticationFilter openLRSAuthenticationFilter;
+	@Autowired private XAPIRequestValidationFilter xapiRequestValidationFilter;
 	
 	public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
@@ -46,8 +47,19 @@ public class Application {
 	public FilterRegistrationBean securityFilterBean() {
 		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 		registrationBean.setFilter(openLRSAuthenticationFilter);
-		List<String> urls = new ArrayList<String>(1);
+		List<String> urls = new ArrayList<String>(2);
 		urls.add("/xAPI/statements");
+		urls.add("/xAPI/statements/*");
+		registrationBean.setUrlPatterns(urls);
+		return registrationBean;
+	}
+	
+	@Bean
+	public FilterRegistrationBean validationFilterBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		registrationBean.setFilter(xapiRequestValidationFilter);
+		List<String> urls = new ArrayList<String>(1);
+		urls.add("/xAPI/*");
 		registrationBean.setUrlPatterns(urls);
 		return registrationBean;
 	}

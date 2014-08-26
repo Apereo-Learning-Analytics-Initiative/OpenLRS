@@ -16,6 +16,9 @@
 package org.apereo.openlrs.controllers;
 
 import org.apereo.openlrs.Application;
+import org.apereo.openlrs.Constants;
+import org.apereo.openlrs.XAPIHeaderFilter;
+import org.apereo.openlrs.XAPIRequestValidationFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,12 +26,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -36,25 +41,52 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author ggilbert (ggilbert @ unicon.net)
  *
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes=Application.class)
 public class AboutControllerIntegrationTest {
 	MockMvc mockMvc;
 	@Autowired AboutController controller;
+	@Autowired XAPIHeaderFilter xapiHeaderFilter;
+	@Autowired XAPIRequestValidationFilter xapiRequestValidationFilter;
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.mockMvc = standaloneSetup(controller).build();
+		this.mockMvc = standaloneSetup(controller)
+				.addFilter(xapiHeaderFilter, "/*")
+				.addFilter(xapiRequestValidationFilter, "/xAPI/*")
+				.build();
+	}
+	
+	@Test
+	public void thatAboutWithNoVersionHeaderReturns400() throws Exception {
+		this.mockMvc.perform(
+				get("/xAPI/about")
+					.accept(MediaType.APPLICATION_JSON))
+					.andDo(print())
+					.andExpect(status().isBadRequest());
 	}
 	
 	@Test
 	public void thatAboutReturnsJsonWithVersion() throws Exception {
 		this.mockMvc.perform(
+			get("/xAPI/about")
+				.header(Constants.XAPI_VERSION_HEADER, "someversion")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("version").exists());
+	}
+	
+	@Test
+	public void thatAboutReturnsHeaderWithVersion() throws Exception {
+		this.mockMvc.perform(
 				get("/xAPI/about")
-					.accept(MediaType.APPLICATION_JSON))
-					.andDo(print())
-					.andExpect(status().isOk())
-					.andExpect(jsonPath("version").exists());
+				.header(Constants.XAPI_VERSION_HEADER, "someversion")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(header().string("X-Experience-API-Version", "someversion"));
 	}
 }
