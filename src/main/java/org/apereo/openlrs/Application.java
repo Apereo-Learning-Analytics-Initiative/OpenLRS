@@ -15,8 +15,14 @@
  */
 package org.apereo.openlrs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +35,20 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 @ComponentScan(basePackages="org.apereo.openlrs")
 public class Application {
+	
+	@Autowired private OpenLRSAuthenticationFilter openLRSAuthenticationFilter;
+	
 	public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
+	
+	@Bean
+	public FilterRegistrationBean securityFilterBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		registrationBean.setFilter(openLRSAuthenticationFilter);
+		List<String> urls = new ArrayList<String>(1);
+		urls.add("/xAPI/statements");
+		registrationBean.setUrlPatterns(urls);
+		return registrationBean;
+	}
 }

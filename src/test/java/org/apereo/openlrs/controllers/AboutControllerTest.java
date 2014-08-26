@@ -18,7 +18,6 @@ package org.apereo.openlrs.controllers;
 import org.apereo.openlrs.Application;
 import org.apereo.openlrs.model.About;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
