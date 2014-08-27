@@ -2,6 +2,7 @@ package org.apereo.openlrs.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -159,6 +160,12 @@ public class StatementUtils {
 
         // create the statement with the required properties
         Statement statement = new Statement(actor, verb, object);
+        
+        String id = (String)statementProperties.get("id");
+        if (StringUtils.isBlank(id)) {
+        	id = UUID.randomUUID().toString();
+        }
+        statement.setId(id);
 
         // process the result - OPTIONAL
         Map<String, Object> resultMap = (Map<String, Object>) statementProperties.get("result");

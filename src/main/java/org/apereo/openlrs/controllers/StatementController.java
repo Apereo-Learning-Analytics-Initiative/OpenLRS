@@ -15,8 +15,11 @@
  */
 package org.apereo.openlrs.controllers;
 
+import java.util.List;
 import java.util.Map;
 
+import org.apereo.openlrs.model.Statement;
+import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.services.StatementService;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,21 +46,24 @@ public class StatementController {
     public StatementController(StatementService statementService) {
         this.statementService = statementService;
     }
+    
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="statementId")
+    public Statement getStatement(@RequestParam(value = "statementId", required = true) String statementId) {
+    	return statementService.getStatement(statementId);
+    }
 
     /**
      * Get statement objects for the specified criteria
      * 
-     * @param statementId the UUID of the statement
      * @param actor the ID of the actor
      * @param activity the activity
      * @return JSON string of the statement objects matching the specified filter
      */
-    @RequestMapping(value = {"", "/", "*"}, method = RequestMethod.GET, produces = "application/json;charset=utf-8")
-    public String getStatement(
-            @RequestParam(value = "statementId", required = false) String statementId,
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="!statementId")
+    public StatementResult getStatement(
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity) {
-        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(statementId, actor, activity);
+        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(null, actor, activity);
 
         return statementService.getStatement(filterMap);
     }
@@ -69,7 +75,7 @@ public class StatementController {
      * @return JSON string of the statement object with the specified ID
      */
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, consumes = "application/json", produces = "application/json;charset=utf-8")
-    public String postStatement(@RequestBody String requestBody) {
+    public List<String> postStatement(@RequestBody String requestBody) {
         return statementService.postStatement(requestBody);
     }
 

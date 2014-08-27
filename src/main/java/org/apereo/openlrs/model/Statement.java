@@ -19,11 +19,14 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apereo.openlrs.controllers.OpenLRSEntity;
 import org.apereo.openlrs.model.statement.LRSActor;
 import org.apereo.openlrs.model.statement.LRSContext;
 import org.apereo.openlrs.model.statement.LRSObject;
 import org.apereo.openlrs.model.statement.LRSResult;
 import org.apereo.openlrs.model.statement.LRSVerb;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The statement model represents all the available properties of a learning event
@@ -31,28 +34,29 @@ import org.apereo.openlrs.model.statement.LRSVerb;
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  */
-public class Statement implements Serializable {
+public class Statement implements OpenLRSEntity {
 
     private static final long serialVersionUID = 1L;
+    @JsonIgnore public static final String OBJECT_KEY = "STATEMENT";
 
     /**
      * if true then this LRS_Statement is populated with all required fields (actor, verb, and object),
      * if false then check the raw data fields instead: {@link #rawMap} first and if null or empty then {@link #rawJSON},
      * it should be impossible for object to have none of these fields populated
      */
-    private boolean populated = false;
+    @JsonIgnore private boolean populated = false;
 
     /**
      * A raw map of the keys and values which should be able to basically be converted directly into a JSON statement,
      * MUST contain at least actor, verb, and object keys and the values for those cannot be null or empty
      */
-    private Map<String, Object> rawMap;
+    @JsonIgnore private Map<String, Object> rawMap;
 
     /**
      * The raw JSON string to send as a statement
      * WARNING: this will not be validated
      */
-    private String rawJSON;
+    @JsonIgnore private String rawJSON;
 
     /**
      * UUID
@@ -141,11 +145,6 @@ public class Statement implements Serializable {
      * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#attachments
      */
     private Object[] attachments;
-
-    /**
-     * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#dataconstraints
-     */
-    private String dataConstraints;
 
     /**
      * Default constructor with no properties set
@@ -401,14 +400,6 @@ public class Statement implements Serializable {
         this.attachments = attachments;
     }
 
-    public String getDataConstraints() {
-        return dataConstraints;
-    }
-
-    public void setDataConstraints(String dataConstraints) {
-        this.dataConstraints = dataConstraints;
-    }
-
     public boolean isPopulated() {
         return populated;
     }
@@ -435,7 +426,18 @@ public class Statement implements Serializable {
 
     @Override
     public String toString() {
-        return "Statement:: actor: "+actor.toString()+", verb: "+verb.toString()+", object: "+object.toString();
-        
+        return "Statement:: actor: "+actor.toString()+", verb: "+verb.toString()+", object: "+object.toString()+", id: "+id;        
     }
+
+	@Override
+	@JsonIgnore
+	public String getKey() {
+		return id;
+	}
+
+	@Override
+	@JsonIgnore
+	public String getObjectKey() {
+		return OBJECT_KEY;
+	}
 }

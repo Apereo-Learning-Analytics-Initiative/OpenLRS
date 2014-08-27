@@ -15,7 +15,10 @@
  */
 package org.apereo.openlrs.controllers;
 
+import java.util.List;
+
 import org.apereo.openlrs.Application;
+import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,7 +46,7 @@ public class StatementTest {
         String statementId = "1234-TEST-5678-UUID";
         String actor = "actor1";
         String activity = "activity1";
-        String response = statementController.getStatement(statementId, actor, activity);
+        StatementResult response = statementController.getStatement(actor, activity);
         Assert.assertNotNull(response);
     }
 
@@ -52,7 +55,7 @@ public class StatementTest {
         String statementId = "";
         String actor = "";
         String activity = "";
-        String response = statementController.getStatement(statementId, actor, activity);
+        StatementResult response = statementController.getStatement(actor, activity);
         Assert.assertNotNull(response);
     }
 
@@ -62,7 +65,7 @@ public class StatementTest {
                     "\"verb\" : {\"id\":\"http://example.com/commented\",\"display\": {\"en-US\":\"commented\"}}," +
                     "\"object\": {\"id\":\"http://example.com/website\",\"definition\": {\"name\" : {\"en-US\":\"Some Awesome Website\"}}}," +
                     "\"result\" : {\"response\" : \"Wow, nice work!\"}}";
-        String response = statementController.postStatement(requestBody);
+        List<String> response = statementController.postStatement(requestBody);
         Assert.assertNotNull(response);
     }
 

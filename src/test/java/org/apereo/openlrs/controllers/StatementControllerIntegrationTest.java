@@ -120,7 +120,7 @@ public class StatementControllerIntegrationTest {
 	}
 	
 	@Test
-	public void thatAboutReturnsHeaderWithVersion() throws Exception {
+	public void thatStatementReturnsHeaderWithVersion() throws Exception {
 		String basic = "test:test";
 		final byte[] encodedBytes = Base64.encodeBase64(basic.getBytes());
 		this.mockMvc.perform(
