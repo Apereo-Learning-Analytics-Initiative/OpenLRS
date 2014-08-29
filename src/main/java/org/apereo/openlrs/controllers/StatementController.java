@@ -18,6 +18,9 @@ package org.apereo.openlrs.controllers;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
+import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.services.StatementService;
@@ -29,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 /**
  * Controller to handle GET and POST calls
  * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#stmtapi
@@ -39,7 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/xAPI/statements")
 public class StatementController {
-
+	
+	private Logger log = Logger.getLogger(StatementController.class);
     private final StatementService statementService;
 
     @Autowired
@@ -63,6 +69,11 @@ public class StatementController {
     public StatementResult getStatement(
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity) {
+    	
+    	if (log.isDebugEnabled()) {
+    		log.debug(String.format("getStatement with actor: %s and activity: %s", actor, activity));
+    	}
+    	
         Map<String, String> filterMap = StatementUtils.createStatementFilterMap(null, actor, activity);
 
         return statementService.getStatement(filterMap);
@@ -73,10 +84,11 @@ public class StatementController {
      * 
      * @param requestBody the JSON containing the statement data
      * @return JSON string of the statement object with the specified ID
+     * @throws JsonProcessingException 
      */
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, consumes = "application/json", produces = "application/json;charset=utf-8")
-    public List<String> postStatement(@RequestBody String requestBody) {
-        return statementService.postStatement(requestBody);
+    public List<String> postStatement(@Valid @RequestBody Statement statement) {
+        return statementService.postStatement(statement);
     }
 
 }

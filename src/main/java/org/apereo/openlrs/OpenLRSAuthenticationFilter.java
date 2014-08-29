@@ -80,6 +80,10 @@ public class OpenLRSAuthenticationFilter extends OncePerRequestFilter {
 				authenticateBasic(authorizationHeader, request, response, filterChain);
 			}
 		}
+		else if ("OPTIONS".equals(request.getMethod())) {
+			log.warn("OPTIONS request - returning no content");
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+		}
 		else {
 			unauthorized(response, "Missing Authorization Header", "None");
 		}
@@ -136,7 +140,7 @@ public class OpenLRSAuthenticationFilter extends OncePerRequestFilter {
 		if (st.hasMoreTokens()) {
 	        String basic = st.nextToken();
 	 
-	        if (basic.equalsIgnoreCase("Basic")) {
+	        if (basic.equalsIgnoreCase("Basic") || basic.equalsIgnoreCase("Base64")) {
 	        	
 	        	try {
 	        		String credentials = new String(Base64.decodeBase64(st.nextToken()), "UTF-8");

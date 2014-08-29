@@ -13,32 +13,49 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.model;
+package org.apereo.openlrs.model.statement;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * @author ggilbert
  *
  */
-public class StatementResult {
+@JsonInclude(Include.NON_NULL)
+public class LRSAccount {
+	private String homePage;
+	private String name;
 	
-	private List<Statement> statements;
-	
-	public StatementResult(List<Statement> statements) {
-		this.statements = statements;
+	/**
+	 * @return the homePage
+	 */
+	public String getHomePage() {
+		return homePage;
 	}
-
-	public List<Statement> getStatements() {
-		return statements;
+	/**
+	 * @param homePage the homePage to set
+	 */
+	public void setHomePage(String homePage) {
+		this.homePage = homePage;
 	}
-
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "StatementResult [statements=" + statements + "]";
+		return "LRSAccount [homePage=" + homePage + ", name=" + name + "]";
 	}
-
 }

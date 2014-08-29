@@ -1,146 +1,111 @@
 package org.apereo.openlrs.model.statement;
 
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 
 /**
  * Holds a representation of a statement actor
  *
  * @author Robert E. Long (rlong @ unicon.net)
  */
+@JsonInclude(Include.NON_NULL)
 public class LRSActor {
 
-    private BaseActorObjectType objectType;
-
-    public enum InverseFunctionalIdentifiers {
-        /**
-         * The required format is "mailto:email address". Only email addresses that have only ever been and 
-         * will ever be assigned to this Agent, but no others, should be used for this property
-         */
-        mbox,
-        /**
-         * The SHA1 hash of a mailto IRI (i.e. the value of an mbox property). An LRS MAY include Agents with 
-         * a matching hash when a request is based on an mbox.
-         */
-        mbox_sha1sum,
-        /**
-         * An openID that uniquely identifies the Agent.
-         */
-        openid,
-        /**
-         * A user account on an existing system e.g. an LMS or intranet.
-         * If used, you must supply a hashmap with a "homepage" and "name" as string keys
-         */
-        account
-    }
-
-    /**
-     * Default constructor
-     * Creates an Agent Actor
-     */
-    public LRSActor() {
-        this(null, null);
-    }
-
-    public LRSActor(String objectType) {
-        this(objectType, null);
-    }
-
-    /**
-     * Create basic Actor object
-     * 
-     * @param objectType
-     * @param name
-     */
-    public LRSActor(String objectType, String name) {
-        this(objectType, name, null, "");
-    }
-
-    /**
-     * Create a non-account actor object
-     * 
-     * @param objectType
-     * @param name
-     * @param inverseFunctionalIdentifier
-     * @param ifiValue
-     */
-    public LRSActor(String objectType, String name, String inverseFunctionalIdentifier, String ifiValue) {
-        determineObjectType(objectType);
-        this.objectType.setName(name);
-        if (StringUtils.isNotEmpty(inverseFunctionalIdentifier)) {
-            this.objectType.setInverseFunctionalIdentifier(inverseFunctionalIdentifier, ifiValue);
-        }
-    }
-
-    /**
-     * Create an account actor object
-     * 
-     * @param objectType
-     * @param name
-     * @param inverseFunctionalIdentifier
-     * @param ifiValue
-     */
-    /*public Actor(String objectType, String name, String inverseFunctionalIdentifier, Map<String, String> ifiValue) {
-        determineObjectType(objectType);
-        this.objectType.setName(name);
-        if (StringUtils.isNotEmpty(inverseFunctionalIdentifier)) {
-            this.objectType.setInverseFunctionalIdentifier(inverseFunctionalIdentifier, ifiValue);
-        }
-    }*/
-
-    /**
-     * A user account on an existing system, such as a private system (LMS or intranet) or a public system (social networking site).
-     * 
-     * @author Robert E. Long (rlong @ unicon.net)
-     */
-    protected class Account {
-
-        private String homepage;
-        private String name;
-
-        public Account(String homepage, String name) {
-            this.homepage = homepage;
-            this.name = name;
-        }
-
-        public String getHomepage() {
-            return homepage;
-        }
-        public void setHomepage(String homepage) {
-            this.homepage = homepage;
-        }
-        public String getName() {
-            return name;
-        }
-        public void setName(String name) {
-            this.name = name;
-        }
-
-    }
-
-    /**
-     * Determines whether the Actor is an Agent or Group
-     * 
-     * @param objectType the string representing the object type
-     */
-    private void determineObjectType(String objectType) {
-        // default to Agent
-        this.objectType = new LRSAgent();
-
-        if (StringUtils.equalsIgnoreCase(objectType, "Group")) {
-            this.objectType = new LRSGroup();
-        }
-    }
-
-    public BaseActorObjectType getObjectType() {
+    private LRSActorTypes objectType;
+    private String mbox;
+    private String name;
+    private String mbox_sha1sum;
+    private String openid;
+    private LRSAccount account;
+ 
+    public LRSActor() {}
+    
+    public LRSActorTypes getObjectType() {
         return objectType;
     }
 
-    public void setObjectType(BaseActorObjectType objectType) {
+    public void setObjectType(LRSActorTypes objectType) {
         this.objectType = objectType;
     }
 
-    @Override
-    public String toString() {
-        return "Actor[type: "+ objectType.getClass() + ", ifi: " + objectType.getInverseFunctionalIdentifier() + ", name: " + (objectType.getName() != null ? objectType.getName() : "NONE") + "]";
-    }
+	/**
+	 * @return the mbox
+	 */
+	public String getMbox() {
+		return mbox;
+	}
+
+	/**
+	 * @param mbox the mbox to set
+	 */
+	public void setMbox(String mbox) {
+		this.mbox = mbox;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the mbox_sha1sum
+	 */
+	public String getMbox_sha1sum() {
+		return mbox_sha1sum;
+	}
+
+	/**
+	 * @param mbox_sha1sum the mbox_sha1sum to set
+	 */
+	public void setMbox_sha1sum(String mbox_sha1sum) {
+		this.mbox_sha1sum = mbox_sha1sum;
+	}
+
+	/**
+	 * @return the openid
+	 */
+	public String getOpenid() {
+		return openid;
+	}
+
+	/**
+	 * @param openid the openid to set
+	 */
+	public void setOpenid(String openid) {
+		this.openid = openid;
+	}
+
+	/**
+	 * @return the account
+	 */
+	public LRSAccount getAccount() {
+		return account;
+	}
+
+	/**
+	 * @param account the account to set
+	 */
+	public void setAccount(LRSAccount account) {
+		this.account = account;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "LRSActor [objectType=" + objectType + ", mbox=" + mbox
+				+ ", name=" + name + ", mbox_sha1sum=" + mbox_sha1sum
+				+ ", openid=" + openid + ", account=" + account + "]";
+	}
 }

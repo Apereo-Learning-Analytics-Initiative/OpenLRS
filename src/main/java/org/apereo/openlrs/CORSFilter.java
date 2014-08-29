@@ -22,8 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,27 +31,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  */
 @Component
-public class XAPIHeaderFilter extends OncePerRequestFilter {
+public class CORSFilter extends OncePerRequestFilter {
 	
-	@Value("${xapi.version}")
-	private String version;
-
+	private Logger log = Logger.getLogger(CORSFilter.class);
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		String allowedRequestHeaders = request.getHeader("Access-Control-Request-Headers");
-		String responseHeader = Constants.XAPI_VERSION_HEADER;
-		
-		if (StringUtils.isNotBlank(allowedRequestHeaders)) {
-			if (StringUtils.contains(allowedRequestHeaders, Constants.XAPI_VERSION_HEADER.toLowerCase())) {
-				responseHeader = responseHeader.toLowerCase();
-			}
+		if (log.isDebugEnabled()) {
+			log.debug("CORSFilter invoked");
 		}
 		
-		response.addHeader(responseHeader, version);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+		response.setHeader("Access-Control-Max-Age", "3600");
+		response.setHeader("Access-Control-Allow-Headers", "x-requested-with, " + Constants.XAPI_VERSION_HEADER + ", Authorization, Content-Type");
 		filterChain.doFilter(request, response);
 	}
-
 }

@@ -1,17 +1,17 @@
 package org.apereo.openlrs.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
-import org.apereo.openlrs.repositories.Repository;
 import org.apereo.openlrs.repositories.statements.StatementRepositoryFactory;
-import org.apereo.openlrs.utils.JsonUtils;
-import org.apereo.openlrs.utils.StatementUtils;
+import org.apereo.openlrs.utils.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,29 +65,28 @@ public class StatementService {
     /**
      * Post a statement to the database
      * 
-     * @param statementData JSON string containing the statement properties
-     * @return JSON string of the response
+     * @param newStatement a statement object 
+     * @return a collection of statement ids
      */
-    public List<String> postStatement(String statementData) {
+    public List<String> postStatement(Statement newStatement) {
     	
-        Map<String, Object> statementProperties = JsonUtils.parseJsonStringToMap(statementData);
-        if (!StatementUtils.hasAllRequiredProperties(statementProperties)) {
-            throw new IllegalArgumentException("Statement properties must contain all required properties.");
-        }
+    	if (log.isDebugEnabled()) {
+    		log.debug(String.format("New Statement: %s",newStatement));
+    	}
+    	
+    	if (StringUtils.isBlank(newStatement.getId())) {
+    		newStatement.setId(UUID.randomUUID().toString());
+    	}
+    	newStatement.setStored(TimestampUtils.getISO8601StringForDate(new Date()));
+    	
+        Statement savedStatement = factory.getRepository().post(newStatement);
         
         if (log.isDebugEnabled()) {
-        	log.debug(String.format("Statement Properties: %s", statementProperties));
-        }
-
-        // prepare the statement for storage & save
-        Statement statement = factory.getRepository().post(StatementUtils.prepareStatement(statementProperties));
-        
-        if (log.isDebugEnabled()) {
-        	log.debug(statement);
+        	log.debug(String.format("Saved Statement: %s",savedStatement));
         }
         
         List<String> statementIds = new ArrayList<String>();
-        statementIds.add(statement.getId());
+        statementIds.add(savedStatement.getId());
         
         return statementIds;
     }

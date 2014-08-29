@@ -38,10 +38,20 @@ public class Application {
 	
 	@Autowired private OpenLRSAuthenticationFilter openLRSAuthenticationFilter;
 	@Autowired private XAPIRequestValidationFilter xapiRequestValidationFilter;
+	@Autowired private CORSFilter corsFilter;
+	
 	
 	public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
+	
+	@Bean
+	public FilterRegistrationBean corsFilterBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		registrationBean.setFilter(corsFilter);
+		registrationBean.setOrder(1);
+		return registrationBean;
+	}
 	
 	@Bean
 	public FilterRegistrationBean securityFilterBean() {
@@ -51,6 +61,7 @@ public class Application {
 		urls.add("/xAPI/statements");
 		urls.add("/xAPI/statements/*");
 		registrationBean.setUrlPatterns(urls);
+		registrationBean.setOrder(2);
 		return registrationBean;
 	}
 	
@@ -61,6 +72,7 @@ public class Application {
 		List<String> urls = new ArrayList<String>(1);
 		urls.add("/xAPI/*");
 		registrationBean.setUrlPatterns(urls);
+		registrationBean.setOrder(3);
 		return registrationBean;
 	}
 }

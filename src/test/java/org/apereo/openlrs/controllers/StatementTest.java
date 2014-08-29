@@ -15,12 +15,18 @@
  */
 package org.apereo.openlrs.controllers;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apereo.openlrs.Application;
+import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
+import org.apereo.openlrs.model.statement.LRSActor;
+import org.apereo.openlrs.model.statement.LRSObject;
+import org.apereo.openlrs.model.statement.LRSVerb;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +46,23 @@ public class StatementTest {
 
     @Autowired
     private StatementController statementController;
+	private LRSActor actor;
+	private LRSVerb verb;
+	private LRSObject object;
+
+	@Before
+	public void setup() {
+		actor = new LRSActor();
+		actor.setMbox("mailto:test@test.com");
+		verb = new LRSVerb();
+		verb.setId("http://example.com/verb");
+		verb.setDisplay(Collections.singletonMap("en-US", "verb"));
+		object = new LRSObject();
+		object.setId("http://example.com/object");
+	}
 
     @Test
     public void getFilteredStatementTest() {
-        String statementId = "1234-TEST-5678-UUID";
         String actor = "actor1";
         String activity = "activity1";
         StatementResult response = statementController.getStatement(actor, activity);
@@ -52,7 +71,6 @@ public class StatementTest {
 
     @Test
     public void getAllStatementTest() {
-        String statementId = "";
         String actor = "";
         String activity = "";
         StatementResult response = statementController.getStatement(actor, activity);
@@ -61,11 +79,12 @@ public class StatementTest {
 
     @Test
     public void postStatementTest() {
-        String requestBody = "{\"actor\" : {\"objectType\": \"Agent\",\"mbox\":\"mailto:test@example.com\"}," +
-                    "\"verb\" : {\"id\":\"http://example.com/commented\",\"display\": {\"en-US\":\"commented\"}}," +
-                    "\"object\": {\"id\":\"http://example.com/website\",\"definition\": {\"name\" : {\"en-US\":\"Some Awesome Website\"}}}," +
-                    "\"result\" : {\"response\" : \"Wow, nice work!\"}}";
-        List<String> response = statementController.postStatement(requestBody);
+		Statement statement = new Statement();
+		statement.setActor(actor);
+		statement.setVerb(verb);
+		statement.setObject(object);
+        
+        List<String> response = statementController.postStatement(statement);
         Assert.assertNotNull(response);
     }
 

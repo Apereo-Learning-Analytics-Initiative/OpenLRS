@@ -15,18 +15,18 @@
  */
 package org.apereo.openlrs.model;
 
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 import org.apereo.openlrs.controllers.OpenLRSEntity;
 import org.apereo.openlrs.model.statement.LRSActor;
-import org.apereo.openlrs.model.statement.LRSContext;
 import org.apereo.openlrs.model.statement.LRSObject;
-import org.apereo.openlrs.model.statement.LRSResult;
 import org.apereo.openlrs.model.statement.LRSVerb;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The statement model represents all the available properties of a learning event
@@ -34,29 +34,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  */
+@JsonInclude(Include.NON_NULL)
 public class Statement implements OpenLRSEntity {
 
     private static final long serialVersionUID = 1L;
     @JsonIgnore public static final String OBJECT_KEY = "STATEMENT";
-
-    /**
-     * if true then this LRS_Statement is populated with all required fields (actor, verb, and object),
-     * if false then check the raw data fields instead: {@link #rawMap} first and if null or empty then {@link #rawJSON},
-     * it should be impossible for object to have none of these fields populated
-     */
-    @JsonIgnore private boolean populated = false;
-
-    /**
-     * A raw map of the keys and values which should be able to basically be converted directly into a JSON statement,
-     * MUST contain at least actor, verb, and object keys and the values for those cannot be null or empty
-     */
-    @JsonIgnore private Map<String, Object> rawMap;
-
-    /**
-     * The raw JSON string to send as a statement
-     * WARNING: this will not be validated
-     */
-    @JsonIgnore private String rawJSON;
 
     /**
      * UUID
@@ -72,7 +54,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
-    private LRSActor actor;
+    @NotNull private LRSActor actor;
 
     /**
      * Action between actor and activity
@@ -80,7 +62,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
-    private LRSVerb verb;
+    @NotNull private LRSVerb verb;
 
     /**
      * an Activity, Agent/Group, Sub-Statement, or Statement Reference. It is the "this" part of the Statement, i.e. "I did this"
@@ -88,7 +70,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
-    private LRSObject object;
+    @NotNull private LRSObject object;
 
     /**
      * optional field that represents a measured outcome related to the Statement in which it is included
@@ -96,7 +78,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
-    private LRSResult result;
+    //private LRSResult result;
 
     /**
      * optional field that provides a place to add contextual information to a Statement. All properties are optional
@@ -104,7 +86,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
-    private LRSContext context;
+    //private LRSContext context;
 
     /**
      *  time at which the experience occurred
@@ -144,174 +126,8 @@ public class Statement implements OpenLRSEntity {
      * Object array of digital artifacts providing evidence of a learning experience
      * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#attachments
      */
-    private Object[] attachments;
+    //private Object[] attachments;
 
-    /**
-     * Default constructor with no properties set
-     * 
-     * If used, the following properties must be set at a minimum: actor, verb, object
-     */
-    public Statement() {
-    }
-
-    /**
-     * Constructor using all required and recommended optional properties
-     * @param id
-     * @param actor
-     * @param verb
-     * @param object
-     * @param result
-     * @param context
-     * @param timestamp
-     * @param version
-     * @param attachments
-     */
-    public Statement(
-            String id,
-            LRSActor actor,
-            LRSVerb verb,
-            LRSObject object,
-            LRSResult result,
-            LRSContext context,
-            String timestamp,
-            String version,
-            Object[] attachments) {
-        this();
-        if (actor == null) {
-            throw new IllegalArgumentException("LRSActor cannot be null");
-        }
-        if (verb == null) {
-            throw new IllegalArgumentException("LRSVerb cannot be null");
-        }
-        if (object == null) {
-            throw new IllegalArgumentException("LRSObject cannot be null");
-        }
-
-        this.id = id;
-        this.actor = actor;
-        this.verb = verb;
-        this.object = object;
-        this.result = result;
-        this.context = context;
-        this.timestamp = timestamp;
-        this.version = version;
-        this.attachments = attachments;
-        this.populated = true;
-    }
-
-    /**
-     * Constructor using only required properties, plus the UUID
-     * @param id
-     * @param actor
-     * @param verb
-     * @param object
-     */
-    public Statement(String id, LRSActor actor, LRSVerb verb, LRSObject object) {
-        this();
-        if (actor == null) {
-            throw new IllegalArgumentException("LRSActor cannot be null");
-        }
-        if (verb == null) {
-            throw new IllegalArgumentException("LRSVerb cannot be null");
-        }
-        if (object == null) {
-            throw new IllegalArgumentException("LRSObject cannot be null");
-        }
-
-        this.id = id;
-        this.actor = actor;
-        this.verb = verb;
-        this.object = object;
-        this.populated = true;
-    }
-
-    /**
-     * Constructor using only required properties, without the UUID
-     * @param actor
-     * @param verb
-     * @param object
-     */
-    public Statement(LRSActor actor, LRSVerb verb, LRSObject object) {
-        this();
-        if (actor == null) {
-            throw new IllegalArgumentException("LRSActor cannot be null");
-        }
-        if (verb == null) {
-            throw new IllegalArgumentException("LRSVerb cannot be null");
-        }
-        if (object == null) {
-            throw new IllegalArgumentException("LRSObject cannot be null");
-        }
-
-        this.actor = actor;
-        this.verb = verb;
-        this.object = object;
-        this.populated = true;
-    }
-
-    /**
-     * Construct a simple LRS statement
-     * 
-     * @param actorEmail the user email address, "I"
-     * @param verbStr a string indicating the action, "did"
-     * @param objectURI URI indicating the object of the statement, "this"
-     */
-    public Statement(String actorEmail, String verbStr, String objectURI) {
-        this(new LRSActor(actorEmail), new LRSVerb(verbStr), new LRSObject(objectURI));
-    }
-
-    /**
-     * Construct a simple LRS statement with Result
-     * 
-     * @param actorEmail the user email address, "I"
-     * @param verbStr a string indicating the action, "did"
-     * @param objectURI URI indicating the object of the statement, "this"
-     * @param resultSuccess true if the result was successful (pass) or false if not (fail), "well"
-     * @param resultScaledScore Score from -1.0 to 1.0 where 0=0% and 1.0=100%
-     */
-    public Statement(String actorEmail, String verbStr, String objectURI, boolean resultSuccess, float resultScaledScore) {
-        this(new LRSActor(actorEmail), new LRSVerb(verbStr), new LRSObject(objectURI));
-        this.result = new LRSResult(resultScaledScore, resultSuccess);
-    }
-    /**
-     * EXPERT USE ONLY
-     * @param rawData map of the keys and values which MUST contain at least actor, verb, and object keys and the values for those cannot be null or empty
-     * @throws IllegalArgumentException if any required keys are missing
-     * @see #rawMap
-     */
-    public Statement(Map<String, Object> rawData) {
-        this();
-        this.populated = false;
-        this.rawMap = rawData;
-        if (rawData != null) {
-            if (!rawData.containsKey("actor") || rawData.get("actor") == null) {
-                throw new IllegalArgumentException("actor key MUST be set and NOT null");
-            }
-            if (!rawData.containsKey("verb") || rawData.get("verb") == null) {
-                throw new IllegalArgumentException("verb key MUST be set and NOT null");
-            }
-            if (!rawData.containsKey("object") || rawData.get("object") == null) {
-                throw new IllegalArgumentException("object key MUST be set and NOT null");
-            }
-            this.rawMap = new LinkedHashMap<String, Object>(rawData);
-            this.rawJSON = null;
-        }
-    }
-    /**
-     * INTERNAL USE ONLY
-     * Probably will not work for anything that is NOT the Experience API
-     * @param rawJSON JSON string to send as a statement
-     *          WARNING: this will NOT be validated!
-     * @see #rawJSON
-     */
-    public Statement(String rawJSON) {
-        this();
-        this.populated = false;
-        this.rawJSON = rawJSON;
-        if (rawJSON != null) {
-            this.rawMap = null;
-        }
-    }
     public String getId() {
         return id;
     }
@@ -344,22 +160,22 @@ public class Statement implements OpenLRSEntity {
         this.object = object;
     }
 
-    public LRSResult getResult() {
-        return result;
-    }
-
-    public void setResult(LRSResult result) {
-        this.result = result;
-    }
-
-    public LRSContext getContext() {
-        return context;
-    }
-
-    public void setContext(LRSContext context) {
-        this.context = context;
-    }
-
+//    public LRSResult getResult() {
+//        return result;
+//    }
+//
+//    public void setResult(LRSResult result) {
+//        this.result = result;
+//    }
+//
+//    public LRSContext getContext() {
+//        return context;
+//    }
+//
+//    public void setContext(LRSContext context) {
+//        this.context = context;
+//    }
+//
     public String getTimestamp() {
         return timestamp;
     }
@@ -392,41 +208,30 @@ public class Statement implements OpenLRSEntity {
         this.version = version;
     }
 
-    public Object[] getAttachments() {
-        return attachments;
-    }
+//    public Object[] getAttachments() {
+//        return attachments;
+//    }
+//
+//    public void setAttachments(Object[] attachments) {
+//        this.attachments = attachments;
+//    }
 
-    public void setAttachments(Object[] attachments) {
-        this.attachments = attachments;
-    }
-
-    public boolean isPopulated() {
-        return populated;
-    }
-
-    public void setPopulated(boolean populated) {
-        this.populated = populated;
-    }
-
-    public Map<String, Object> getRawMap() {
-        return rawMap;
-    }
-
-    public void setRawMap(Map<String, Object> rawMap) {
-        this.rawMap = rawMap;
-    }
-
-    public String getRawJSON() {
-        return rawJSON;
-    }
-
-    public void setRawJSON(String rawJSON) {
-        this.rawJSON = rawJSON;
+    @JsonIgnore
+    public String toJSON() {
+    	ObjectMapper om = new ObjectMapper();
+    	String rawJson = null;
+    	try {
+			rawJson = om.writer().writeValueAsString(this);
+		} 
+    	catch (JsonProcessingException e) {
+			// TODO 
+		}
+		return rawJson;
     }
 
     @Override
     public String toString() {
-        return "Statement:: actor: "+actor.toString()+", verb: "+verb.toString()+", object: "+object.toString()+", id: "+id;        
+        return toJSON();        
     }
 
 	@Override

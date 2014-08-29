@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -33,6 +34,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class XAPIRequestValidationFilter extends OncePerRequestFilter {
 
+	private Logger log = Logger.getLogger(XAPIRequestValidationFilter.class);
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
@@ -45,7 +48,8 @@ public class XAPIRequestValidationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		}
 		else {
-			 response.sendError(400, "Missing "+Constants.XAPI_VERSION_HEADER+" Header");
+			log.warn("Request missing XAPI VERSION HEADER");
+			response.sendError(400, "Missing "+Constants.XAPI_VERSION_HEADER+" Header");
 		}
 		
 	}

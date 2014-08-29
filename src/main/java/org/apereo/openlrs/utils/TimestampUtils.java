@@ -13,32 +13,21 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.model;
+package org.apereo.openlrs.utils;
 
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author ggilbert
  *
  */
-public class StatementResult {
-	
-	private List<Statement> statements;
-	
-	public StatementResult(List<Statement> statements) {
-		this.statements = statements;
+public class TimestampUtils {
+	public static String getISO8601StringForDate(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return dateFormat.format(date);
 	}
-
-	public List<Statement> getStatements() {
-		return statements;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "StatementResult [statements=" + statements + "]";
-	}
-
 }
