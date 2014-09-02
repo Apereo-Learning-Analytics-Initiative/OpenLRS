@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Robert E. Long (rlong @ unicon.net)
  */
 @JsonInclude(Include.NON_NULL)
-public class LRSVerb {
+public class XApiVerb {
 
     /**
      * Corresponds to a Verb definition. Each Verb definition corresponds to the meaning of a Verb, not the word. 

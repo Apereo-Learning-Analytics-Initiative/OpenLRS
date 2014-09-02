@@ -15,6 +15,8 @@
  */
 package org.apereo.openlrs.model.statement;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -30,6 +32,15 @@ public class XApiObjectDefinition {
 	private Map<String, String> description;
 	private String type;
 	private String moreInfo;
+	private String interactionType;
+	private List<String> correctResponsesPattern;
+	private List<XApiInteractionComponent> choices;
+	private List<XApiInteractionComponent> scale;
+	private List<XApiInteractionComponent> source;
+	private List<XApiInteractionComponent> target;
+	private List<XApiInteractionComponent> steps;
+	private Map<URI, String> extensions;
+	
 	/**
 	 * @return the name
 	 */
@@ -86,6 +97,102 @@ public class XApiObjectDefinition {
 		return "XApiObjectDefinition [name=" + name + ", description="
 				+ description + ", type=" + type + ", moreInfo=" + moreInfo
 				+ "]";
+	}
+	/**
+	 * @return the interactionType
+	 */
+	public String getInteractionType() {
+		return interactionType;
+	}
+	/**
+	 * @param interactionType the interactionType to set
+	 */
+	public void setInteractionType(String interactionType) {
+		this.interactionType = interactionType;
+	}
+	/**
+	 * @return the correctResponsesPattern
+	 */
+	public List<String> getCorrectResponsesPattern() {
+		return correctResponsesPattern;
+	}
+	/**
+	 * @param correctResponsesPattern the correctResponsesPattern to set
+	 */
+	public void setCorrectResponsesPattern(List<String> correctResponsesPattern) {
+		this.correctResponsesPattern = correctResponsesPattern;
+	}
+	/**
+	 * @return the choices
+	 */
+	public List<XApiInteractionComponent> getChoices() {
+		return choices;
+	}
+	/**
+	 * @param choices the choices to set
+	 */
+	public void setChoices(List<XApiInteractionComponent> choices) {
+		this.choices = choices;
+	}
+	/**
+	 * @return the scale
+	 */
+	public List<XApiInteractionComponent> getScale() {
+		return scale;
+	}
+	/**
+	 * @param scale the scale to set
+	 */
+	public void setScale(List<XApiInteractionComponent> scale) {
+		this.scale = scale;
+	}
+	/**
+	 * @return the source
+	 */
+	public List<XApiInteractionComponent> getSource() {
+		return source;
+	}
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(List<XApiInteractionComponent> source) {
+		this.source = source;
+	}
+	/**
+	 * @return the target
+	 */
+	public List<XApiInteractionComponent> getTarget() {
+		return target;
+	}
+	/**
+	 * @param target the target to set
+	 */
+	public void setTarget(List<XApiInteractionComponent> target) {
+		this.target = target;
+	}
+	/**
+	 * @return the steps
+	 */
+	public List<XApiInteractionComponent> getSteps() {
+		return steps;
+	}
+	/**
+	 * @param steps the steps to set
+	 */
+	public void setSteps(List<XApiInteractionComponent> steps) {
+		this.steps = steps;
+	}
+	/**
+	 * @return the extensions
+	 */
+	public Map<URI, String> getExtensions() {
+		return extensions;
+	}
+	/**
+	 * @param extensions the extensions to set
+	 */
+	public void setExtensions(Map<URI, String> extensions) {
+		this.extensions = extensions;
 	}
 	
 }

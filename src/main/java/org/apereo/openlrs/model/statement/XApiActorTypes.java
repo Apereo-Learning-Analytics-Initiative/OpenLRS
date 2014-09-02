@@ -19,6 +19,6 @@ package org.apereo.openlrs.model.statement;
  * @author ggilbert
  *
  */
-public enum LRSActorTypes {
+public enum XApiActorTypes {
 	Agent,Group
 }

@@ -1,5 +1,7 @@
 package org.apereo.openlrs.model.statement;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -10,22 +12,23 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Robert E. Long (rlong @ unicon.net)
  */
 @JsonInclude(Include.NON_NULL)
-public class LRSActor {
+public class XApiActor {
 
-    private LRSActorTypes objectType;
+    private XApiActorTypes objectType;
     private String mbox;
     private String name;
     private String mbox_sha1sum;
     private String openid;
-    private LRSAccount account;
+    private XApiAccount account;
+    private List<XApiActor> member;
  
-    public LRSActor() {}
+    public XApiActor() {}
     
-    public LRSActorTypes getObjectType() {
+    public XApiActorTypes getObjectType() {
         return objectType;
     }
 
-    public void setObjectType(LRSActorTypes objectType) {
+    public void setObjectType(XApiActorTypes objectType) {
         this.objectType = objectType;
     }
 
@@ -88,14 +91,14 @@ public class LRSActor {
 	/**
 	 * @return the account
 	 */
-	public LRSAccount getAccount() {
+	public XApiAccount getAccount() {
 		return account;
 	}
 
 	/**
 	 * @param account the account to set
 	 */
-	public void setAccount(LRSAccount account) {
+	public void setAccount(XApiAccount account) {
 		this.account = account;
 	}
 
@@ -107,5 +110,19 @@ public class LRSActor {
 		return "LRSActor [objectType=" + objectType + ", mbox=" + mbox
 				+ ", name=" + name + ", mbox_sha1sum=" + mbox_sha1sum
 				+ ", openid=" + openid + ", account=" + account + "]";
+	}
+
+	/**
+	 * @return the member
+	 */
+	public List<XApiActor> getMember() {
+		return member;
+	}
+
+	/**
+	 * @param member the member to set
+	 */
+	public void setMember(List<XApiActor> member) {
+		this.member = member;
 	}
 }

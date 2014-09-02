@@ -13,10 +13,8 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.model;
+package org.apereo.openlrs.model.statement;
 
-import java.io.Serializable;
-import java.net.URI;
 import java.util.Map;
 
 import javax.validation.constraints.NotNull;
@@ -25,43 +23,36 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Information about the LRS
- * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#aboutresource
- * 
- * @author ggilbert (ggilbert @ unicon.net)
+ * @author ggilbert
  *
  */
 @JsonInclude(Include.NON_NULL)
-public class About implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class XApiInteractionComponent {
+	@NotNull private String id;
+	private Map<String, String> description;
 	
-	@NotNull private String version;
-	private Map<URI, String> extensions;
-	
-	public About (String version) {
-		this.version = version;
-	}
-
 	/**
-	 * @return the version
+	 * @return the id
 	 */
-	public String getVersion() {
-		return version;
+	public String getId() {
+		return id;
 	}
-
 	/**
-	 * @return the extensions
+	 * @param id the id to set
 	 */
-	public Map<URI, String> getExtensions() {
-		return extensions;
+	public void setId(String id) {
+		this.id = id;
 	}
-
 	/**
-	 * @param extensions the extensions to set
+	 * @return the description
 	 */
-	public void setExtensions(Map<URI, String> extensions) {
-		this.extensions = extensions;
+	public Map<String, String> getDescription() {
+		return description;
 	}
-
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(Map<String, String> description) {
+		this.description = description;
+	}
 }

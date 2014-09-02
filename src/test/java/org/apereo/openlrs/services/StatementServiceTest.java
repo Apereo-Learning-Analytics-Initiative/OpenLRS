@@ -25,9 +25,9 @@ import java.util.UUID;
 import org.apereo.openlrs.Application;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
-import org.apereo.openlrs.model.statement.LRSActor;
-import org.apereo.openlrs.model.statement.LRSObject;
-import org.apereo.openlrs.model.statement.LRSVerb;
+import org.apereo.openlrs.model.statement.XApiActor;
+import org.apereo.openlrs.model.statement.XApiObject;
+import org.apereo.openlrs.model.statement.XApiVerb;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,18 +46,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringApplicationConfiguration(classes=Application.class)
 public class StatementServiceTest {
 	@Autowired StatementService service;
-	private LRSActor actor;
-	private LRSVerb verb;
-	private LRSObject object;
+	private XApiActor actor;
+	private XApiVerb verb;
+	private XApiObject object;
 	
 	@Before
 	public void setup() {
-		actor = new LRSActor();
+		actor = new XApiActor();
 		actor.setMbox("mailto:test@test.com");
-		verb = new LRSVerb();
+		verb = new XApiVerb();
 		verb.setId("http://example.com/verb");
 		verb.setDisplay(Collections.singletonMap("en-US", "verb"));
-		object = new LRSObject();
+		object = new XApiObject();
 		object.setId("http://example.com/object");
 	}
 	

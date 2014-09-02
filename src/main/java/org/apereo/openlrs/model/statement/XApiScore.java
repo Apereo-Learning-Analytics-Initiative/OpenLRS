@@ -23,39 +23,58 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  *
  */
 @JsonInclude(Include.NON_NULL)
-public class LRSAccount {
-	private String homePage;
-	private String name;
+public class XApiScore {
+	private double scaled;
+	private double raw;
+	private double min;
+	private double max;
 	
 	/**
-	 * @return the homePage
+	 * @return the scaled
 	 */
-	public String getHomePage() {
-		return homePage;
+	public double getScaled() {
+		return scaled;
 	}
 	/**
-	 * @param homePage the homePage to set
+	 * @param scaled the scaled to set
 	 */
-	public void setHomePage(String homePage) {
-		this.homePage = homePage;
+	public void setScaled(double scaled) {
+		this.scaled = scaled;
 	}
 	/**
-	 * @return the name
+	 * @return the raw
 	 */
-	public String getName() {
-		return name;
+	public double getRaw() {
+		return raw;
 	}
 	/**
-	 * @param name the name to set
+	 * @param raw the raw to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setRaw(double raw) {
+		this.raw = raw;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * @return the min
 	 */
-	@Override
-	public String toString() {
-		return "LRSAccount [homePage=" + homePage + ", name=" + name + "]";
+	public double getMin() {
+		return min;
+	}
+	/**
+	 * @param min the min to set
+	 */
+	public void setMin(double min) {
+		this.min = min;
+	}
+	/**
+	 * @return the max
+	 */
+	public double getMax() {
+		return max;
+	}
+	/**
+	 * @param max the max to set
+	 */
+	public void setMax(double max) {
+		this.max = max;
 	}
 }

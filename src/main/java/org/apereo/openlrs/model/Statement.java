@@ -17,10 +17,13 @@ package org.apereo.openlrs.model;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.log4j.Logger;
 import org.apereo.openlrs.controllers.OpenLRSEntity;
-import org.apereo.openlrs.model.statement.LRSActor;
-import org.apereo.openlrs.model.statement.LRSObject;
-import org.apereo.openlrs.model.statement.LRSVerb;
+import org.apereo.openlrs.model.statement.XApiActor;
+import org.apereo.openlrs.model.statement.XApiObject;
+import org.apereo.openlrs.model.statement.XApiVerb;
+import org.apereo.openlrs.model.statement.XApiContext;
+import org.apereo.openlrs.model.statement.XApiResult;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,7 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @JsonInclude(Include.NON_NULL)
 public class Statement implements OpenLRSEntity {
-
+	
+	private Logger log = Logger.getLogger(Statement.class);
     private static final long serialVersionUID = 1L;
     @JsonIgnore public static final String OBJECT_KEY = "STATEMENT";
 
@@ -54,7 +58,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
-    @NotNull private LRSActor actor;
+    @NotNull private XApiActor actor;
 
     /**
      * Action between actor and activity
@@ -62,7 +66,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
-    @NotNull private LRSVerb verb;
+    @NotNull private XApiVerb verb;
 
     /**
      * an Activity, Agent/Group, Sub-Statement, or Statement Reference. It is the "this" part of the Statement, i.e. "I did this"
@@ -70,7 +74,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
-    @NotNull private LRSObject object;
+    @NotNull private XApiObject object;
 
     /**
      * optional field that represents a measured outcome related to the Statement in which it is included
@@ -78,7 +82,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
-    //private LRSResult result;
+    private XApiResult result;
 
     /**
      * optional field that provides a place to add contextual information to a Statement. All properties are optional
@@ -86,7 +90,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
-    //private LRSContext context;
+    private XApiContext context;
 
     /**
      *  time at which the experience occurred
@@ -136,46 +140,46 @@ public class Statement implements OpenLRSEntity {
         this.id = id;
     }
 
-    public LRSActor getActor() {
+    public XApiActor getActor() {
         return actor;
     }
 
-    public void setActor(LRSActor actor) {
+    public void setActor(XApiActor actor) {
         this.actor = actor;
     }
 
-    public LRSVerb getVerb() {
+    public XApiVerb getVerb() {
         return verb;
     }
 
-    public void setVerb(LRSVerb verb) {
+    public void setVerb(XApiVerb verb) {
         this.verb = verb;
     }
 
-    public LRSObject getObject() {
+    public XApiObject getObject() {
         return object;
     }
 
-    public void setObject(LRSObject object) {
+    public void setObject(XApiObject object) {
         this.object = object;
     }
 
-//    public LRSResult getResult() {
-//        return result;
-//    }
-//
-//    public void setResult(LRSResult result) {
-//        this.result = result;
-//    }
-//
-//    public LRSContext getContext() {
-//        return context;
-//    }
-//
-//    public void setContext(LRSContext context) {
-//        this.context = context;
-//    }
-//
+    public XApiResult getResult() {
+        return result;
+    }
+
+    public void setResult(XApiResult result) {
+        this.result = result;
+    }
+
+    public XApiContext getContext() {
+        return context;
+    }
+
+    public void setContext(XApiContext context) {
+        this.context = context;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -224,7 +228,7 @@ public class Statement implements OpenLRSEntity {
 			rawJson = om.writer().writeValueAsString(this);
 		} 
     	catch (JsonProcessingException e) {
-			// TODO 
+			log.error(e.getMessage(), e); 
 		}
 		return rawJson;
     }

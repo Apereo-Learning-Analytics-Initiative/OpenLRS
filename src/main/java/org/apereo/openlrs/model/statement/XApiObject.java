@@ -11,11 +11,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Robert E. Long (rlong @ unicon.net)
  */
 @JsonInclude(Include.NON_NULL)
-public class LRSObject {
+public class XApiObject {
 
     @NotNull private String id;
     private XApiObjectTypes objectType;
     private XApiObjectDefinition definition;
+    private XApiActor actor;
+    private XApiVerb verb;
+    private XApiObject object;
     
 	/**
 	 * @return the id
@@ -60,5 +63,41 @@ public class LRSObject {
 	public String toString() {
 		return "LRSObject [id=" + id + ", objectType=" + objectType
 				+ ", definition=" + definition + "]";
+	}
+	/**
+	 * @return the actor
+	 */
+	public XApiActor getActor() {
+		return actor;
+	}
+	/**
+	 * @param actor the actor to set
+	 */
+	public void setActor(XApiActor actor) {
+		this.actor = actor;
+	}
+	/**
+	 * @return the verb
+	 */
+	public XApiVerb getVerb() {
+		return verb;
+	}
+	/**
+	 * @param verb the verb to set
+	 */
+	public void setVerb(XApiVerb verb) {
+		this.verb = verb;
+	}
+	/**
+	 * @return the object
+	 */
+	public XApiObject getObject() {
+		return object;
+	}
+	/**
+	 * @param object the object to set
+	 */
+	public void setObject(XApiObject object) {
+		this.object = object;
 	}
 }
