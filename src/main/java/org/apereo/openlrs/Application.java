@@ -25,6 +25,9 @@ import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.integration.redis.store.RedisMessageStore;
 
 /**
  * @author ggilbert
@@ -74,5 +77,15 @@ public class Application {
 		registrationBean.setUrlPatterns(urls);
 		registrationBean.setOrder(3);
 		return registrationBean;
+	}
+	
+	@Bean
+	public StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
+		return new StringRedisTemplate(connectionFactory);
+	}
+	
+	@Bean
+	public RedisMessageStore redisMessageStore(RedisConnectionFactory connectionFactory) {
+		return new RedisMessageStore(connectionFactory);
 	}
 }
