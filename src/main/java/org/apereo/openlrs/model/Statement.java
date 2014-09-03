@@ -28,6 +28,7 @@ import org.apereo.openlrs.model.statement.XApiResult;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,7 +51,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Recommended
      */
-    private String id;
+    @JsonProperty(value="statementId") private String id;
 
     /**
      * An agent (an individual) is a persona or system

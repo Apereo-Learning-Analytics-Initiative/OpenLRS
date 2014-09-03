@@ -20,11 +20,15 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apereo.openlrs.exceptions.InvalidXAPIRequestException;
+import org.apereo.openlrs.exceptions.NotFoundException;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.services.StatementService;
 import org.apereo.openlrs.utils.StatementUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,23 +43,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#stmtapi
  * 
  * @author Robert E. Long (rlong @ unicon.net)
- *
  */
 @RestController
 @RequestMapping("/xAPI/statements")
 public class StatementController {
 	
-	private Logger log = Logger.getLogger(StatementController.class);
+	private final Logger logger = LoggerFactory.getLogger(StatementController.class);
     private final StatementService statementService;
 
     @Autowired
     public StatementController(StatementService statementService) {
         this.statementService = statementService;
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="statementId")
-    public Statement getStatement(@RequestParam(value = "statementId", required = true) String statementId) {
-    	return statementService.getStatement(statementId);
+    public Statement getStatement(
+            @RequestParam(value = "statementId", required = true) String statementId,
+            @RequestParam Map<String,String> allRequestParams) {
+        logger.debug("Statement GET request received with parameters: {}", allRequestParams);
+        if (allRequestParams.containsKey("voidedStatementId")) {
+            throw new InvalidXAPIRequestException("Cannot submit both 'statementId' and 'voidedStatementId' parameters.");
+        }
+        final Statement result = statementService.getStatement(statementId);
+        if (result == null) {
+            throw new NotFoundException("Statement for ID [" + statementId + "] not found.");
+        }
+        return result;
     }
 
     /**
@@ -69,11 +82,9 @@ public class StatementController {
     public StatementResult getStatement(
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity) {
-    	
-    	if (log.isDebugEnabled()) {
-    		log.debug(String.format("getStatement with actor: %s and activity: %s", actor, activity));
-    	}
-    	
+
+        logger.debug("getStatement with actor: {} and activity: {}", actor, activity);
+
         Map<String, String> filterMap = StatementUtils.createStatementFilterMap(null, actor, activity);
 
         return statementService.getStatement(filterMap);
@@ -88,7 +99,17 @@ public class StatementController {
      */
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, consumes = "application/json", produces = "application/json;charset=utf-8")
     public List<String> postStatement(@Valid @RequestBody Statement statement) {
+        logger.debug("Statement POST request received with input statement: {}", statement);
         return statementService.postStatement(statement);
+    }
+
+    /**
+     * TODO
+     */
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json;charset=utf-8")
+    public Statement putStatement(@Valid @RequestBody Statement statement) {
+        logger.debug("Statement PUT request received with input statement: {}", statement);
+        throw new NotImplementedException("PUT operation not yet implemented.");
     }
 
 }
