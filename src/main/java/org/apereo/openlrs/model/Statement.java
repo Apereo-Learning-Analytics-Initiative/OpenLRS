@@ -19,15 +19,14 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.statement.XApiActor;
-import org.apereo.openlrs.model.statement.XApiObject;
-import org.apereo.openlrs.model.statement.XApiVerb;
 import org.apereo.openlrs.model.statement.XApiContext;
+import org.apereo.openlrs.model.statement.XApiObject;
 import org.apereo.openlrs.model.statement.XApiResult;
+import org.apereo.openlrs.model.statement.XApiVerb;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,7 +49,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Recommended
      */
-    @JsonProperty(value="statementId") private String id;
+    private String id;
 
     /**
      * An agent (an individual) is a persona or system
