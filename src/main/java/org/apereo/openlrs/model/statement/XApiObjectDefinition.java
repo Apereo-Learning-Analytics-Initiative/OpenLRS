@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 /**
  * @author ggilbert
@@ -39,7 +40,7 @@ public class XApiObjectDefinition {
 	private List<XApiInteractionComponent> source;
 	private List<XApiInteractionComponent> target;
 	private List<XApiInteractionComponent> steps;
-	private Map<URI, String> extensions;
+	private Map<URI, Object> extensions;
 	
 	/**
 	 * @return the name
@@ -185,13 +186,13 @@ public class XApiObjectDefinition {
 	/**
 	 * @return the extensions
 	 */
-	public Map<URI, String> getExtensions() {
+	public Map<URI, Object> getExtensions() {
 		return extensions;
 	}
 	/**
 	 * @param extensions the extensions to set
 	 */
-	public void setExtensions(Map<URI, String> extensions) {
+	public void setExtensions(Map<URI, Object> extensions) {
 		this.extensions = extensions;
 	}
 	

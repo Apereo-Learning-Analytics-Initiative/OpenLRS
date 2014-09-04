@@ -36,4 +36,8 @@ public class StatementRepositoryFactory {
 	public Repository<Statement> getRepository() {
 		return statementRepositories.get(repository);
 	}
+	
+	public Repository<Statement> getRepository(String repositoryType) {
+		return statementRepositories.get(repositoryType);
+	}
 }

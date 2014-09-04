@@ -15,6 +15,8 @@
  */
 package org.apereo.openlrs.model.statement;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -24,56 +26,56 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @JsonInclude(Include.NON_NULL)
 public class XApiContextActivities {
-	private XApiObject parent;
-	private XApiObject grouping;
-	private XApiObject category;
-	private XApiObject other;
+	private List<XApiObject> parent;
+	private List<XApiObject> grouping;
+	private List<XApiObject> category;
+	private List<XApiObject> other;
 	/**
 	 * @return the parent
 	 */
-	public XApiObject getParent() {
+	public List<XApiObject> getParent() {
 		return parent;
 	}
 	/**
 	 * @param parent the parent to set
 	 */
-	public void setParent(XApiObject parent) {
+	public void setParent(List<XApiObject> parent) {
 		this.parent = parent;
 	}
 	/**
 	 * @return the grouping
 	 */
-	public XApiObject getGrouping() {
+	public List<XApiObject> getGrouping() {
 		return grouping;
 	}
 	/**
 	 * @param grouping the grouping to set
 	 */
-	public void setGrouping(XApiObject grouping) {
+	public void setGrouping(List<XApiObject> grouping) {
 		this.grouping = grouping;
 	}
 	/**
 	 * @return the category
 	 */
-	public XApiObject getCategory() {
+	public List<XApiObject> getCategory() {
 		return category;
 	}
 	/**
 	 * @param category the category to set
 	 */
-	public void setCategory(XApiObject category) {
+	public void setCategory(List<XApiObject> category) {
 		this.category = category;
 	}
 	/**
 	 * @return the other
 	 */
-	public XApiObject getOther() {
+	public List<XApiObject> getOther() {
 		return other;
 	}
 	/**
 	 * @param other the other to set
 	 */
-	public void setOther(XApiObject other) {
+	public void setOther(List<XApiObject> other) {
 		this.other = other;
 	}
 }

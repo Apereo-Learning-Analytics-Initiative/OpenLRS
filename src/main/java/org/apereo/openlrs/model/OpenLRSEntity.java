@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.controllers;
+package org.apereo.openlrs.model;
 
 import java.io.Serializable;
 

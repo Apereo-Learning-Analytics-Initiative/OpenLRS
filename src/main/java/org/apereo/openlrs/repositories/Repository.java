@@ -17,7 +17,7 @@ package org.apereo.openlrs.repositories;
 
 import java.util.List;
 
-import org.apereo.openlrs.controllers.OpenLRSEntity;
+import org.apereo.openlrs.model.OpenLRSEntity;
 
 /**
  * @author ggilbert

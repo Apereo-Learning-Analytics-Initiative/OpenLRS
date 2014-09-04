@@ -18,7 +18,6 @@ package org.apereo.openlrs.model;
 import javax.validation.constraints.NotNull;
 
 import org.apache.log4j.Logger;
-import org.apereo.openlrs.controllers.OpenLRSEntity;
 import org.apereo.openlrs.model.statement.XApiActor;
 import org.apereo.openlrs.model.statement.XApiObject;
 import org.apereo.openlrs.model.statement.XApiVerb;
@@ -115,7 +114,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
-    private String authority;
+    private XApiActor authority;
 
     /**
      * information in Statements helps systems that process data from an LRS get their bearings. Since the Statement data model 
@@ -197,11 +196,11 @@ public class Statement implements OpenLRSEntity {
         this.stored = stored;
     }
 
-    public String getAuthority() {
+    public XApiActor getAuthority() {
         return authority;
     }
 
-    public void setAuthority(String authority) {
+    public void setAuthority(XApiActor authority) {
         this.authority = authority;
     }
 

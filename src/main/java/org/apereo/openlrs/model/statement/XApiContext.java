@@ -35,7 +35,7 @@ public class XApiContext {
 	private XApiActor team;
 	private XApiContextActivities contextActivities;
 	private XApiStatementRef statement;
-	private Map<URI, String> extensions;
+	private Map<URI, Object> extensions;
 	
 	/**
 	 * @return the registration
@@ -136,13 +136,13 @@ public class XApiContext {
 	/**
 	 * @return the extensions
 	 */
-	public Map<URI, String> getExtensions() {
+	public Map<URI, Object> getExtensions() {
 		return extensions;
 	}
 	/**
 	 * @param extensions the extensions to set
 	 */
-	public void setExtensions(Map<URI, String> extensions) {
+	public void setExtensions(Map<URI, Object> extensions) {
 		this.extensions = extensions;
 	}
 }
