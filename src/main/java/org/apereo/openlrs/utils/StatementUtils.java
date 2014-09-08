@@ -7,6 +7,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class StatementUtils {
+	
+	public static final String ACTOR_FILTER = "actor";
+	public static final String ACTIVITY_FILTER = "activity";
 
     /**
      * Verifies the statement has all required properties:
@@ -82,22 +85,17 @@ public class StatementUtils {
      * @param activity the activity
      * @return the HashMap containing the filter criteria
      */
-    public static Map<String, String> createStatementFilterMap(String statementId, String actor, String activity) {
+    public static Map<String, String> createStatementFilterMap(String actor, String activity) {
         Map<String, String> filterMap = new HashMap<String, String>(3);
 
-        // statementId
-        if (!StringUtils.isEmpty(statementId)) {
-            filterMap.put("statementId", statementId);
-        }
-
-        // actor
+       // actor
         if (!StringUtils.isEmpty(actor)) {
-            filterMap.put("actor", actor);
+            filterMap.put(ACTOR_FILTER, actor);
         }
 
         // activity
         if (!StringUtils.isEmpty(activity)) {
-            filterMap.put("activity", activity);
+            filterMap.put(ACTIVITY_FILTER, activity);
         }
 
         return filterMap;

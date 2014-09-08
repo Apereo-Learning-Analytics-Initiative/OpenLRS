@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apereo.openlrs.exceptions.StatementStateConflictException;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.repositories.statements.StatementRepositoryFactory;
@@ -38,25 +39,11 @@ public class StatementService {
     public StatementResult getStatement(Map<String, String> filterMap) {
     	
     	StatementResult result = null;
-    	List<Statement> allStatements = factory.getRepository().get();
-    	
     	if (filterMap != null && !filterMap.isEmpty()) {
-    		String actor = filterMap.get("actor"); // TODO actor filter
-    		String activity = filterMap.get("activity");
-    		
-    		List<Statement> filteredStatements = new ArrayList<Statement>();
-    		for (Statement statement: allStatements) {
-    			if (StringUtils.isNotBlank(activity)) {
-    				if (activity.equals(statement.getObject().getId())) {
-    					filteredStatements.add(statement);
-    				}
-    			}
-    		}
-    		
-    		result = new StatementResult(filteredStatements);
+     		result = new StatementResult(factory.getRepository().get(filterMap));
     	}
     	else {
-    		result = new StatementResult(allStatements);
+    		result = new StatementResult(factory.getRepository().get());
     	}
     	
         return result;
@@ -76,6 +63,21 @@ public class StatementService {
     	
     	if (StringUtils.isBlank(newStatement.getId())) {
     		newStatement.setId(UUID.randomUUID().toString());
+    	}
+    	else {
+    		// check for conflict
+    		Statement statement = factory.getRepository().get(newStatement);
+    		if (statement != null) {
+    			// set the stored timestamps null for comparison purposes
+        		statement.setStored(null);
+        		newStatement.setStored(null);
+
+    			String newStatementJSON = newStatement.toJSON();
+    			String statementJSON = statement.toJSON();
+    			if (newStatementJSON.equals(statementJSON)) {
+    				throw new StatementStateConflictException(String.format("Matching statement for id: %s already exists", newStatement.getId()));
+    			}
+    		}
     	}
     	newStatement.setStored(TimestampUtils.getISO8601StringForDate(new Date()));
     	

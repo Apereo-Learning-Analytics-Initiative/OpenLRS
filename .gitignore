@@ -21,3 +21,4 @@ stacktrace.log
 /target-eclipse/
 plugins/
 .buildpath
+data/

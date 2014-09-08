@@ -15,6 +15,8 @@
  */
 package org.apereo.openlrs.services;
 
+import static org.mockito.BDDMockito.given;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apereo.openlrs.Application;
+import org.apereo.openlrs.exceptions.StatementStateConflictException;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.model.statement.XApiActor;
@@ -110,5 +113,20 @@ public class StatementServiceTest {
 		Statement retval = service.getStatement(id);
 		Assert.assertNotNull(retval);
 		Assert.assertTrue(id.equals(retval.getId()));
+	}
+	
+	@Test(expected=StatementStateConflictException.class)
+	public void postStatementMethodShouldThrowExceptionIfStatementIsDuplicate() {
+		String id = UUID.randomUUID().toString();
+		
+		Statement statement = new Statement();
+		statement.setId(id);
+		statement.setActor(actor);
+		statement.setVerb(verb);
+		statement.setObject(object);
+		//ok
+		service.postStatement(statement);
+		//conflict
+		service.postStatement(statement);
 	}
 }

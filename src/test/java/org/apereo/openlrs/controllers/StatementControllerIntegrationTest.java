@@ -52,6 +52,7 @@ public class StatementControllerIntegrationTest {
 	@Autowired OpenLRSAuthenticationFilter filter;
 	@Autowired XAPIHeaderFilter xapiHeaderFilter;
 	@Autowired XAPIRequestValidationFilter xapiRequestValidationFilter;
+	@Autowired XAPIExceptionHandlerAdvice advice;
 	
 	@Before
 	public void setup() {
@@ -306,5 +307,4 @@ public class StatementControllerIntegrationTest {
 			.andExpect(status().isBadRequest())
 			.andExpect(header().string("X-Experience-API-Version", "someversion"));
 	}
-
 }

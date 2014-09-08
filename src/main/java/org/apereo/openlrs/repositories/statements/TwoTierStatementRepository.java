@@ -16,6 +16,7 @@
 package org.apereo.openlrs.repositories.statements;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.repositories.Repository;
@@ -64,6 +65,11 @@ public class TwoTierStatementRepository implements Repository<Statement> {
 			readRepository = statementRepositoryFactory.getRepository(readRepositoryType);
 		}
 		return readRepository;
+	}
+
+	@Override
+	public List<Statement> get(Map<String, String> filters) {
+		return getReadRepository().get(filters);
 	}
 
 }

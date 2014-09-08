@@ -73,6 +73,5 @@ public class StatementControllerTest {
 	public void putStatementMethodShouldThrowExceptionIfStatementNotFound() {
 		// when
 		this.controller.putStatement(this.statement);
-	}
-
+	}	
 }

@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.repositories.Repository;
+import org.apereo.openlrs.utils.StatementUtils;
 
 /**
  * @author ggilbert
@@ -46,6 +48,41 @@ public class InMemoryStatementRepository implements Repository<Statement> {
 	@Override
 	public List<Statement> get() {
 		return new ArrayList<Statement>(store.values());
+	}
+
+	@Override
+	public List<Statement> get(Map<String, String> filters) {
+		List<Statement> statements = get();
+		if (statements != null && !statements.isEmpty()) {
+			String actor = filters.get(StatementUtils.ACTOR_FILTER);
+			String activity = filters.get(StatementUtils.ACTIVITY_FILTER);
+			
+			List<Statement> filteredStatements = null;
+			for (Statement statement : statements) {
+				if (StringUtils.isNotBlank(actor) && StringUtils.isNotBlank(activity)) {
+					if (statement.getObject().getId().equals(activity)) {
+						if (filteredStatements == null) {
+							filteredStatements = new ArrayList<Statement>();
+						}
+						filteredStatements.add(statement);
+					}
+				}
+				else if (StringUtils.isNotBlank(actor)) {
+					
+				}
+				else if (StringUtils.isNotBlank(activity)) {
+					if (statement.getObject().getId().equals(activity)) {
+						if (filteredStatements == null) {
+							filteredStatements = new ArrayList<Statement>();
+						}
+
+						filteredStatements.add(statement);
+					}
+				}
+			}
+			return filteredStatements;
+		}
+		return null;
 	}
 
 }

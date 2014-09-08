@@ -85,7 +85,7 @@ public class StatementController {
 
         logger.debug("getStatement with actor: {} and activity: {}", actor, activity);
 
-        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(null, actor, activity);
+        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(actor, activity);
 
         return statementService.getStatement(filterMap);
     }

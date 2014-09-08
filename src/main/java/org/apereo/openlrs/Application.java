@@ -18,6 +18,8 @@ package org.apereo.openlrs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apereo.openlrs.repositories.statements.ElasticSearchStatementRepository;
+import org.apereo.openlrs.repositories.statements.RedisStatementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -27,6 +29,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.integration.redis.store.RedisMessageStore;
 
 /**
@@ -77,6 +82,22 @@ public class Application {
 		registrationBean.setUrlPatterns(urls);
 		registrationBean.setOrder(3);
 		return registrationBean;
+	}
+	
+	@Bean
+	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+			MessageListenerAdapter listenerAdapter) {
+
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(listenerAdapter, new PatternTopic(RedisStatementRepository.TOPIC));
+
+		return container;
+	}
+	
+	@Bean
+	MessageListenerAdapter listenerAdapter(ElasticSearchStatementRepository receiver) {
+		return new MessageListenerAdapter(receiver, "onMessage");
 	}
 	
 	@Bean

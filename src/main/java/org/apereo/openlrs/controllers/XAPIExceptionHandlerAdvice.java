@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -29,6 +30,7 @@ import org.apereo.openlrs.model.error.XAPIErrorInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.NestedServletException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -87,7 +90,7 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(StatementStateConflictException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ResponseBody
-    public XAPIErrorInfo handleStatementStateConflictException(final HttpServletRequest request, final StatementStateConflictException e) {
+    public XAPIErrorInfo handleStatementStateConflictException(final HttpServletRequest request, final HttpServletResponse response, final StatementStateConflictException e) {
         final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.CONFLICT, request, e.getLocalizedMessage());
         this.logException(e);
         this.logError(result);
@@ -144,6 +147,12 @@ public class XAPIExceptionHandlerAdvice {
             this.logError(result);
             return result;
         }
+    }
+    
+    @ExceptionHandler(org.springframework.web.util.NestedServletException.class)
+    public void test(NestedServletException e) {
+    	Throwable t = e.getCause();
+    	logger.debug("*************************** "+t.getClass().getName());
     }
 
     @ExceptionHandler(Exception.class)

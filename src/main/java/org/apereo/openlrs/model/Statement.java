@@ -23,6 +23,8 @@ import org.apereo.openlrs.model.statement.XApiContext;
 import org.apereo.openlrs.model.statement.XApiObject;
 import org.apereo.openlrs.model.statement.XApiResult;
 import org.apereo.openlrs.model.statement.XApiVerb;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  */
+@Document(indexName="statement", type="statement")
 @JsonInclude(Include.NON_NULL)
 public class Statement implements OpenLRSEntity {
 	
@@ -49,7 +52,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Recommended
      */
-    private String id;
+    @Id private String id;
 
     /**
      * An agent (an individual) is a persona or system

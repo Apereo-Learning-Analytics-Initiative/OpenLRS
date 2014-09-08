@@ -16,6 +16,7 @@
 package org.apereo.openlrs.repositories.statements;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.repositories.Repository;
@@ -29,7 +30,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @org.springframework.stereotype.Repository("RedisStatementRepository")
 public class RedisStatementRepository implements Repository<Statement> {
 	
-	private static final String TOPIC = "STATEMENT";
+	public static final String TOPIC = "STATEMENT";
 	
 	@Autowired private StringRedisTemplate redisTemplate;
 
@@ -46,6 +47,11 @@ public class RedisStatementRepository implements Repository<Statement> {
 
 	@Override
 	public List<Statement> get() {
+		throw new UnsupportedOperationException("RedisStatementRepository does not support get operations");	
+	}
+
+	@Override
+	public List<Statement> get(Map<String, String> filters) {
 		throw new UnsupportedOperationException("RedisStatementRepository does not support get operations");	
 	}
 
