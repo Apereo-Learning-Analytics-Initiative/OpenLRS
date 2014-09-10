@@ -25,6 +25,8 @@ import org.apereo.openlrs.model.statement.XApiResult;
 import org.apereo.openlrs.model.statement.XApiVerb;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  */
-@Document(indexName="statement", type="statement")
+@Document(indexName="openlrs", type="statement")
 @JsonInclude(Include.NON_NULL)
 public class Statement implements OpenLRSEntity {
 	
@@ -60,6 +62,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
+    @Field(type=FieldType.Nested)
     @NotNull private XApiActor actor;
 
     /**
@@ -68,6 +71,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
+    @Field(type=FieldType.Nested)
     @NotNull private XApiVerb verb;
 
     /**
@@ -76,6 +80,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Required
      */
+    @Field(type=FieldType.Nested)
     @NotNull private XApiObject object;
 
     /**
@@ -84,6 +89,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
+    @Field(type=FieldType.Nested)
     private XApiResult result;
 
     /**
@@ -92,6 +98,7 @@ public class Statement implements OpenLRSEntity {
      * 
      * Optional
      */
+    @Field(type=FieldType.Nested)
     private XApiContext context;
 
     /**

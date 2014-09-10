@@ -15,6 +15,10 @@
  */
 package org.apereo.openlrs.model.statement;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -24,8 +28,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @JsonInclude(Include.NON_NULL)
 public class XApiAccount {
-	private String homePage;
-	private String name;
+	@Field(type=FieldType.String,index=FieldIndex.not_analyzed) private String homePage;
+	@Field(type=FieldType.String,index=FieldIndex.not_analyzed) private String name;
 	
 	/**
 	 * @return the homePage

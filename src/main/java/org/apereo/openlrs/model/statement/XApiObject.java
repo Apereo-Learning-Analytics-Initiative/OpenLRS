@@ -2,6 +2,10 @@ package org.apereo.openlrs.model.statement;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -13,7 +17,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class XApiObject {
 
+	@Field(type=FieldType.String,index=FieldIndex.not_analyzed) 
     @NotNull private String id;
+	
     private XApiObjectTypes objectType;
     private XApiObjectDefinition definition;
     private XApiActor actor;

@@ -2,6 +2,10 @@ package org.apereo.openlrs.model.statement;
 
 import java.util.List;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -15,11 +19,17 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class XApiActor {
 
     private XApiActorTypes objectType;
-    private String mbox;
+    
+    @Field(type=FieldType.String,index=FieldIndex.not_analyzed) private String mbox;
+    
     private String name;
-    private String mbox_sha1sum;
-    private String openid;
+    
+    @Field(type=FieldType.String,index=FieldIndex.not_analyzed) private String mbox_sha1sum;
+    @Field(type=FieldType.String,index=FieldIndex.not_analyzed) private String openid;
+    
+    @Field(type=FieldType.Nested)
     private XApiAccount account;
+    
     private List<XApiActor> member;
  
     public XApiActor() {}

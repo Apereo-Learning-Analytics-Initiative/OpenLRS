@@ -4,6 +4,10 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -19,6 +23,7 @@ public class XApiVerb {
      * Corresponds to a Verb definition. Each Verb definition corresponds to the meaning of a Verb, not the word. 
      * The IRI should be human-readable and contain the Verb meaning.
      */
+	@Field(type=FieldType.String,index=FieldIndex.not_analyzed) 
     @NotNull private String id;
 
     /**

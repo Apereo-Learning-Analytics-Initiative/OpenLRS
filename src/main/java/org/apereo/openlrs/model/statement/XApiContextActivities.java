@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @JsonInclude(Include.NON_NULL)
 public class XApiContextActivities {
+	
 	private List<XApiObject> parent;
 	private List<XApiObject> grouping;
 	private List<XApiObject> category;
