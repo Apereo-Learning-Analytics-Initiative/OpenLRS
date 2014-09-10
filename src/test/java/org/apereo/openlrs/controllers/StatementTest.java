@@ -65,7 +65,7 @@ public class StatementTest {
     public void getFilteredStatementTest() {
         String actor = "actor1";
         String activity = "activity1";
-        StatementResult response = statementController.getStatement(actor, activity);
+        StatementResult response = statementController.getStatement(actor, activity, null);
         Assert.assertNotNull(response);
     }
 
@@ -73,7 +73,7 @@ public class StatementTest {
     public void getAllStatementTest() {
         String actor = "";
         String activity = "";
-        StatementResult response = statementController.getStatement(actor, activity);
+        StatementResult response = statementController.getStatement(actor, activity, null);
         Assert.assertNotNull(response);
     }
 

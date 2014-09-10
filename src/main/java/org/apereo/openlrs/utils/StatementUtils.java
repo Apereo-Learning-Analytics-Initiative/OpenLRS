@@ -10,6 +10,7 @@ public class StatementUtils {
 	
 	public static final String ACTOR_FILTER = "actor";
 	public static final String ACTIVITY_FILTER = "activity";
+	public static final String SINCE_FILTER = "since";
 
     /**
      * Verifies the statement has all required properties:
@@ -85,7 +86,7 @@ public class StatementUtils {
      * @param activity the activity
      * @return the HashMap containing the filter criteria
      */
-    public static Map<String, String> createStatementFilterMap(String actor, String activity) {
+    public static Map<String, String> createStatementFilterMap(String actor, String activity, String since) {
         Map<String, String> filterMap = new HashMap<String, String>(3);
 
        // actor
@@ -96,6 +97,10 @@ public class StatementUtils {
         // activity
         if (!StringUtils.isEmpty(activity)) {
             filterMap.put(ACTIVITY_FILTER, activity);
+        }
+        
+        if (!StringUtils.isEmpty(since)) {
+        	filterMap.put(SINCE_FILTER, since);
         }
 
         return filterMap;

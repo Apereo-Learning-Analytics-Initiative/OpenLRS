@@ -32,6 +32,9 @@ import org.apereo.openlrs.utils.StatementUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	private Logger log = LoggerFactory.getLogger(ElasticSearchStatementRepository.class);
 	
 	@Autowired private ElasticSearchStatementSpringDataRepository esSpringDataRepository;
+	@Autowired private ObjectMapper objectMapper;
 	
 	public void onMessage(String statementJSON) {
 		
@@ -57,9 +61,8 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			log.debug(statementJSON);
 		}
 		
-		ObjectMapper mapper = new ObjectMapper();
 		try {
-			Statement statement = mapper.readValue(statementJSON.getBytes(), Statement.class);
+			Statement statement = objectMapper.readValue(statementJSON.getBytes(), Statement.class);
 			if (log.isDebugEnabled()) {
 				log.debug("statement: {}",statement);
 			}
@@ -97,8 +100,8 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	@Override
 	public List<Statement> get(Map<String, String> filters) {
 		String actor = filters.get(StatementUtils.ACTOR_FILTER);
-
 		String activity = filters.get(StatementUtils.ACTIVITY_FILTER);
+		String since = filters.get(StatementUtils.SINCE_FILTER);
 		
 		XApiActor xApiActor = null;
 		
@@ -139,6 +142,13 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			
 			searchQuery = new NativeSearchQueryBuilder()
 			.withQuery(query)
+			.build();
+		}
+		else if (StringUtils.isNotBlank(since)) {
+			QueryBuilder query = new RangeQueryBuilder("stored").gte(since).to("now");
+			searchQuery = new NativeSearchQueryBuilder()
+			.withQuery(query)
+			.withSort(new FieldSortBuilder("stored").order(SortOrder.DESC))
 			.build();
 		}
 		

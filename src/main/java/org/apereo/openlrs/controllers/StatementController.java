@@ -81,11 +81,12 @@ public class StatementController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="!statementId")
     public StatementResult getStatement(
             @RequestParam(value = "actor", required = false) String actor,
-            @RequestParam(value = "activity", required = false) String activity) {
+            @RequestParam(value = "activity", required = false) String activity,
+            @RequestParam(value = "since", required = false) String since) {
 
         logger.debug("getStatement with actor: {} and activity: {}", actor, activity);
 
-        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(actor, activity);
+        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(actor, activity, since);
 
         return statementService.getStatement(filterMap);
     }
