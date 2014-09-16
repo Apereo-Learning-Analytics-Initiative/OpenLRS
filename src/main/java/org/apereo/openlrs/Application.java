@@ -18,6 +18,9 @@ package org.apereo.openlrs;
 import java.util.ArrayList;
 import java.util.List;
 
+import lti.oauth.OAuthFilter;
+
+import org.apereo.openlrs.conditions.RedisEnabledCondition;
 import org.apereo.openlrs.repositories.statements.ElasticSearchStatementRepository;
 import org.apereo.openlrs.repositories.statements.RedisStatementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -33,11 +37,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.integration.redis.store.RedisMessageStore;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -47,13 +49,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages="org.apereo.openlrs")
+@ComponentScan(basePackages={"org.apereo.openlrs","lti"})
 public class Application {
 	
 	@Autowired private OpenLRSAuthenticationFilter openLRSAuthenticationFilter;
 	@Autowired private XAPIRequestValidationFilter xapiRequestValidationFilter;
 	@Autowired private CORSFilter corsFilter;
-	
+	@Autowired private OAuthFilter oAuthFilter;
 	
 	public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
@@ -71,6 +73,9 @@ public class Application {
 	public FilterRegistrationBean corsFilterBean() {
 		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 		registrationBean.setFilter(corsFilter);
+		List<String> urls = new ArrayList<String>(1);
+		urls.add("/xAPI/*");
+		registrationBean.setUrlPatterns(urls);
 		registrationBean.setOrder(1);
 		return registrationBean;
 	}
@@ -97,7 +102,19 @@ public class Application {
 		registrationBean.setOrder(3);
 		return registrationBean;
 	}
+	
+	@Bean
+	public FilterRegistrationBean oAuthFilterBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		registrationBean.setFilter(oAuthFilter);
+		List<String> urls = new ArrayList<String>(1);
+		urls.add("/lti");
+		registrationBean.setUrlPatterns(urls);
+		registrationBean.setOrder(4);
+		return registrationBean;
+	}
 		
+	@Conditional(RedisEnabledCondition.class)
 	@Bean
 	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
 			MessageListenerAdapter listenerAdapter) {

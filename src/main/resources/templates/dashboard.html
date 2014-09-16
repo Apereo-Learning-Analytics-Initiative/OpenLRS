@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html ng-app="oaai">
+
+<head>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"></link>
+    <style type="text/css">
+		.voffset  { margin-top: 2px; }
+		.voffset1 { margin-top: 5px; }
+		.voffset2 { margin-top: 10px; }
+		.voffset3 { margin-top: 15px; }
+		.voffset4 { margin-top: 30px; }
+		.voffset5 { margin-top: 40px; }
+		.voffset6 { margin-top: 60px; }
+		.voffset7 { margin-top: 80px; }
+		.voffset8 { margin-top: 100px; }
+		.voffset9 { margin-top: 150px; }    
+		
+		.m-l {margin-left: 15px;}
+		.m-r {margin-right: 15px;}
+	</style>
+</head>
+
+<body ng-controller="OaaiController">
+
+    <div class="container">
+    	<div class="row" style="background-color: red;">
+			<div class="col-xs-12">{{visualization}}</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="row voffset2">
+					<div class="form-group col-xs-12">
+					  <input type="text" class="form-control" 
+					    ng-model="query" name="query" id="query" placeholder="Search..."></input>
+				    </div>
+			    </div>
+			    <div class="row voffset1">
+					<div class="list-group col-xs-12 m-l m-r">
+						  <a href="#" class="list-group-item" ng-repeat="statement in statements | filter:query">{{statement}}</a>
+					</div>			    
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.4/angular-route.min.js"></script>
+    <script src="../static/js/application.js" th:src="@{/js/application.js}"></script>
+    <script src="../static/js/controllers.js" th:src="@{/js/controllers.js?v1}"></script>
+
+</body>
+
+</html>
