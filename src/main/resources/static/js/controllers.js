@@ -1,6 +1,6 @@
-var oaaiControllers = angular.module('oaaiControllers', []);
+var openLrsControllers = angular.module('openLrsControllers', []);
 
-oaaiControllers.controller('OaaiController', function($scope, $http, $window) {
+openLrsControllers.controller('OpenLRSController', function($scope, $http, $window) {
 	
 	$scope.statements = null;
     $scope.query = '';

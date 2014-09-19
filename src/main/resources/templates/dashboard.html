@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html ng-app="oaai">
+<html ng-app="openlrs">
 
 <head>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"></link>
@@ -21,7 +21,7 @@
 	</style>
 </head>
 
-<body ng-controller="OaaiController">
+<body ng-controller="OpenLRSController">
 
     <div class="container">
     	<div class="row" style="background-color: red;">
@@ -38,6 +38,7 @@
 			    <div class="row voffset1">
 					<div class="list-group col-xs-12 m-l m-r">
 						  <a href="#" class="list-group-item" ng-repeat="statement in statements | filter:query">{{statement}}</a>
+						  <h4 class="text-center" ng-show="!statements || statements.length == 0">No xAPI Statements available</h4>
 					</div>			    
 				</div>
 			</div>
