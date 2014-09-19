@@ -11,6 +11,7 @@ public class StatementUtils {
 	public static final String ACTOR_FILTER = "actor";
 	public static final String ACTIVITY_FILTER = "activity";
 	public static final String SINCE_FILTER = "since";
+	public static final String LIMIT_FILTER = "limit";
 
     /**
      * Verifies the statement has all required properties:
@@ -86,7 +87,7 @@ public class StatementUtils {
      * @param activity the activity
      * @return the HashMap containing the filter criteria
      */
-    public static Map<String, String> createStatementFilterMap(String actor, String activity, String since) {
+    public static Map<String, String> createStatementFilterMap(String actor, String activity, String since, String limit) {
         Map<String, String> filterMap = new HashMap<String, String>(3);
 
        // actor
@@ -101,6 +102,18 @@ public class StatementUtils {
         
         if (!StringUtils.isEmpty(since)) {
         	filterMap.put(SINCE_FILTER, since);
+        }
+        
+        if (!StringUtils.isEmpty(limit)) {
+        	try{
+    		  int number = Integer.parseInt(limit);
+    		  if(number > 0)
+    		  {
+    			  filterMap.put(LIMIT_FILTER, limit);
+    		  }
+    		} catch (NumberFormatException e) {
+    		  
+    		}
         }
 
         return filterMap;

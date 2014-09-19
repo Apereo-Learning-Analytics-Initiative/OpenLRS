@@ -30,6 +30,8 @@ import org.apereo.openlrs.model.statement.XApiActorTypes;
 import org.apereo.openlrs.repositories.Repository;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MatchAllFilterBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -38,6 +40,8 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
@@ -102,6 +106,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 		String actor = filters.get(StatementUtils.ACTOR_FILTER);
 		String activity = filters.get(StatementUtils.ACTIVITY_FILTER);
 		String since = filters.get(StatementUtils.SINCE_FILTER);
+		int limit = getLimit(filters.get(StatementUtils.LIMIT_FILTER));;
 		
 		XApiActor xApiActor = null;
 		
@@ -122,39 +127,40 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			QueryBuilder activityQuery = nestedQuery("object",boolQuery().must(matchQuery("object.id", activity)));
 			
 			BoolQueryBuilder boolQuery = boolQuery().must(actorQuery).must(activityQuery);
-			searchQuery = new NativeSearchQueryBuilder()
-			.withQuery(boolQuery)
-			.build();
+			
+			searchQuery = startQuery(limit, boolQuery).build();
 		}
 		else if (xApiActor != null) {
 			
 			QueryBuilder query = buildActorQuery(xApiActor);
 			
 			if (query != null) {
-				searchQuery = new NativeSearchQueryBuilder()
-				.withQuery(query)
-				.build();
+				searchQuery = startQuery(limit, query).build();
 			}
 		}
 		else if (StringUtils.isNotBlank(activity)) {	
-			
 			QueryBuilder query = nestedQuery("object",boolQuery().must(matchQuery("object.id", activity)));
-			
-			searchQuery = new NativeSearchQueryBuilder()
-			.withQuery(query)
-			.build();
+			searchQuery = startQuery(limit, query).build();
 		}
 		else if (StringUtils.isNotBlank(since)) {
 			QueryBuilder query = new RangeQueryBuilder("stored").gte(since).to("now");
-			searchQuery = new NativeSearchQueryBuilder()
-			.withQuery(query)
-			.withSort(new FieldSortBuilder("stored").order(SortOrder.DESC))
-			.build();
+			
+			NativeSearchQueryBuilder searchQueryBuilder = startQuery(limit, query);
+			
+			searchQuery = searchQueryBuilder.withSort(new FieldSortBuilder("stored").order(SortOrder.DESC)).build();
+		}
+		else if(limit > 0) {
+			QueryBuilder query = new  MatchQueryBuilder("","");
+			searchQuery  = startQuery(limit, null).build();
 		}
 		
 		if (searchQuery != null) {
-			if (log.isDebugEnabled()) {
-				log.debug(String.format("Elasticsearch query %s", searchQuery.getQuery().toString()));
+			if (log.isDebugEnabled()) 
+			{
+				if(searchQuery.getQuery() != null)
+				{
+					log.debug(String.format("Elasticsearch query %s", searchQuery.getQuery().toString()));
+				}
 			}
 			
 			Iterable<Statement> iterableStatements = esSpringDataRepository.search(searchQuery);
@@ -163,6 +169,36 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			}
 		}
 		return null;
+	}
+
+
+	private NativeSearchQueryBuilder startQuery(int limit, QueryBuilder query) {
+		NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder();
+
+		if(query != null)
+		{
+			searchQueryBuilder = searchQueryBuilder.withQuery(query);
+		}
+		
+		if(limit > 0)
+		{
+			searchQueryBuilder = searchQueryBuilder.withFilter(FilterBuilders.limitFilter(limit));
+		}
+		return searchQueryBuilder;
+	}
+
+	private int getLimit(String limit) {
+		
+		if(StringUtils.isNotBlank(limit))
+		{
+			try{
+    		  return Integer.parseInt(limit);
+    		} catch (NumberFormatException e) {
+    			log.debug("Limit not a number");
+    		}
+		}
+		
+		return 0;
 	}
 	
 	private QueryBuilder buildActorQuery(XApiActor xApiActor) {

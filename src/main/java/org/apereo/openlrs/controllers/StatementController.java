@@ -82,11 +82,12 @@ public class StatementController {
     public StatementResult getStatement(
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity,
-            @RequestParam(value = "since", required = false) String since) {
+            @RequestParam(value = "since", required = false) String since,
+            @RequestParam(value = "limit", required = false) String limit) {
 
         logger.debug("getStatement with actor: {} and activity: {}", actor, activity);
 
-        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(actor, activity, since);
+        Map<String, String> filterMap = StatementUtils.createStatementFilterMap(actor, activity, since, limit);
 
         return statementService.getStatement(filterMap);
     }
