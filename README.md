@@ -7,37 +7,40 @@ WORK IN PROGRESS
 ----------------
 This project is still being developed and is not in a usable state yet but we welcome contributions, questions, and contributors (we are especially looking for any funding or resources to help move things forward more quickly).
 *************************************************************************************
+## Technical Overview
+OpenLRS is a Java application built with Spring Boot (http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-documentation). OpenLRS manages configuration using Spring profiles. Currently there are two available profiles:
 
-### Getting started #
-* Download the source code (use the Download zip or a git/svn checkout)
-   * https://github.com/Unicon/OpenLRS
-* Build with maven 3 (http://maven.apache.org/download.cgi):
+default - which uses in-memory datastorage
 
-    1. cd OpenLRS
-    2. mvn -e clean install exec:java
+redisElasticsearch - which uses redis for tier1 storage and elasticsearch for tier2 persistent storage
 
-* TODO more useful info here
+OpenLRS is deployed as an executable jar file with Tomcat 7 embedded. Conversion to a war file is possible (http://spring.io/guides/gs/convert-jar-to-war-maven/).
 
+### Requirements
+* JDK 7+
+* Maven 3+
 
-Developers
-----------
-This is a grails application (http://grails.org/) which means it will run in the JVM as a war like any normal java web application. Grails also offers complete spring integration, groovy programming syntax, community support, known scalability, MVC structure, and loads of plugins.
+### Using the default profile
+#### Build
+* mvn clean package (this produces openlrs.jar in the target folder)
 
-### Getting started #
-* Checkout the source code with git (read-only version):
-    git clone https://github.com/Unicon/OpenLRS.git openLRS
-* Install grails (at least 2.2):
-    http://grails.org/doc/latest/guide/gettingStarted.html
-* Install SpringToolsSuite (or some other IDE with grails support):
-    http://www.springsource.org/sts
-    * Make sure you install the version with Grails support
-* Import the grails project into your IDE
-	* Generally works best to create a new project and point it at the existing source code
-* Run the project using the typical:
+#### Run (in place for development purposes)
+* mvn clean package spring-boot:run
 
-	grails run-app
-* TODO more tips here
+#### Deploy
+* java -jar openlrs.jar
 
+This starts OpenLRS on port 8080. Changing the server port (and other properties) can be done on the command line (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html)
+
+### Using the redisElasticsearch profile
+#### Build
+* mvn clean package (this produces openlrs.jar in the target folder)
+
+#### Run (in place for development purposes)
+* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=redisElasticsearch"
+
+#### Deploy
+java -jar -Dspring.profiles.active=redisElasticsearch openlrs.jar
 
 License
 -------
