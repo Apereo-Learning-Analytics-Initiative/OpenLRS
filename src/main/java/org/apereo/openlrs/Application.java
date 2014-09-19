@@ -20,24 +20,16 @@ import java.util.List;
 
 import lti.oauth.OAuthFilter;
 
-import org.apereo.openlrs.conditions.RedisEnabledCondition;
-import org.apereo.openlrs.repositories.statements.ElasticSearchStatementRepository;
-import org.apereo.openlrs.repositories.statements.RedisStatementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.PatternTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.integration.redis.store.RedisMessageStore;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @Configuration
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = {ElasticsearchAutoConfiguration.class,ElasticsearchDataAutoConfiguration.class})
 @ComponentScan(basePackages={"org.apereo.openlrs","lti"})
 public class Application {
 	
@@ -114,30 +106,4 @@ public class Application {
 		return registrationBean;
 	}
 		
-	@Conditional(RedisEnabledCondition.class)
-	@Bean
-	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-			MessageListenerAdapter listenerAdapter) {
-
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(listenerAdapter, new PatternTopic(RedisStatementRepository.TOPIC));
-
-		return container;
-	}
-	
-	@Bean
-	MessageListenerAdapter listenerAdapter(ElasticSearchStatementRepository receiver) {
-		return new MessageListenerAdapter(receiver, "onMessage");
-	}
-	
-	@Bean
-	public StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
-		return new StringRedisTemplate(connectionFactory);
-	}
-	
-	@Bean
-	public RedisMessageStore redisMessageStore(RedisConnectionFactory connectionFactory) {
-		return new RedisMessageStore(connectionFactory);
-	}
 }

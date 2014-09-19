@@ -13,19 +13,23 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.repositories.statements;
+package org.apereo.openlrs.controllers;
 
-import org.apereo.openlrs.model.Statement;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author ggilbert
  *
  */
-@Repository
-@Profile("redisElasticsearch")
-public interface ElasticSearchStatementSpringDataRepository extends
-		ElasticsearchRepository<Statement, String> {
+@Controller
+@RequestMapping("/")
+public class OpenLRSController {
+	
+	@RequestMapping(method=RequestMethod.GET, value = {"", "/"})
+    public String index() {
+		return "index";
+    }
+
 }

@@ -1,4 +1,4 @@
-var oaai = angular.module('oaai', ['ngRoute', 'oaaiControllers']);
+var openlrs = angular.module('openlrs', ['ngRoute', 'openLrsControllers']);
 
-oaai.config(['$routeProvider', function($routeProvider) {
+openlrs.config(['$routeProvider', function($routeProvider) {
 }]);

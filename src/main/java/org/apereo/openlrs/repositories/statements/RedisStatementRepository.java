@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  *
  */
 @org.springframework.stereotype.Repository("RedisStatementRepository")
+@Profile("redisElasticsearch")
 public class RedisStatementRepository implements Repository<Statement> {
 	
 	public static final String TOPIC = "STATEMENT";

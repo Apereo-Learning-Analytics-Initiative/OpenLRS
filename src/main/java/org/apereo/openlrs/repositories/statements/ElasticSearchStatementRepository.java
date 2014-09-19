@@ -15,7 +15,9 @@
  */
 package org.apereo.openlrs.repositories.statements;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -52,6 +53,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @org.springframework.stereotype.Repository("ElasticSearchStatementRepository")
+@Profile("redisElasticsearch")
 public class ElasticSearchStatementRepository implements Repository<Statement> {
 	
 	private Logger log = LoggerFactory.getLogger(ElasticSearchStatementRepository.class);
