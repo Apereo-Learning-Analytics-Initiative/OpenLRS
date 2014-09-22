@@ -39,6 +39,10 @@ This starts OpenLRS on port 8080. Changing the server port (and other properties
 #### Run (in place for development purposes)
 * mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=redisElasticsearch"
 
+#### Run in debug mode
+* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=redisElasticsearch -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
+
+
 #### Deploy
 java -jar -Dspring.profiles.active=redisElasticsearch openlrs.jar
 
