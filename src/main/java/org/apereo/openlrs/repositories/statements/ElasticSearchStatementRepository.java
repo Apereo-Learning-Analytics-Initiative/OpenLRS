@@ -42,6 +42,9 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -152,7 +155,6 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			searchQuery = searchQueryBuilder.withSort(new FieldSortBuilder("stored").order(SortOrder.DESC)).build();
 		}
 		else if(limit > 0) {
-			QueryBuilder query = new  MatchQueryBuilder("","");
 			searchQuery  = startQuery(limit, null).build();
 		}
 		
@@ -184,7 +186,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 		
 		if(limit > 0)
 		{
-			searchQueryBuilder = searchQueryBuilder.withFilter(FilterBuilders.limitFilter(limit));
+			searchQueryBuilder = searchQueryBuilder.withPageable(new PageRequest(0, limit));
 		}
 		return searchQueryBuilder;
 	}
