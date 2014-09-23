@@ -11,6 +11,7 @@ public class StatementUtils {
 	public static final String ACTOR_FILTER = "actor";
 	public static final String ACTIVITY_FILTER = "activity";
 	public static final String SINCE_FILTER = "since";
+	public static final String UNTIL_FILTER = "until";
 	public static final String LIMIT_FILTER = "limit";
 
     /**
@@ -87,7 +88,7 @@ public class StatementUtils {
      * @param activity the activity
      * @return the HashMap containing the filter criteria
      */
-    public static Map<String, String> createStatementFilterMap(String actor, String activity, String since, String limit) {
+    public static Map<String, String> createStatementFilterMap(String actor, String activity, String since, String until, String limit) {
         Map<String, String> filterMap = new HashMap<String, String>(3);
 
        // actor
@@ -102,6 +103,10 @@ public class StatementUtils {
         
         if (!StringUtils.isEmpty(since)) {
         	filterMap.put(SINCE_FILTER, since);
+        }
+        
+        if (!StringUtils.isEmpty(until)) {
+        	filterMap.put(UNTIL_FILTER, until);
         }
         
         if (!StringUtils.isEmpty(limit)) {

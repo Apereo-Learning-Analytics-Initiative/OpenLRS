@@ -19,9 +19,15 @@ import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -111,6 +117,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 		String actor = filters.get(StatementUtils.ACTOR_FILTER);
 		String activity = filters.get(StatementUtils.ACTIVITY_FILTER);
 		String since = filters.get(StatementUtils.SINCE_FILTER);
+		String until = filters.get(StatementUtils.UNTIL_FILTER);
 		int limit = getLimit(filters.get(StatementUtils.LIMIT_FILTER));;
 		
 		XApiActor xApiActor = null;
@@ -147,11 +154,42 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			QueryBuilder query = nestedQuery("object",boolQuery().must(matchQuery("object.id", activity)));
 			searchQuery = startQuery(limit, query).build();
 		}
-		else if (StringUtils.isNotBlank(since)) {
-			QueryBuilder query = new RangeQueryBuilder("stored").gte(since).to("now");
+		else if (StringUtils.isNotBlank(since) || StringUtils.isNotBlank(until)) {
+			QueryBuilder query = null;
+			
+			if(StringUtils.isNotBlank(since) && StringUtils.isNotBlank(until))
+			{
+				query = new RangeQueryBuilder("stored").from(since).to(until);
+			}
+			else
+			{
+				if(StringUtils.isNotBlank(since))
+				{
+					query = new RangeQueryBuilder("stored").from(since).to("now");
+				}
+				
+				if(StringUtils.isNotBlank(until))
+				{
+					try {
+						
+						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+						TimeZone tz = TimeZone.getTimeZone("UTC");
+						formatter.setTimeZone( tz );
+						Date date = (Date)formatter.parse(until);
+						Calendar calendar = Calendar.getInstance();  
+						calendar.setTime(date); 
+						calendar.add(Calendar.YEAR,-1);  
+						
+						query = new RangeQueryBuilder("stored").from(formatter.format(calendar.getTime())).to(until);
+					} catch (ParseException e) {
+						log.error(e.getMessage(),e);
+						return null;
+					}
+				}
+			}
 			
 			NativeSearchQueryBuilder searchQueryBuilder = startQuery(limit, query);
-			
+		
 			searchQuery = searchQueryBuilder.withSort(new FieldSortBuilder("stored").order(SortOrder.DESC)).build();
 		}
 		else if(limit > 0) {
@@ -184,10 +222,8 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			searchQueryBuilder = searchQueryBuilder.withQuery(query);
 		}
 		
-		if(limit > 0)
-		{
-			searchQueryBuilder = searchQueryBuilder.withPageable(new PageRequest(0, limit));
-		}
+		searchQueryBuilder = searchQueryBuilder.withPageable(new PageRequest(0, limit > 0 ? limit : 500));
+		
 		return searchQueryBuilder;
 	}
 
