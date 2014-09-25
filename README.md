@@ -3,9 +3,26 @@ OpenLRS
 Open source Java based Learning Record Store (http://en.wikipedia.org/wiki/Learning_Record_Store, http://tincanapi.com/learning-record-store/) which is compatible with TinCanAPI (http://tincanapi.com/) and Experience API (http://www.adlnet.gov/tla/experience-api).
 
 *************************************************************************************
-WORK IN PROGRESS
+Current Status
 ----------------
-This project is still being developed and is not in a usable state yet but we welcome contributions, questions, and contributors (we are especially looking for any funding or resources to help move things forward more quickly).
+### xAPI Support
+#### General
+* Support for Basic HTTP Auth
+* Support for OAuth 1.0a 
+* Support for X-Experience-API-Version header
+#### Statement API
+* Support for POST
+* Support for GET and the following filters:
+ * statementId
+ * agent
+ * verb
+ * activity
+ * since
+ * until
+ * limit
+#### About API
+* Supported
+
 *************************************************************************************
 ## Technical Overview
 OpenLRS is a Java application built with Spring Boot (http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-documentation). OpenLRS manages configuration using Spring profiles. Currently there are two available profiles:
