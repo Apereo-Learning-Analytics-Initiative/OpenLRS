@@ -6,10 +6,12 @@ Open source Java based Learning Record Store (http://en.wikipedia.org/wiki/Learn
 Current Status
 ----------------
 ### xAPI Support
+
 #### General
 * Support for Basic HTTP Auth
 * Support for OAuth 1.0a 
 * Support for X-Experience-API-Version header
+
 #### Statement API
 * Support for POST
 * Support for GET and the following filters:
