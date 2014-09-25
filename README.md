@@ -48,7 +48,7 @@ java -jar -Dspring.profiles.active=redisElasticsearch openlrs.jar
 
 ### Overriding properties
 
-A list of common properties can be found: http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+A list of Spring-Boot properties can be found: http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html Some common properties of interest are listed below.
 
 ### Tomcat Configuration Options
 * server.port=8080
