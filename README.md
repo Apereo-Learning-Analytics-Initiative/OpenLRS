@@ -48,7 +48,16 @@ java -jar -Dspring.profiles.active=redisElasticsearch openlrs.jar
 
 ### Overriding properties
 
-A list of Spring-Boot properties can be found: http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html Some common properties of interest are listed below.
+Details on externalizing configuration can be found [here] (http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
+
+Some examples
+
+* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.config.location=/export/home/prod.properties"
+* java -jar -Dspring.config.location=/export/home/prod.properties openlrs.jar
+
+Note to activate the redisElasticsearch profile be sure to include spring.profiles.active=redisElasticsearch in your external properties file. 
+
+A list of Spring-Boot properties can be found [here] (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html) Some common properties of interest are listed below.
 
 ### Tomcat Configuration Options
 * server.port=8080
