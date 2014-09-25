@@ -46,6 +46,39 @@ This starts OpenLRS on port 8080. Changing the server port (and other properties
 #### Deploy
 java -jar -Dspring.profiles.active=redisElasticsearch openlrs.jar
 
+### Overriding properties
+
+A list of common properties can be found: http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
+### Tomcat Configuration Options
+* server.port=8080
+* server.address= # bind to a specific NIC
+* server.session-timeout= # session timeout in seconds
+* server.context-path= # the context path, defaults to '/'
+* server.servlet-path= # the servlet path, defaults to '/'
+* server.tomcat.access-log-pattern= # log pattern of the access log
+* server.tomcat.access-log-enabled=false # is access logging enabled
+* server.tomcat.protocol-header=x-forwarded-proto # ssl forward headers
+* server.tomcat.remote-ip-header=x-forwarded-for
+* server.tomcat.basedir=/tmp # base dir (usually not needed, defaults to tmp)
+* server.tomcat.background-processor-delay=30; # in seconds
+* server.tomcat.max-threads = 0 # number of threads in protocol handler
+* server.tomcat.uri-encoding = UTF-8 # character encoding to use for URL decoding
+
+### Redis Configuration Options
+* spring.redis.host=localhost # server host
+* spring.redis.password= # server password
+* spring.redis.port=6379 # connection port
+* spring.redis.pool.max-idle=8 # pool settings ...
+* spring.redis.pool.min-idle=0
+* spring.redis.pool.max-active=8
+* spring.redis.pool.max-wait=-1
+
+### Elasticsearch Configuration Options
+* spring.data.elasticsearch.cluster-name= # The cluster name (defaults to elasticsearch)
+* spring.data.elasticsearch.cluster-nodes= # The address(es) of the server node (comma-separated; if not specified starts a client node)
+* spring.data.elasticsearch.repositories.enabled=true # if spring data repository support is enabled
+
 License
 -------
 ECL (a slightly less permissive Apache2)
