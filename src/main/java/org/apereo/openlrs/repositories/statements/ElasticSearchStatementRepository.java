@@ -38,8 +38,6 @@ import org.apereo.openlrs.model.statement.XApiActorTypes;
 import org.apereo.openlrs.repositories.Repository;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.MatchAllFilterBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -48,10 +46,9 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 
@@ -70,7 +67,14 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	@Autowired private ElasticSearchStatementSpringDataRepository esSpringDataRepository;
 	@Autowired private ObjectMapper objectMapper;
 	
+	@Value("${elasticsearch.redisriverplugin}")
+	private boolean dontIndex;
+	
 	public void onMessage(String statementJSON) {
+		
+		if (dontIndex) {
+			return;
+		}
 		
 		if (log.isDebugEnabled()) {
 			log.debug(statementJSON);
