@@ -89,7 +89,6 @@ public class StatementController {
         logger.debug("getStatement with actor: {} and activity: {}", actor, activity);
 
         Map<String, String> filterMap = StatementUtils.createStatementFilterMap(actor, activity, since, until, limit);
-
         return statementService.getStatement(filterMap);
     }
 
