@@ -15,6 +15,8 @@
  */
 package org.apereo.openlrs.controllers;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * 
@@ -78,13 +83,13 @@ public class StatementTest {
     }
 
     @Test
-    public void postStatementTest() {
+    public void postStatementTest() throws JsonParseException, JsonMappingException, IOException {
 		Statement statement = new Statement();
 		statement.setActor(actor);
 		statement.setVerb(verb);
 		statement.setObject(object);
         
-        List<String> response = statementController.postStatement(statement);
+        List<String> response = statementController.postStatement(statement.toJSON());
         Assert.assertNotNull(response);
     }
 

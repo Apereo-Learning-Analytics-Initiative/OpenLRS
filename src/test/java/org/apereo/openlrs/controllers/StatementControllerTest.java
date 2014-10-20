@@ -20,6 +20,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Validator;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apereo.openlrs.exceptions.InvalidXAPIRequestException;
 import org.apereo.openlrs.exceptions.NotFoundException;
@@ -29,6 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * JUnit test class for {@link StatementController}.
@@ -38,6 +43,8 @@ public class StatementControllerTest {
 
 	@Mock private Statement statement;
 	@Mock private StatementService statementService;
+	@Autowired private ObjectMapper objectMapper;
+	@Autowired private Validator validator;
 
 	private String statementId;
 	private Map<String,String> allRequestParams;
@@ -49,7 +56,7 @@ public class StatementControllerTest {
 		this.statementId = "12345678";
 		this.allRequestParams = new HashMap<String,String>();
 		this.allRequestParams.put("statementId", this.statementId);
-		this.controller = new StatementController(this.statementService);
+		this.controller = new StatementController(this.statementService, this.objectMapper, this.validator);
 	}
 
 	@Test(expected = NotFoundException.class)

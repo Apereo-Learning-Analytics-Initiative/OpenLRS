@@ -15,6 +15,7 @@
  */
 package org.apereo.openlrs;
 
+import org.apereo.openlrs.conditions.PrimaryInstanceCondition;
 import org.apereo.openlrs.conditions.RedisEnabledCondition;
 import org.apereo.openlrs.repositories.statements.ElasticSearchStatementRepository;
 import org.apereo.openlrs.repositories.statements.RedisStatementRepository;
@@ -41,18 +42,6 @@ public class RedisElasticsearchConfig {
 	
 	@Conditional(RedisEnabledCondition.class)
 	@Bean
-	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-			MessageListenerAdapter listenerAdapter) {
-
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(listenerAdapter, new PatternTopic(RedisStatementRepository.TOPIC));
-
-		return container;
-	}
-	
-	@Conditional(RedisEnabledCondition.class)
-	@Bean
 	public StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
 		return new StringRedisTemplate(connectionFactory);
 	}
@@ -63,6 +52,18 @@ public class RedisElasticsearchConfig {
 		return new RedisMessageStore(connectionFactory);
 	}
 	
+	@Conditional(PrimaryInstanceCondition.class)
+	@Bean
+	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+			MessageListenerAdapter listenerAdapter) {
+		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory);
+		container.addMessageListener(listenerAdapter, new PatternTopic(RedisStatementRepository.TOPIC));
+
+		return container;
+	}
+
+	@Conditional(PrimaryInstanceCondition.class)
 	@Bean
 	MessageListenerAdapter listenerAdapter(ElasticSearchStatementRepository receiver) {
 		return new MessageListenerAdapter(receiver, "onMessage");

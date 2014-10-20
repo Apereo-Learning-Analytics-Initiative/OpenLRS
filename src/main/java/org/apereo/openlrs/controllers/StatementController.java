@@ -15,12 +15,18 @@
  */
 package org.apereo.openlrs.controllers;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.openlrs.exceptions.InvalidXAPIRequestException;
 import org.apereo.openlrs.exceptions.NotFoundException;
 import org.apereo.openlrs.model.Statement;
@@ -36,7 +42,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Controller to handle GET and POST calls
@@ -49,11 +59,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class StatementController {
 	
 	private final Logger logger = LoggerFactory.getLogger(StatementController.class);
+	private ObjectMapper objectMapper;
+	private Validator validator;
     private final StatementService statementService;
 
     @Autowired
-    public StatementController(StatementService statementService) {
+    public StatementController(StatementService statementService, ObjectMapper objectMapper, Validator validator) {
         this.statementService = statementService;
+        this.objectMapper = objectMapper;
+        this.validator = validator;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="statementId")
@@ -97,12 +111,40 @@ public class StatementController {
      * 
      * @param requestBody the JSON containing the statement data
      * @return JSON string of the statement object with the specified ID
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      * @throws JsonProcessingException 
      */
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, consumes = "application/json", produces = "application/json;charset=utf-8")
-    public List<String> postStatement(@Valid @RequestBody Statement statement) {
-        logger.debug("Statement POST request received with input statement: {}", statement);
-        return statementService.postStatement(statement);
+    public List<String> postStatement(@RequestBody String json) throws InvalidXAPIRequestException {
+    	
+    	List<String> ids = null;
+    	if (json != null && StringUtils.isNotBlank(json)) {
+    		ids = new ArrayList<String>();
+    		
+    		List<Statement> statements = null;
+			try {
+				statements = objectMapper.readValue(json, new TypeReference<List<Statement>>() { });
+			} 
+			catch (Exception e) {
+				throw new InvalidXAPIRequestException(e);
+			} 
+    		
+    		for (Statement statement : statements) {
+    			Set<ConstraintViolation<Statement>> violations = validator.validate(statement);
+    			if (!violations.isEmpty()) {
+    				StringBuilder msg = new StringBuilder();
+    				for (ConstraintViolation<Statement> cv : violations) {
+    					msg.append(cv.getMessage()+", ");
+    				}
+    				throw new InvalidXAPIRequestException(msg.toString());
+    			}
+    	        logger.debug("Statement POST request received with input statement: {}", statement);
+    	        ids.addAll(statementService.postStatement(statement)) ;
+    		}
+    	}
+    	return ids;
     }
 
     /**

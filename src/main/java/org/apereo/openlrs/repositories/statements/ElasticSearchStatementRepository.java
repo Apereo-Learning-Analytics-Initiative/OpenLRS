@@ -28,13 +28,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.openlrs.model.Statement;
+import org.apereo.openlrs.model.StatementMetadata;
 import org.apereo.openlrs.model.statement.XApiAccount;
 import org.apereo.openlrs.model.statement.XApiActor;
 import org.apereo.openlrs.model.statement.XApiActorTypes;
+import org.apereo.openlrs.model.statement.XApiContext;
+import org.apereo.openlrs.model.statement.XApiContextActivities;
+import org.apereo.openlrs.model.statement.XApiObject;
 import org.apereo.openlrs.repositories.Repository;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -65,6 +70,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	private Logger log = LoggerFactory.getLogger(ElasticSearchStatementRepository.class);
 	
 	@Autowired private ElasticSearchStatementSpringDataRepository esSpringDataRepository;
+	@Autowired private ElasticSearchStatementMetadataSDRepository esStatementMetadataRepository;
 	@Autowired private ObjectMapper objectMapper;
 	
 	@Value("${elasticsearch.redisriverplugin}")
@@ -76,17 +82,14 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			return;
 		}
 		
-		if (log.isDebugEnabled()) {
-			log.debug(statementJSON);
-		}
-		
 		try {
 			Statement statement = objectMapper.readValue(statementJSON.getBytes(), Statement.class);
 			if (log.isDebugEnabled()) {
-				log.debug("statement: {}",statement);
+				log.debug("statement to index: {}",statement);
 			}
 
 			post(statement);
+			esStatementMetadataRepository.save(extractMetadata(statement));
 		} 
 		catch (Exception e) {
 			log.error(e.getMessage(),e);
@@ -97,13 +100,64 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 
 	@Override
 	public Statement post(Statement entity) {
-		return esSpringDataRepository.save(entity);
+		
+		try {
+			return esSpringDataRepository.save(entity);
+		}
+		catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
 	public Statement get(Statement key) {
 		return esSpringDataRepository.findOne(key.getId());
 	}
+	
+	private List<Statement> map(List<StatementMetadata> metadata) {
+		List<String> ids = new ArrayList<String>();
+		for (StatementMetadata sm: metadata) {
+			ids.add(sm.getStatementId());
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("statement ids: "+ids);
+		}
+		
+		return esSpringDataRepository.findByIdInOrderByTimestampDesc(ids);
+	}
+	
+	@Override
+	public List<Statement> getByContext(String context) {
+		
+		List<StatementMetadata> metadata = esStatementMetadataRepository.findByContext(context);
+		if (metadata != null && !metadata.isEmpty()) {
+			return map(metadata);
+		}
+		return null;
+	}
+	
+	@Override
+	public List<Statement> getByUser(String user) {
+		
+		List<StatementMetadata> metadata = esStatementMetadataRepository.findByUser(user);
+		if (metadata != null && !metadata.isEmpty()) {
+			return map(metadata);
+		}
+		return null;
+	}
+	
+	@Override
+	public List<Statement> getByContextAndUser(String context, String user) {
+		
+		List<StatementMetadata> metadata = esStatementMetadataRepository.findByUserAndContext(user,context);
+		if (metadata != null && !metadata.isEmpty()) {
+			return map(metadata);
+		}
+		return null;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -307,5 +361,37 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			return nestedQuery("actor", boolQuery);
 		}
 		return null;
+	}
+	
+	private StatementMetadata extractMetadata(Statement statement) {
+		StatementMetadata statementMetadata = new StatementMetadata();
+		statementMetadata.setId(UUID.randomUUID().toString());
+		statementMetadata.setStatementId(statement.getId());
+		
+		XApiContext xApiContext = statement.getContext();
+		if (xApiContext != null) {
+			XApiContextActivities xApiContextActivities = xApiContext.getContextActivities();
+			if (xApiContextActivities != null) {
+				List<XApiObject> parentContext = xApiContextActivities.getParent();
+				if (parentContext != null && !parentContext.isEmpty()) {
+					for (XApiObject object : parentContext) {
+						String id = object.getId();
+						if (StringUtils.contains(id, "portal/site/")) {
+							statementMetadata.setContext(StringUtils.substringAfterLast(id, "/"));
+						}
+					}
+				}
+			}
+		}
+		
+		XApiActor xApiActor = statement.getActor();
+		if (xApiActor != null) {
+			String mbox = xApiActor.getMbox();
+			if (StringUtils.isNotBlank(mbox)) {
+				statementMetadata.setUser(StringUtils.substringBetween(mbox, "mailto:", "@"));
+			}
+		}
+		
+		return statementMetadata;
 	}
 }

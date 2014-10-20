@@ -57,4 +57,19 @@ public class RedisStatementRepository implements Repository<Statement> {
 		throw new UnsupportedOperationException("RedisStatementRepository does not support get operations");	
 	}
 
+	@Override
+	public List<Statement> getByUser(String userId) {
+		throw new UnsupportedOperationException("RedisStatementRepository does not support get operations");
+	}
+
+	@Override
+	public List<Statement> getByContext(String context) {
+		throw new UnsupportedOperationException("RedisStatementRepository does not support get operations");
+	}
+
+	@Override
+	public List<Statement> getByContextAndUser(String context, String userId) {
+		throw new UnsupportedOperationException("RedisStatementRepository does not support get operations");
+	}
+
 }

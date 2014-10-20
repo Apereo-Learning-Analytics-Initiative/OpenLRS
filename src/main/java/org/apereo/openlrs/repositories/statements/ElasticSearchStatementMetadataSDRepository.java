@@ -13,25 +13,23 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.repositories;
+package org.apereo.openlrs.repositories.statements;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apereo.openlrs.model.OpenLRSEntity;
+import org.apereo.openlrs.model.StatementMetadata;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author ggilbert
  *
  */
-public interface Repository<V extends OpenLRSEntity> {
-	
-	V post(V entity);
-	V get(V key);
-	List<V> get();
-	List<V> get(Map<String, String> filters);
-	
-	List<V> getByUser(String userId);
-	List<V>	getByContext(String context);
-	List<V>	getByContextAndUser(String context, String userId);
+@Repository
+@Profile("redisElasticsearch")
+public interface ElasticSearchStatementMetadataSDRepository extends ElasticsearchRepository<StatementMetadata, String> {
+	List<StatementMetadata> findByUser(String user);
+	List<StatementMetadata> findByContext(String context);
+	List<StatementMetadata> findByUserAndContext(String user, String context);
 }

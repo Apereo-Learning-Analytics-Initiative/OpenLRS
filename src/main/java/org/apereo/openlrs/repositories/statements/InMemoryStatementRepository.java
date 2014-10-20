@@ -85,4 +85,61 @@ public class InMemoryStatementRepository implements Repository<Statement> {
 		return null;
 	}
 
+	@Override
+	public List<Statement> getByUser(String userId) {
+		List<Statement> statements = get();
+		if (statements != null && !statements.isEmpty()) {			
+			List<Statement> filteredStatements = null;
+			for (Statement statement : statements) {
+				if (statement.toJSON().contains(userId)) {
+					if (filteredStatements == null) {
+						filteredStatements = new ArrayList<Statement>();
+					}
+
+					filteredStatements.add(statement);
+				}
+			}
+			return filteredStatements;
+		}
+		return null;
+	}
+
+	@Override
+	public List<Statement> getByContext(String context) {
+		List<Statement> statements = get();
+		if (statements != null && !statements.isEmpty()) {			
+			List<Statement> filteredStatements = null;
+			for (Statement statement : statements) {
+				if (statement.toJSON().contains(context)) {
+					if (filteredStatements == null) {
+						filteredStatements = new ArrayList<Statement>();
+					}
+
+					filteredStatements.add(statement);
+				}
+			}
+			return filteredStatements;
+		}
+		return null;
+	}
+
+	@Override
+	public List<Statement> getByContextAndUser(String context, String userId) {
+		List<Statement> statements = get();
+		if (statements != null && !statements.isEmpty()) {			
+			List<Statement> filteredStatements = null;
+			for (Statement statement : statements) {
+				if (statement.toJSON().contains(context) && statement.toJSON().contains(userId)) {
+					if (filteredStatements == null) {
+						filteredStatements = new ArrayList<Statement>();
+					}
+
+					filteredStatements.add(statement);
+				}
+			}
+			return filteredStatements;
+		}
+		return null;
+	}
+
 }

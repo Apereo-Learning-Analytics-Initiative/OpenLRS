@@ -72,4 +72,19 @@ public class TwoTierStatementRepository implements Repository<Statement> {
 		return getReadRepository().get(filters);
 	}
 
+	@Override
+	public List<Statement> getByUser(String userId) {
+		return getReadRepository().getByUser(userId);
+	}
+
+	@Override
+	public List<Statement> getByContext(String context) {
+		return getReadRepository().getByContext(context);
+	}
+
+	@Override
+	public List<Statement> getByContextAndUser(String context, String userId) {
+		return getReadRepository().getByContextAndUser(context, userId);
+	}
+
 }

@@ -92,5 +92,17 @@ public class StatementService {
         
         return statementIds;
     }
+    
+    public List<Statement> getByContext(String context) {
+    	return factory.getRepository().getByContext(context);
+    }
+    
+    public List<Statement> getByUser(String user) {
+    	return factory.getRepository().getByUser(user);
+    }
+    
+    public List<Statement> getByContextAndUser(String context,String user) {
+    	return factory.getRepository().getByContextAndUser(context,user);
+    }
 
 }

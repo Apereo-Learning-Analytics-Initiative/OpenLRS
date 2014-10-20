@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,11 +56,16 @@ public class Application {
 	
 	@Bean
     @Primary
-    public ObjectMapper objectMapper(){
+    public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         return mapper;
     }
+	
+	@Bean
+	public javax.validation.Validator localValidatorFactoryBean() {
+	   return new LocalValidatorFactoryBean();
+	}
 	
 	@Bean
 	public FilterRegistrationBean corsFilterBean() {
@@ -79,6 +85,7 @@ public class Application {
 		List<String> urls = new ArrayList<String>(2);
 		urls.add("/xAPI/statements");
 		urls.add("/xAPI/statements/*");
+		urls.add("/api/*");
 		registrationBean.setUrlPatterns(urls);
 		registrationBean.setOrder(2);
 		return registrationBean;

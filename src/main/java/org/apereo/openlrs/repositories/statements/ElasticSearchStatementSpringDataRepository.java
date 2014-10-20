@@ -15,6 +15,9 @@
  */
 package org.apereo.openlrs.repositories.statements;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.apereo.openlrs.model.Statement;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
@@ -28,4 +31,5 @@ import org.springframework.stereotype.Repository;
 @Profile("redisElasticsearch")
 public interface ElasticSearchStatementSpringDataRepository extends
 		ElasticsearchRepository<Statement, String> {
+	List<Statement> findByIdInOrderByTimestampDesc(Collection<String> ids);
 }

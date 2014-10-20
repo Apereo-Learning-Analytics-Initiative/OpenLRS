@@ -13,25 +13,22 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.repositories;
+package org.apereo.openlrs.conditions;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apereo.openlrs.model.OpenLRSEntity;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
  * @author ggilbert
  *
  */
-public interface Repository<V extends OpenLRSEntity> {
-	
-	V post(V entity);
-	V get(V key);
-	List<V> get();
-	List<V> get(Map<String, String> filters);
-	
-	List<V> getByUser(String userId);
-	List<V>	getByContext(String context);
-	List<V>	getByContextAndUser(String context, String userId);
+public class PrimaryInstanceCondition implements Condition {
+
+	@Override
+	public boolean matches(ConditionContext ctx, AnnotatedTypeMetadata atm) {
+		String isPrimary = ctx.getEnvironment().getProperty("primary");
+		return (isPrimary != null && Boolean.valueOf(isPrimary));
+	}
+
 }

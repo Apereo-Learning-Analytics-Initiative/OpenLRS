@@ -20,7 +20,7 @@ public class XApiActor {
 
     private XApiActorTypes objectType;
     
-    @Field(type=FieldType.String,index=FieldIndex.not_analyzed) private String mbox;
+    @Field(type=FieldType.String) private String mbox;
     
     private String name;
     
