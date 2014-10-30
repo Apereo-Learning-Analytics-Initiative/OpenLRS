@@ -54,7 +54,6 @@ public class StatementControllerIntegrationTest {
 	MockMvc mockMvc;
 	
 	@Autowired WebApplicationContext wac;
-	
 	@Autowired OpenLRSAuthenticationFilter filter;
 	@Autowired XAPIHeaderFilter xapiHeaderFilter;
 	@Autowired XAPIRequestValidationFilter xapiRequestValidationFilter;

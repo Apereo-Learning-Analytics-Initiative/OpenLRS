@@ -56,6 +56,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -63,8 +64,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author ggilbert
  *
  */
-@org.springframework.stereotype.Repository("ElasticSearchStatementRepository")
 @Profile("redisElasticsearch")
+@Component("ElasticSearchStatementRepository")
 public class ElasticSearchStatementRepository implements Repository<Statement> {
 	
 	private Logger log = LoggerFactory.getLogger(ElasticSearchStatementRepository.class);

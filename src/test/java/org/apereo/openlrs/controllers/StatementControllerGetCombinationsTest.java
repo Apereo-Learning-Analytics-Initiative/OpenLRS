@@ -41,9 +41,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author ggilbert
  *
  */
-@ActiveProfiles("redisElasticsearch")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes=Application.class)
+@ActiveProfiles("redisElasticsearch")
 public class StatementControllerGetCombinationsTest {
 	
 	@Autowired private ElasticSearchStatementSpringDataRepository elasticSearchStatementSpringDataRepository;

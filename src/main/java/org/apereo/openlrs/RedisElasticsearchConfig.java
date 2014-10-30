@@ -29,7 +29,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.integration.redis.store.RedisMessageStore;
 
 /**
  * @author ggilbert
@@ -44,12 +43,6 @@ public class RedisElasticsearchConfig {
 	@Bean
 	public StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
 		return new StringRedisTemplate(connectionFactory);
-	}
-	
-	@Conditional(RedisEnabledCondition.class)
-	@Bean
-	public RedisMessageStore redisMessageStore(RedisConnectionFactory connectionFactory) {
-		return new RedisMessageStore(connectionFactory);
 	}
 	
 	@Conditional(PrimaryInstanceCondition.class)
