@@ -15,10 +15,9 @@
  */
 package org.apereo.openlrs;
 
-import org.apereo.openlrs.conditions.PrimaryInstanceCondition;
 import org.apereo.openlrs.conditions.RedisEnabledCondition;
 import org.apereo.openlrs.repositories.statements.ElasticSearchStatementRepository;
-import org.apereo.openlrs.repositories.statements.RedisStatementRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -26,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
@@ -39,26 +38,36 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Profile("redisElasticsearch")
 public class RedisElasticsearchConfig {
 	
+	@Value("${instance.name}")
+	private String instanceName;
+	
 	@Conditional(RedisEnabledCondition.class)
 	@Bean
 	public StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
 		return new StringRedisTemplate(connectionFactory);
 	}
 	
-	@Conditional(PrimaryInstanceCondition.class)
+	@Conditional(RedisEnabledCondition.class)
 	@Bean
 	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
 			MessageListenerAdapter listenerAdapter) {
+		
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(listenerAdapter, new PatternTopic(RedisStatementRepository.TOPIC));
+		container.addMessageListener(listenerAdapter, new ChannelTopic(channelName()));
 
 		return container;
 	}
 
-	@Conditional(PrimaryInstanceCondition.class)
+	@Conditional(RedisEnabledCondition.class)
 	@Bean
 	MessageListenerAdapter listenerAdapter(ElasticSearchStatementRepository receiver) {
 		return new MessageListenerAdapter(receiver, "onMessage");
+	}
+	
+	@Conditional(RedisEnabledCondition.class)
+	@Bean
+	public String channelName() {
+		return "Statements" + "-" + instanceName;
 	}
 }

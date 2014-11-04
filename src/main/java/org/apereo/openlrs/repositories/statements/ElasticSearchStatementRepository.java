@@ -51,7 +51,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -74,14 +73,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	@Autowired private ElasticSearchStatementMetadataSDRepository esStatementMetadataRepository;
 	@Autowired private ObjectMapper objectMapper;
 	
-	@Value("${elasticsearch.redisriverplugin}")
-	private boolean dontIndex;
-	
 	public void onMessage(String statementJSON) {
-		
-		if (dontIndex) {
-			return;
-		}
 		
 		try {
 			Statement statement = objectMapper.readValue(statementJSON.getBytes(), Statement.class);

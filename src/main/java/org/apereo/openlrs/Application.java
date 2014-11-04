@@ -22,6 +22,7 @@ import lti.oauth.OAuthFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
@@ -51,8 +52,10 @@ public class Application {
 	@Autowired private OAuthFilter oAuthFilter;
 	
 	public static void main(final String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+		SpringApplication springApplication = new SpringApplication(Application.class);
+		springApplication.addListeners(new ApplicationPidFileWriter("openlrs.pid"));
+		springApplication.run(args);
+	}
 	
 	@Bean
     @Primary

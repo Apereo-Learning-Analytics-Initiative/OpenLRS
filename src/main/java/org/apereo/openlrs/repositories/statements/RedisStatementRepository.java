@@ -32,13 +32,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @Profile("redisElasticsearch")
 public class RedisStatementRepository implements Repository<Statement> {
 	
-	public static final String TOPIC = "STATEMENT";
+	@Autowired private String channelName;
 	
 	@Autowired private StringRedisTemplate redisTemplate;
 
 	@Override
 	public Statement post(Statement entity) {
-		redisTemplate.convertAndSend(TOPIC, entity.toJSON());
+		redisTemplate.convertAndSend(channelName, entity.toJSON());
 		return entity;
 	}
 
