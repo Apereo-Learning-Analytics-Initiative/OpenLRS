@@ -29,6 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +55,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -69,9 +74,48 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	
 	private Logger log = LoggerFactory.getLogger(ElasticSearchStatementRepository.class);
 	
+	@Value("${es.bulkIndexSize:100}")
+	private int bulkIndexSize;
+	
+	@Value("${es.bulkIndexScheduleRateSecond:1")
+	private int bulkIndexScheduleRateSecond;
+	
 	@Autowired private ElasticSearchStatementSpringDataRepository esSpringDataRepository;
 	@Autowired private ElasticSearchStatementMetadataSDRepository esStatementMetadataRepository;
 	@Autowired private ObjectMapper objectMapper;
+	
+	ScheduledExecutorService executorService = null;
+	private LinkedBlockingQueue<Statement> statementQueue = new LinkedBlockingQueue<Statement>();
+	Runnable task = new Runnable() {
+		
+		@Override
+		public void run() {
+			int size = statementQueue.size();
+			if (size > 0) {
+				if (size > bulkIndexSize) {
+					size = bulkIndexSize;
+				}
+				List<Statement> statementsToIndex = new ArrayList<Statement>();
+				List<StatementMetadata> metadataToIndex = new ArrayList<StatementMetadata>();
+				for (int i = 0; i < bulkIndexSize; i++) {
+					Statement statement = statementQueue.poll();
+					statementsToIndex.add(statement);
+					metadataToIndex.add(extractMetadata(statement));
+				}
+
+				if (!statementsToIndex.isEmpty()) {
+					try {
+						esSpringDataRepository.save(statementsToIndex);
+						esStatementMetadataRepository.save(metadataToIndex);
+					}
+					catch (Exception e) {
+						log.error("Unable to index statements");
+						//TODO
+					}
+				}
+			}
+		}
+	};
 	
 	public void onMessage(String statementJSON) {
 		
@@ -80,9 +124,12 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			if (log.isDebugEnabled()) {
 				log.debug("statement to index: {}",statement);
 			}
-
-			post(statement);
-			esStatementMetadataRepository.save(extractMetadata(statement));
+			statementQueue.add(statement);
+			
+			if (executorService == null) {
+				executorService = Executors.newSingleThreadScheduledExecutor();
+				executorService.scheduleAtFixedRate(task, 0, bulkIndexScheduleRateSecond, TimeUnit.SECONDS);
+			}
 		} 
 		catch (Exception e) {
 			log.error(e.getMessage(),e);

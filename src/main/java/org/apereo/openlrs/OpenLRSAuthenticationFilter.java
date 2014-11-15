@@ -154,8 +154,9 @@ public class OpenLRSAuthenticationFilter extends OncePerRequestFilter {
 	        			if (!username.equals(_username) || !password.equals(_password)) {
 	        				unauthorized(response, "Bad credentials", "Basic");
 	        			}
-	 
-	        			filterChain.doFilter(request, response);
+	        			else {
+	        				filterChain.doFilter(request, response);
+	        			}
 	        		} 
 	        		else {
 	        			unauthorized(response, "Invalid authentication token", "Basic");

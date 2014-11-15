@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  */
-@Document(indexName="openlrs", type="statement")
+@Document(indexName="openlrsstatement", type="statement", refreshInterval="60s", replicas=1, shards=5)
 @JsonInclude(Include.NON_NULL)
 public class Statement implements OpenLRSEntity {
 	

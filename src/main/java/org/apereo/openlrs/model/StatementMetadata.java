@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author ggilbert
  *
  */
-@Document(indexName="openlrs", type="statement_metadata")
+@Document(indexName="openlrsstatementmetadata", type="statement_metadata", refreshInterval="60s", replicas=1, shards=5)
 @JsonInclude(Include.NON_NULL)
 public class StatementMetadata implements OpenLRSEntity {
 

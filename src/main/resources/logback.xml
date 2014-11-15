@@ -14,6 +14,6 @@
     -->
 
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
-	<logger name="org.apereo.openlrs" level="DEBUG"/>
+	<!-- <logger name="org.apereo.openlrs" level="WARN"/> -->
 	<!-- <logger name="org.elasticsearch" level="DEBUG"/> -->
 </configuration>
