@@ -77,7 +77,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	@Value("${es.bulkIndexSize:100}")
 	private int bulkIndexSize;
 	
-	@Value("${es.bulkIndexScheduleRateSecond:1")
+	@Value("${es.bulkIndexScheduleRateSecond:1}")
 	private int bulkIndexScheduleRateSecond;
 	
 	@Autowired private ElasticSearchStatementSpringDataRepository esSpringDataRepository;
@@ -97,13 +97,16 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 				}
 				List<Statement> statementsToIndex = new ArrayList<Statement>();
 				List<StatementMetadata> metadataToIndex = new ArrayList<StatementMetadata>();
-				for (int i = 0; i < bulkIndexSize; i++) {
+				for (int i = 0; i < size; i++) {
 					Statement statement = statementQueue.poll();
-					statementsToIndex.add(statement);
-					metadataToIndex.add(extractMetadata(statement));
+					if (statement != null) {
+						statementsToIndex.add(statement);
+						metadataToIndex.add(extractMetadata(statement));
+					}
 				}
 
 				if (!statementsToIndex.isEmpty()) {
+					log.debug("Indexing records: "+statementsToIndex.size());
 					try {
 						esSpringDataRepository.save(statementsToIndex);
 						esStatementMetadataRepository.save(metadataToIndex);
@@ -127,6 +130,7 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			statementQueue.add(statement);
 			
 			if (executorService == null) {
+				log.debug("Init executorService with rate "+bulkIndexScheduleRateSecond);
 				executorService = Executors.newSingleThreadScheduledExecutor();
 				executorService.scheduleAtFixedRate(task, 0, bulkIndexScheduleRateSecond, TimeUnit.SECONDS);
 			}
