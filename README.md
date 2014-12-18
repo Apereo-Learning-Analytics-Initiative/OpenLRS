@@ -53,6 +53,9 @@ OpenLRS is deployed as an executable jar file with Tomcat 7 embedded. Conversion
 This starts OpenLRS on port 8080. Changing the server port (and other properties) can be done on the command line (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html)
 
 ### Using the redisElasticsearch profile
+
+Note: to use the redisElasticsearch profile you should have access to redis (2.6+) and elasticsearch (1.3.x +) instances. If redis and elasticsearch are not running on localhost with the default ports you will need to update or override the relevant redis and elasticsearch properties - see the Overriding properties section below.
+
 #### Build
 * mvn clean package (this produces openlrs.jar in the target folder)
 
