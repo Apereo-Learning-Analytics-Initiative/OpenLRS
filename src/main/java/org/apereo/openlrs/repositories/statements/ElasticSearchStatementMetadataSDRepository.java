@@ -15,10 +15,10 @@
  */
 package org.apereo.openlrs.repositories.statements;
 
-import java.util.List;
-
 import org.apereo.openlrs.model.StatementMetadata;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Profile("redisElasticsearch")
 public interface ElasticSearchStatementMetadataSDRepository extends ElasticsearchRepository<StatementMetadata, String> {
-	List<StatementMetadata> findByUser(String user);
-	List<StatementMetadata> findByContext(String context);
-	List<StatementMetadata> findByUserAndContext(String user, String context);
+	Page<StatementMetadata> findByUser(String user, Pageable pageable);
+	Page<StatementMetadata> findByContext(String context, Pageable pageable);
+	Page<StatementMetadata> findByUserAndContext(String user, String context, Pageable pageable);
 }
