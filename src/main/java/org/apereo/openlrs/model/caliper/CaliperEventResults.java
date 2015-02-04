@@ -18,8 +18,8 @@ package org.apereo.openlrs.model.caliper;
 import java.util.List;
 
 /**
- * @author scody
- *
+ * TODO Document this file
+ * @author steve cody scody@unicon.net
  */
 public class CaliperEventResults {
 	

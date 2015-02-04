@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.CaliperEventStateConflictException;
-//import org.apereo.openlrs.exceptions.CaliperEventStateConflictException;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.caliper.CaliperEventResults;
 import org.apereo.openlrs.repositories.caliperevents.CaliperEventRepositoryFactory;
@@ -17,6 +16,10 @@ import org.apereo.openlrs.utils.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * TODO Document this file
+ * @author steve cody scody@unicon.net
+ */
 @Service
 public class CaliperEventService {
 	private Logger log = Logger.getLogger(CaliperEventService.class);

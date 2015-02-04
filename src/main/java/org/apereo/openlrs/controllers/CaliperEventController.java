@@ -31,11 +31,9 @@ import org.apereo.openlrs.exceptions.InvalidCaliperEventRequestException;
 import org.apereo.openlrs.exceptions.InvalidXAPIRequestException;
 import org.apereo.openlrs.exceptions.NotFoundException;
 import org.apereo.openlrs.model.Statement;
-import org.apereo.openlrs.model.StatementResult;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.caliper.CaliperEventResults;
 import org.apereo.openlrs.services.CaliperEventService;
-import org.apereo.openlrs.services.StatementService;
 import org.apereo.openlrs.utils.StatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Controller to handle GET and POST calls
  * see https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#stmtapi
  * 
- * @author Robert E. Long (rlong @ unicon.net)
+ * @author Steve Cody (scody @ unicon.net)
  */
 @RestController
 @RequestMapping("/caliper/events")
@@ -74,30 +72,39 @@ public class CaliperEventController {
         this.validator = validator;
     }
  
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="statementId")
+    /**
+     * Sample: http://localhost:8080/caliper/events?eventId=caliper-java_ae7d638e-1eed-4e6d-a9cd-5a855204d73
+     * @param eventId
+     * @param allRequestParams
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="eventId")
     public CaliperEvent getCaliperEvent(
-            @RequestParam(value = "statementId", required = true) String statementId,
+            @RequestParam(value = "eventId", required = true) String eventId,
             @RequestParam Map<String,String> allRequestParams) {
-        logger.debug("Statement GET request received with parameters: {}", allRequestParams);
+        logger.debug("Event GET request received with parameters: {}", allRequestParams);
         if (allRequestParams.containsKey("voidedStatementId")) {
-            throw new InvalidXAPIRequestException("Cannot submit both 'statementId' and 'voidedStatementId' parameters.");
+            throw new InvalidXAPIRequestException("Cannot submit both 'eventId' and 'voidedEventId' parameters.");
         }
-        final CaliperEvent result = caliperEventService.getCaliperEvent(statementId);
+        final CaliperEvent result = caliperEventService.getCaliperEvent(eventId);
         if (result == null) {
-            throw new NotFoundException("Statement for ID [" + statementId + "] not found.");
+            throw new NotFoundException("Event for ID [" + eventId + "] not found.");
         }
         return result;
     }
 
     /**
-     * Get statement objects for the specified criteria
+     * Get CaliperEvent objects for the specified criteria
+     * Sample: http://localhost:8080/caliper/events
      * 
      * @param actor the ID of the actor
      * @param activity the activity
      * @return JSON string of the statement objects matching the specified filter
      */
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="!statementId")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=utf-8", params="!eventId")
     public CaliperEventResults getCaliperEvent(
+    		
+    		//TODO: Test and Implement filters
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity,
             @RequestParam(value = "since", required = false) String since,
@@ -114,8 +121,8 @@ public class CaliperEventController {
     /**
      * Post a caliper event
      * 
-     * @param requestBody the JSON containing the statement data
-     * @return JSON string of the statement object with the specified ID
+     * @param requestBody the JSON containing the CaliperEvent data
+     * @return JSON string of the CaliperEvent object with the specified ID
      * @throws IOException 
      * @throws JsonMappingException 
      * @throws JsonParseException 
@@ -146,12 +153,9 @@ public class CaliperEventController {
     				}
     				throw new InvalidCaliperEventRequestException(msg.toString());    				
     			}
-    	        logger.debug("Statement POST request received with input statement: {}", caliperEvent);
+    	        logger.debug("Statement POST request received with input CaliperEvent: {}", caliperEvent);
     	        ids.addAll(caliperEventService.postCaliperEvent(caliperEvent)) ;
-    	        //ids.add(caliperEvent.getAction() + " by " + caliperEvent.getActor().getDisplayName());
-    	        //ids.addAll(caliperEvent.getActor().getDisplayName());
     		}
-    		System.out.println("after for");
     	}
     	return ids;
     }
@@ -160,8 +164,8 @@ public class CaliperEventController {
      * TODO
      */
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json;charset=utf-8")
-    public Statement putStatement(@Valid @RequestBody Statement statement) {
-        logger.debug("Statement PUT request received with input statement: {}", statement);
+    public Statement putStatement(@Valid @RequestBody CaliperEvent caliperEvent) {
+        logger.debug("CaliperEvent PUT request received with input statement: {}", caliperEvent);
         throw new NotImplementedException("PUT operation not yet implemented.");
     }
 

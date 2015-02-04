@@ -21,14 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.repositories.Repository;
 import org.apereo.openlrs.utils.StatementUtils;
 
 /**
- * @author ggilbert
- *
+ * TODO Document this file
+ * @author steve cody scody@unicon.net
  */
 @org.springframework.stereotype.Repository("InMemoryCaliperEventRepository")
 public class InMemoryCaliperEventRepository implements Repository<CaliperEvent> {
@@ -61,7 +60,6 @@ public class InMemoryCaliperEventRepository implements Repository<CaliperEvent> 
 			List<CaliperEvent> filteredStatements = null;
 			for (CaliperEvent caliperEvent : caliperEvents) {
 				if (StringUtils.isNotBlank(actor) && StringUtils.isNotBlank(activity)) {
-					//if (caliperEvent.getObject().getId().equals(activity)) {
 					if (caliperEvent.getId().equals(activity)) {
 						if (filteredStatements == null) {
 							filteredStatements = new ArrayList<CaliperEvent>();
@@ -72,9 +70,7 @@ public class InMemoryCaliperEventRepository implements Repository<CaliperEvent> 
 				else if (StringUtils.isNotBlank(actor)) {
 					
 				}
-				else if (StringUtils.isNotBlank(activity)) {
-					
-					//if (caliperEvent.getObject().getId().equals(activity)) {
+				else if (StringUtils.isNotBlank(activity)) {					
 					if (caliperEvent.getId().equals(activity)) {
 						if (filteredStatements == null) {
 							filteredStatements = new ArrayList<CaliperEvent>();
@@ -91,6 +87,10 @@ public class InMemoryCaliperEventRepository implements Repository<CaliperEvent> 
 		return caliperEvents;
 	}
 
+	
+	/**
+	 * TODO: MUST IMPLEMENT
+	 */
 	@Override
 	public List<CaliperEvent> getByUser(String userId) {
 		

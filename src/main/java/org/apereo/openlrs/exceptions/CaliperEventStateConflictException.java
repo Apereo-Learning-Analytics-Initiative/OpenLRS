@@ -1,5 +1,10 @@
 package org.apereo.openlrs.exceptions;
 
+
+/**
+ * Exception indicating that a received Caliper Event request cannot be fulfilled due to a conflict with the state of the target statement.
+ * @author steve cody, scody@unicon.net
+ */
 public class CaliperEventStateConflictException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;

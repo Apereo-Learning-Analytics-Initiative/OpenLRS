@@ -18,15 +18,14 @@ package org.apereo.openlrs.repositories.caliperevents;
 import java.util.List;
 import java.util.Map;
 
-import org.apereo.openlrs.model.Statement;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * @author ggilbert
- *
+ * TODO Document this file
+ * @author steve cody scody@unicon.net
  */
 @org.springframework.stereotype.Repository("TwoTierCaliperEventRepository")
 public class TwoTierCaliperEventRepository implements Repository<CaliperEvent> {

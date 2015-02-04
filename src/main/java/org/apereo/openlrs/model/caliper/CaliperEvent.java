@@ -4,8 +4,6 @@ package org.apereo.openlrs.model.caliper;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Generated;
-
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.Statement; 
@@ -18,18 +16,15 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({
-    "id",
-    "type",
-    "time",
-    "data"
-})
+
+/**
+ * TODO Document this file
+ * @author steve cody scody@unicon.net
+ */
 public class CaliperEvent implements OpenLRSEntity{
 
     /**

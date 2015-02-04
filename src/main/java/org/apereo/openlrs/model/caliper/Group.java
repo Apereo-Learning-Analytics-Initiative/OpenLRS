@@ -3,26 +3,17 @@ package org.apereo.openlrs.model.caliper;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({
-    "@id",
-    "@type",
-    "semester",
-    "courseNumber",
-    "label",
-    "name",
-    "parentOrg",
-    "lastModifiedTime"
-})
+/**
+ * TODO Document this file
+ * @author steve cody scody@unicon.net
+ */
 public class Group {
 
     @JsonProperty("@id")

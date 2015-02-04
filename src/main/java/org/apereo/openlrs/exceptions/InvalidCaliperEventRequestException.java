@@ -1,5 +1,10 @@
 package org.apereo.openlrs.exceptions;
 
+
+/**
+ * Exception indicating that a received caliper event request was invalid.
+ * @author steve cody, scody@unicon.net
+ */
 public class InvalidCaliperEventRequestException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
