@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -169,15 +170,17 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 			log.debug("statement ids: "+ids);
 		}
 		
-		return esSpringDataRepository.findByIdInOrderByTimestampDesc(ids);
+		Page<Statement> pagedStatements = esSpringDataRepository.findByIdInOrderByTimestampDesc(ids, new PageRequest(0, 1000));
+		
+		return pagedStatements.getContent();
 	}
 	
 	@Override
 	public List<Statement> getByContext(String context) {
 		
-		List<StatementMetadata> metadata = esStatementMetadataRepository.findByContext(context);
-		if (metadata != null && !metadata.isEmpty()) {
-			return map(metadata);
+		Page<StatementMetadata> metadata = esStatementMetadataRepository.findByContext(context, new PageRequest(0, 1000));
+		if (metadata != null && metadata.getContent() != null && !metadata.getContent().isEmpty()) {
+			return map(metadata.getContent());
 		}
 		return null;
 	}
@@ -185,9 +188,9 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	@Override
 	public List<Statement> getByUser(String user) {
 		
-		List<StatementMetadata> metadata = esStatementMetadataRepository.findByUser(user);
-		if (metadata != null && !metadata.isEmpty()) {
-			return map(metadata);
+		Page<StatementMetadata> metadata = esStatementMetadataRepository.findByUser(user, new PageRequest(0, 1000));
+		if (metadata != null && metadata.getContent() != null && !metadata.getContent().isEmpty()) {
+			return map(metadata.getContent());
 		}
 		return null;
 	}
@@ -195,9 +198,9 @@ public class ElasticSearchStatementRepository implements Repository<Statement> {
 	@Override
 	public List<Statement> getByContextAndUser(String context, String user) {
 		
-		List<StatementMetadata> metadata = esStatementMetadataRepository.findByUserAndContext(user,context);
-		if (metadata != null && !metadata.isEmpty()) {
-			return map(metadata);
+		Page<StatementMetadata> metadata = esStatementMetadataRepository.findByUserAndContext(user,context,new PageRequest(0, 1000));
+		if (metadata != null && metadata.getContent() != null && !metadata.getContent().isEmpty()) {
+			return map(metadata.getContent());
 		}
 		return null;
 	}
