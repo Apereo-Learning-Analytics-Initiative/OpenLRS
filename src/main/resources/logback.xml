@@ -17,7 +17,7 @@
 	<!-- <logger name="org.apereo.openlrs" level="WARN"/> -->
 	<!-- <logger name="org.elasticsearch" level="DEBUG"/> -->
 	
-	  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%msg%n</pattern>
     </encoder>
