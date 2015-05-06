@@ -15,10 +15,18 @@
  */
 package org.apereo.openlrs.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import org.apereo.openlrs.Application;
-import org.apereo.openlrs.Constants;
-import org.apereo.openlrs.XAPIHeaderFilter;
-import org.apereo.openlrs.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.AboutController;
+import org.apereo.openlrs.controllers.xapi.XAPIHeaderFilter;
+import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.XApiConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,13 +37,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * @author ggilbert (ggilbert @ unicon.net)
@@ -72,7 +73,7 @@ public class AboutControllerIntegrationTest {
 	public void thatAboutReturnsJsonWithVersion() throws Exception {
 		this.mockMvc.perform(
 			get("/xAPI/about")
-				.header(Constants.XAPI_VERSION_HEADER, "someversion")
+				.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
@@ -83,7 +84,7 @@ public class AboutControllerIntegrationTest {
 	public void thatAboutReturnsHeaderWithVersion() throws Exception {
 		this.mockMvc.perform(
 				get("/xAPI/about")
-				.header(Constants.XAPI_VERSION_HEADER, "someversion")
+				.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())

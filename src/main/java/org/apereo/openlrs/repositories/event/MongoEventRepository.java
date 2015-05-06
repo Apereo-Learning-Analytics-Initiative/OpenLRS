@@ -17,6 +17,8 @@ package org.apereo.openlrs.repositories.event;
 
 import org.apereo.openlrs.model.event.Event;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +27,10 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-@Profile("redisMongo")
+@Profile("mongo")
 public interface MongoEventRepository extends MongoRepository<Event, String> {
-
+	Event findBySourceId(String sourceId);
+	Page<Event> findByActor(String actor, Pageable pageable);
+	Page<Event> findByContext(String context, Pageable pageable);
+	Page<Event> findByActorAndContext(String actor, String context, Pageable pageable);
 }

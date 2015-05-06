@@ -24,4 +24,5 @@ import java.io.Serializable;
 public interface OpenLRSEntity extends Serializable {
 	String getKey();
 	String getObjectKey();
+	String toJSON();
 }

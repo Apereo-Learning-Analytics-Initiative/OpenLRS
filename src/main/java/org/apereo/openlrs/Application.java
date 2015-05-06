@@ -20,6 +20,7 @@ import java.util.List;
 
 import lti.oauth.OAuthFilter;
 
+import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;

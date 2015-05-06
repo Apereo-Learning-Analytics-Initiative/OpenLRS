@@ -18,6 +18,8 @@ package org.apereo.openlrs.model.event;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,14 +31,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author ggilbert
  *
  */
+@Document(indexName="event")
 @JsonInclude(Include.NON_NULL)
 public class Event implements OpenLRSEntity {
 
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(Event.class);
+	@Transient private Logger log = Logger.getLogger(Event.class);
 	@JsonIgnore public static final String OBJECT_KEY = "NORMALIZED";
 	
 	@Id private String id;
+	private String sourceId;
 	private String actor;
 	private String verb;
 	private String object;
@@ -52,6 +56,12 @@ public class Event implements OpenLRSEntity {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getSourceId() {
+		return sourceId;
+	}
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
 	}
 	public String getActor() {
 		return actor;
@@ -140,5 +150,4 @@ public class Event implements OpenLRSEntity {
 	public String getObjectKey() {
 		return OBJECT_KEY;
 	}
-
 }
