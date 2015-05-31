@@ -59,7 +59,7 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 	public OpenLRSEntity findById(String id) {
 		return store.get(id);
 	}
-	
+
 	@Override
 	public List<OpenLRSEntity> findAll() {
 		return new ArrayList<OpenLRSEntity>(store.values());
@@ -83,11 +83,11 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 		log.warn("InMemoryStorage does not support filters. Return all.");
 		return new PageImpl<OpenLRSEntity>(new ArrayList<OpenLRSEntity>(store.values()));
 	}
-	
+
 	@Override
 	public Page<OpenLRSEntity> findByUser(String userId, Pageable pageable) {
 		Collection<OpenLRSEntity> values = store.values();
-		if (values != null && !values.isEmpty()) {			
+		if (values != null && !values.isEmpty()) {
 			List<OpenLRSEntity> filtered = null;
 			for (OpenLRSEntity entity : values) {
 				if (entity.toJSON().contains(userId)) {
@@ -98,7 +98,9 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 					filtered.add(entity);
 				}
 			}
-			return new PageImpl<OpenLRSEntity>(filtered);
+			if (filtered != null) {
+				return new PageImpl<OpenLRSEntity>(filtered);
+			}
 		}
 		return null;
 	}
@@ -106,7 +108,7 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 	@Override
 	public Page<OpenLRSEntity> findByContext(String context, Pageable pageable) {
 		Collection<OpenLRSEntity> values = store.values();
-		if (values != null && !values.isEmpty()) {			
+		if (values != null && !values.isEmpty()) {
 			List<OpenLRSEntity> filtered = null;
 			for (OpenLRSEntity entity : values) {
 				if (entity.toJSON().contains(context)) {
@@ -117,7 +119,9 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 					filtered.add(entity);
 				}
 			}
-			return new PageImpl<OpenLRSEntity>(filtered);
+			if (filtered != null) {
+				return new PageImpl<OpenLRSEntity>(filtered);
+			}
 		}
 		return null;
 	}
@@ -125,7 +129,7 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 	@Override
 	public Page<OpenLRSEntity> findByContextAndUser(String context, String userId, Pageable pageable) {
 		Collection<OpenLRSEntity> values = store.values();
-		if (values != null && !values.isEmpty()) {			
+		if (values != null && !values.isEmpty()) {
 			List<OpenLRSEntity> filtered = null;
 			for (OpenLRSEntity entity : values) {
 				if (entity.toJSON().contains(context) && entity.toJSON().contains(userId)) {
@@ -136,7 +140,9 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 					filtered.add(entity);
 				}
 			}
-			return new PageImpl<OpenLRSEntity>(filtered);
+			if (filtered != null) {
+				return new PageImpl<OpenLRSEntity>(filtered);
+			}
 		}
 		return null;
 	}
