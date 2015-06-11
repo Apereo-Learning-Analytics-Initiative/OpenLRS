@@ -39,10 +39,6 @@ public class StorageFactory {
 	@Autowired private Map<String, TierTwoStorage<OpenLRSEntity>> tierTwoStorageOptions;
 	
 	public TierOneStorage<OpenLRSEntity> getTierOneStorage() {
-System.out.println("******************");
-System.out.println(tierOneStorage);
-System.out.println(tierOneStorageOptions);
-System.out.println("**********************");
 		return tierOneStorageOptions.get(tierOneStorage);
 	}
 	
@@ -51,10 +47,6 @@ System.out.println("**********************");
 	}
 	
 	public TierTwoStorage<OpenLRSEntity> getTierTwoStorage() {
-System.out.println("******************");
-System.out.println(tierTwoStorage);
-System.out.println(tierTwoStorageOptions);
-System.out.println("**********************");
 		return tierTwoStorageOptions.get(tierTwoStorage);
 	}
 	
