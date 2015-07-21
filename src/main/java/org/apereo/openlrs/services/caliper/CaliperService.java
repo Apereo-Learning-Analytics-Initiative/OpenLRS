@@ -15,10 +15,18 @@
  */
 package org.apereo.openlrs.services.caliper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
+import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
+import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.services.EventService;
-import org.springframework.context.annotation.Profile;
+import org.imsglobal.caliper.events.Event;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,17 +34,53 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Profile({"redis","mongo"})
 public class CaliperService extends EventService {
 
-	private Logger log = Logger.getLogger(CaliperService.class);
-	
-	public void post(String organizationId, CaliperEvent caliperEvent) {
-    	if (log.isDebugEnabled()) {
-    		log.debug(String.format("Caliper event: %s",caliperEvent));
-    	}
-    	
-        getTierOneStorage().save(caliperEvent);
-	}
-	
+  private Logger log = Logger.getLogger(CaliperService.class);
+  
+  @Autowired
+  private EventConversionService eventConversionService;
+
+  public void post(String organizationId, CaliperEvent caliperEvent) {
+    if (log.isDebugEnabled()) {
+      log.debug(String.format("Caliper event: %s", caliperEvent));
+    }
+
+    getTierOneStorage().save(caliperEvent);
+  }
+
+//  public List<Event> get(Map<String, String> filterMap) {
+//
+//    List<Event> result = null;
+//    List<OpenLRSEntity> entities = null;
+//
+//    if (filterMap != null && !filterMap.isEmpty()) {
+//      entities = getTierTwoStorage().findWithFilters(filterMap);
+//    } 
+//    else {
+//      entities = getTierTwoStorage().findAll();
+//    }
+//
+//    result = eventConversionService.toCaliperCollection(entities);
+//
+//    return result;
+//  }
+//
+//  public Page<Event> getByContext(String context, Pageable pageable) {
+//    Page<OpenLRSEntity> page = getTierTwoStorage().findByContext(context,pageable);
+//    return eventConversionService.toCaliperPage(page);
+//  }
+//
+//  public Page<Event> getByUser(String user, Pageable pageable) {
+//    Page<OpenLRSEntity> page = getTierTwoStorage().findByUser(user, pageable);
+//    return eventConversionService.toCaliperPage(page);
+//  }
+//
+//  public Page<Event> getByContextAndUser(String context, String user,
+//      Pageable pageable) {
+//    Page<OpenLRSEntity> page = getTierTwoStorage().findByContextAndUser(
+//        context, user, pageable);
+//    return eventConversionService.toCaliperPage(page);
+//  }
+
 }

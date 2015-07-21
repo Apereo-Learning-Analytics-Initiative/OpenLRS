@@ -85,9 +85,6 @@ public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEnti
 		return (List<OpenLRSEntity>)(List<?>)mongoEventRepository.findAll();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apereo.openlrs.storage.TierTwoStorage#findWithFilters(java.util.Map)
-	 */
 	@Override
 	public List<OpenLRSEntity> findWithFilters(Map<String, String> filters) {
 		throw new UnsupportedOperationException();

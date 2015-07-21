@@ -77,6 +77,7 @@ public class Application {
 		registrationBean.setFilter(corsFilter);
 		List<String> urls = new ArrayList<String>(1);
 		urls.add("/xAPI/*");
+		urls.add("/caliper/*");
 		registrationBean.setUrlPatterns(urls);
 		registrationBean.setOrder(1);
 		return registrationBean;

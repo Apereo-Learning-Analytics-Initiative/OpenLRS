@@ -15,53 +15,75 @@
  */
 package org.apereo.openlrs.model.caliper;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
+import org.imsglobal.caliper.events.Event;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author ggilbert
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CaliperEvent implements OpenLRSEntity {
-	
-	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(CaliperEvent.class);
-	@JsonIgnore public static final String OBJECT_KEY = "CALIPEREVENT";
 
+  private static final long serialVersionUID = 1L;
+  private Logger log = Logger.getLogger(CaliperEvent.class);
+  @JsonIgnore
+  public static final String OBJECT_KEY = "CALIPEREVENT";
+  
+  public CaliperEvent() {
+    
+  }
+  
+  public CaliperEvent(JsonNode jsonNode) {
+    this.json = jsonNode.toString();
+    this.key = UUID.randomUUID().toString();
+    this.event = CaliperUtils.toEvent(jsonNode);
+    this.type = CaliperUtils.getType(jsonNode);
+  }
 
-	@Override
-	@JsonIgnore
-	public String getKey() {
-		return null;
-	}
+  private String key;
+  private Event event;
+  private String type;
+  private String json;
 
-	@Override
-	@JsonIgnore
-	public String getObjectKey() {
-		return OBJECT_KEY;
-	}
-	
-    @JsonIgnore
-    public String toJSON() {
-    	ObjectMapper om = new ObjectMapper();
-    	String rawJson = null;
-    	try {
-			rawJson = om.writer().writeValueAsString(this);
-		} 
-    	catch (JsonProcessingException e) {
-			log.error(e.getMessage(), e); 
-		}
-		return rawJson;
-    }
+  @JsonIgnore
+  public Event getEvent() {
+    return event;
+  }
 
-    @Override
-    public String toString() {
-        return toJSON();        
-    }
+  @JsonIgnore
+  public String getType() {
+    return type;
+  }
 
+  @Override
+  @JsonIgnore
+  public String getKey() {
+    return key;
+  }
+
+  @Override
+  @JsonIgnore
+  public String getObjectKey() {
+    return OBJECT_KEY;
+  }
+
+  @JsonIgnore
+  public String toJSON() {
+    return this.json;
+  }
+
+  @Override
+  public String toString() {
+    return "CaliperEvent [getKey()="
+        + getKey() + ", getObjectKey()=" + getObjectKey() + "]";
+  }
 
 }

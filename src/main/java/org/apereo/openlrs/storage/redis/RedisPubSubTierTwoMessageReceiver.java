@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -43,6 +44,11 @@ public class RedisPubSubTierTwoMessageReceiver {
 
 	
 	public void onMessage(String json) {
+	  
+	  if (log.isDebugEnabled()) {
+	    log.debug(json);
+	  }
+	  
 		// guess at format
 		OpenLRSEntity entity = null;
 		
@@ -56,7 +62,8 @@ public class RedisPubSubTierTwoMessageReceiver {
 		if (entity == null) {
 			// try caliper
 			try {
-				entity = objectMapper.readValue(json.getBytes(), CaliperEvent.class);
+			  JsonNode jsonNode = objectMapper.readTree(json);
+				entity = new CaliperEvent(jsonNode);
 			}
 			catch (Exception e) {
 				throw new InvalidEventFormatException(String.format("unable to parse %s",json),e);

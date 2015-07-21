@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.xapi.InvalidXApiFormatException;
 import org.apereo.openlrs.model.OpenLRSEntity;
+import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.xapi.Statement;
 import org.apereo.openlrs.model.xapi.StatementResult;
 import org.apereo.openlrs.model.xapi.XApiActor;
@@ -33,6 +34,11 @@ import org.apereo.openlrs.model.xapi.XApiContextActivities;
 import org.apereo.openlrs.model.xapi.XApiObject;
 import org.apereo.openlrs.model.xapi.XApiObjectDefinition;
 import org.apereo.openlrs.model.xapi.XApiVerb;
+import org.imsglobal.caliper.entities.agent.SoftwareApplication;
+import org.imsglobal.caliper.entities.lis.Group;
+import org.imsglobal.caliper.entities.session.Session;
+import org.imsglobal.caliper.entities.w3c.Organization;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -57,6 +63,10 @@ public class EventConversionService {
 		return Statement.OBJECT_KEY.equals(entity.getObjectKey());
 	}
 	
+	public boolean isCaliper(OpenLRSEntity entity) {
+	  return CaliperEvent.OBJECT_KEY.equals(entity.getObjectKey());
+	}
+	
 	public Event toEvent(OpenLRSEntity entity) {
 		Event event = null;
 		if (isEvent(entity)) {
@@ -65,6 +75,10 @@ public class EventConversionService {
 		else if (isXApi(entity)) {
 			Statement statement = (Statement)entity;
 			event = fromXAPI(statement);
+		}
+		else if (isCaliper(entity)) {
+		  CaliperEvent caliperEvent = (CaliperEvent)entity;
+		  event = fromCaliper(caliperEvent);
 		}
 		else {
 			throw new UnsupportedOperationException(String.format("Conversion from %s to event is not yet supported.", entity.getObjectKey()));
@@ -127,6 +141,22 @@ public class EventConversionService {
     	return statements;
 	}
 	
+//	public Page<org.imsglobal.caliper.events.Event> toCaliperPage(Page<OpenLRSEntity> page) {
+//	  
+//	  Page<org.imsglobal.caliper.events.Event> events = null;
+//	  if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
+//	    List<OpenLRSEntity> entities = page.getContent();
+//      List<org.imsglobal.caliper.events.Event> eventList = new ArrayList<org.imsglobal.caliper.events.Event>();
+//      for (OpenLRSEntity entity : entities) {
+//        eventList.add(toCaliper(entity));
+//      }
+//      
+//      events = new PageImpl<org.imsglobal.caliper.events.Event>(eventList);
+//	  }
+//	  
+//	  return events;
+//	}
+	
 	public StatementResult toXApiCollection(Collection<OpenLRSEntity> entities) {
 		StatementResult statementResult = null;
 		List<Statement> statements = null;
@@ -144,6 +174,21 @@ public class EventConversionService {
 		
 		return statementResult;
 	}
+	
+//	public List<org.imsglobal.caliper.events.Event> toCaliperCollection(Collection<OpenLRSEntity> entities) {
+//    List<org.imsglobal.caliper.events.Event> events = null;
+//    
+//    if (entities != null && !entities.isEmpty()) {
+//      events = new ArrayList<org.imsglobal.caliper.events.Event>();
+//      
+//      for (OpenLRSEntity entity : entities) {
+//        events.add(toCaliper(entity));
+//      }
+//      
+//    }    
+//    
+//    return events;
+//	}
 	
 	public Event fromXAPI(Statement xapi) {
 		
@@ -171,6 +216,50 @@ public class EventConversionService {
 		}
 		
 		return event;
+	}
+	
+	public Event fromCaliper(CaliperEvent caliper) {
+    Event event = null;
+    
+    if (caliper != null && caliper.getEvent() != null) {
+      event = new Event();
+      org.imsglobal.caliper.events.Event baseCaliperEvent =
+          caliper.getEvent();
+      
+      event.setActor(baseCaliperEvent.getActor().getId());
+      event.setVerb(baseCaliperEvent.getAction().getValue());
+      
+      Object caliperEventObject = baseCaliperEvent.getObject();
+      if (caliperEventObject instanceof SoftwareApplication) {
+        SoftwareApplication softwareApplication = (SoftwareApplication)caliperEventObject;
+        event.setObject(softwareApplication.getId());
+        event.setObjectType(softwareApplication.getType().getValue());
+      }
+      else if (caliperEventObject instanceof Session) {
+        Session session = (Session)caliperEventObject;
+        event.setObject(session.getId());
+        event.setObjectType(session.getType().getValue());
+      }
+
+      event.setRaw(caliper.toJSON());
+      event.setEventFormatType(EventFormatType.CALIPER);
+      event.setSourceId(caliper.getKey());
+
+      Organization caliperEventGroup = baseCaliperEvent.getGroup();
+      if (caliperEventGroup != null) {
+        event.setContext(caliperEventGroup.getId());
+      }
+      
+      DateTime startedAtTime = baseCaliperEvent.getStartedAtTime();
+      if (startedAtTime != null) {
+        event.setTimestamp(String.valueOf(startedAtTime.getMillis()));
+      }
+      
+      //TODO
+      event.setOrganization(null);
+    }
+    
+    return event;
 	}
 	
 	private String parseContextXApi(Statement xapi) {
