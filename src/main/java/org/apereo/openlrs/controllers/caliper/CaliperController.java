@@ -55,4 +55,9 @@ public class CaliperController {
     return caliperEvent.getKey();
   }
 
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
+    public String getRequest(@RequestBody String request) {
+        logger.debug(request);
+        return Integer.toString(caliperService.get());
+    }
 }

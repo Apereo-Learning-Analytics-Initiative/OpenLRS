@@ -49,6 +49,17 @@ public class CaliperService extends EventService {
     getTierOneStorage().save(caliperEvent);
   }
 
+    public int get() {
+        List<OpenLRSEntity> entities = null;
+
+        entities = getTierOneStorage().findAll();
+
+        log.debug(String.format("entity count: %s", entities.size()));
+
+        return entities.size();
+    }
+
+
 //  public List<Event> get(Map<String, String> filterMap) {
 //
 //    List<Event> result = null;
