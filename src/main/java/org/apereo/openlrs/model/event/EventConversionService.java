@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.xapi.InvalidXApiFormatException;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
+import org.apereo.openlrs.model.caliper.CaliperEventResult;
 import org.apereo.openlrs.model.xapi.Statement;
 import org.apereo.openlrs.model.xapi.StatementResult;
 import org.apereo.openlrs.model.xapi.XApiActor;
@@ -125,6 +126,10 @@ public class EventConversionService {
 		
 		return statement;
 	}
+
+    public CaliperEvent toCaliper(OpenLRSEntity entity) {
+        return (CaliperEvent)entity;
+    }
 	
 	public Page<Statement> toXApiPage(Page<OpenLRSEntity> page) {
 		Page<Statement> statements = null;
@@ -156,37 +161,55 @@ public class EventConversionService {
 //	  
 //	  return events;
 //	}
-	
-	public StatementResult toXApiCollection(Collection<OpenLRSEntity> entities) {
-		StatementResult statementResult = null;
-		List<Statement> statements = null;
-		
-		if (entities != null && !entities.isEmpty()) {
-			statements = new ArrayList<Statement>();
-			
-			for (OpenLRSEntity entity : entities) {
-				statements.add(toXApi(entity));
-			}
-			
-			statementResult = new StatementResult(statements);
-		}
-		
-		
-		return statementResult;
-	}
-	
+
+    public StatementResult toXApiCollection(Collection<OpenLRSEntity> entities) {
+        StatementResult statementResult = null;
+        List<Statement> statements = null;
+
+        if (entities != null && !entities.isEmpty()) {
+            statements = new ArrayList<Statement>();
+
+            for (OpenLRSEntity entity : entities) {
+                statements.add(toXApi(entity));
+            }
+
+            statementResult = new StatementResult(statements);
+        }
+
+
+        return statementResult;
+    }
+
+    public CaliperEventResult toCaliperCollection(Collection<OpenLRSEntity> entities) {
+            CaliperEventResult caliperEventResult = null;
+            List<CaliperEvent> events = null;
+
+        if (entities != null && !entities.isEmpty()) {
+            events = new ArrayList<CaliperEvent>();
+
+            for (OpenLRSEntity entity : entities) {
+                events.add(toCaliper(entity));
+            }
+
+            caliperEventResult = new CaliperEventResult(events);
+        }
+
+
+        return caliperEventResult;
+    }
+
 //	public List<org.imsglobal.caliper.events.Event> toCaliperCollection(Collection<OpenLRSEntity> entities) {
 //    List<org.imsglobal.caliper.events.Event> events = null;
-//    
+//
 //    if (entities != null && !entities.isEmpty()) {
 //      events = new ArrayList<org.imsglobal.caliper.events.Event>();
-//      
+//
 //      for (OpenLRSEntity entity : entities) {
 //        events.add(toCaliper(entity));
 //      }
-//      
-//    }    
-//    
+//
+//    }
+//
 //    return events;
 //	}
 	

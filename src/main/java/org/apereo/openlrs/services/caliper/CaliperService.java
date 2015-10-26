@@ -15,48 +15,52 @@
  */
 package org.apereo.openlrs.services.caliper;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
+import org.apereo.openlrs.model.caliper.CaliperEventResult;
 import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.services.EventService;
-import org.imsglobal.caliper.events.Event;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ggilbert
- *
  */
 @Service
 public class CaliperService extends EventService {
 
-  private Logger log = Logger.getLogger(CaliperService.class);
-  
-  @Autowired
-  private EventConversionService eventConversionService;
+    private Logger log = Logger.getLogger(CaliperService.class);
 
-  public void post(String organizationId, CaliperEvent caliperEvent) {
-    if (log.isDebugEnabled()) {
-      log.debug(String.format("Caliper event: %s", caliperEvent));
+    @Autowired
+    private EventConversionService eventConversionService;
+
+    public void post(String organizationId, CaliperEvent caliperEvent) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Caliper event: %s", caliperEvent));
+        }
+
+        getTierOneStorage().save(caliperEvent);
     }
 
-    getTierOneStorage().save(caliperEvent);
-  }
-
-    public int get() {
+    public CaliperEventResult get(Map<String, String> filterMap) {
+        CaliperEventResult result = null;
         List<OpenLRSEntity> entities = null;
 
-        entities = getTierOneStorage().findAll();
+        if (filterMap != null && !filterMap.isEmpty()) {
+            entities = getTierTwoStorage().findWithFilters(filterMap);
+        } else {
+            entities = getTierTwoStorage().findAll();
+        }
 
         log.debug(String.format("entity count: %s", entities.size()));
 
-        return entities.size();
+        result = eventConversionService.toCaliperCollection(entities);
+
+        return result;
     }
 
 

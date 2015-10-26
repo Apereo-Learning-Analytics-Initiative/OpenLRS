@@ -15,9 +15,11 @@
  */
 package org.apereo.openlrs.controllers.caliper;
 
-import java.io.IOException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
+import org.apereo.openlrs.model.caliper.CaliperEventResult;
 import org.apereo.openlrs.services.caliper.CaliperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,37 +29,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 
 /**
  * @author ggilbert
- *
  */
 @RestController
 @RequestMapping("/caliper")
 public class CaliperController {
-  
-  private final Logger logger = LoggerFactory.getLogger(CaliperController.class);
-  @Autowired private ObjectMapper objectMapper;
-  @Autowired private CaliperService caliperService;
 
-  @RequestMapping(value = {"", "/"}, method = RequestMethod.POST)
-  public String event(@RequestBody String json) throws JsonProcessingException, IOException {
-    logger.debug(json);
-    
-    JsonNode jsonNode = objectMapper.readTree(json);
-    logger.debug("Type: "+jsonNode.findValue("@type").textValue());
-    CaliperEvent caliperEvent = new CaliperEvent(jsonNode);
-    caliperService.post(null, caliperEvent);
-    return caliperEvent.getKey();
-  }
+    private final Logger logger = LoggerFactory.getLogger(CaliperController.class);
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private CaliperService caliperService;
+
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.POST)
+    public String event(@RequestBody String json) throws JsonProcessingException, IOException {
+        logger.debug(json);
+
+        JsonNode jsonNode = objectMapper.readTree(json);
+        logger.debug("Type: " + jsonNode.findValue("@type").textValue());
+        CaliperEvent caliperEvent = new CaliperEvent(jsonNode);
+        caliperService.post(null, caliperEvent);
+        return caliperEvent.getKey();
+    }
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-    public String getRequest(@RequestBody String request) {
-        logger.debug(request);
-        return Integer.toString(caliperService.get());
+    public CaliperEventResult getRequest() {
+        return caliperService.get(null);
     }
 }
