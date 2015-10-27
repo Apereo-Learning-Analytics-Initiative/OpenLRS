@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.xapi.InvalidXApiFormatException;
@@ -126,6 +127,29 @@ public class EventConversionService {
 		
 		return statement;
 	}
+
+    public JsonNode toCaliperJson(OpenLRSEntity entity) {
+        String caliperRawJson = null;
+        JsonNode caliperJson = null;
+        if (entity != null) {
+            if (isCaliper(entity)) {
+                caliperRawJson = entity.toJSON();
+                try {
+                    caliperJson = objectMapper.readTree(caliperRawJson);
+                }
+                catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw new InvalidXApiFormatException();
+                }
+            }
+            else {
+                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper string is not yet supported.", entity.getObjectKey()));
+            }
+        }
+
+        return caliperJson;
+    }
+
 
     public String toCaliperString(OpenLRSEntity entity) {
         String caliperEvent = null;
@@ -239,6 +263,21 @@ public class EventConversionService {
 
             for (OpenLRSEntity entity : entities) {
                 events.add(toCaliper(entity));
+            }
+
+        }
+
+        return events;
+    }
+
+    public List<JsonNode> toCaliperJsonCollection(Collection<OpenLRSEntity> entities) {
+        List<JsonNode> events = null;
+
+        if (entities != null && !entities.isEmpty()) {
+            events = new ArrayList<JsonNode>();
+
+            for (OpenLRSEntity entity : entities) {
+                events.add(toCaliperJson(entity));
             }
 
         }

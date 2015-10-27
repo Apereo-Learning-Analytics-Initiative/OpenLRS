@@ -18,18 +18,9 @@ package org.apereo.openlrs.controllers.caliper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apereo.openlrs.model.caliper.CaliperEvent;
-import org.apereo.openlrs.model.caliper.CaliperEventResult;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import org.apereo.openlrs.exceptions.xapi.InvalidXAPIRequestException;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
-import org.apereo.openlrs.model.event.Event;
-import org.apereo.openlrs.model.xapi.StatementResult;
 import org.apereo.openlrs.services.caliper.CaliperService;
-import org.apereo.openlrs.utils.StatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -61,14 +54,12 @@ public class CaliperController {
      * @return JSON string of the statement objects matching the specified filter
      */
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-    public List<String> getStatement() {
-//        public List<org.imsglobal.caliper.events.Event> getStatement() {
-
+    public List<JsonNode> getStatement() {
         try {
             Map<String, String> filterMap = null;
             // TODO: enable the following after this method has argument support
 //            filterMap = StatementUtils.createStatementFilterMap(actor, activity, since, until, limit);
-            return caliperService.getStrings(filterMap);
+            return caliperService.getJson(filterMap);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InvalidXAPIRequestException(e.getMessage(), e);

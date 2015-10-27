@@ -15,6 +15,7 @@
  */
 package org.apereo.openlrs.services.caliper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
@@ -62,6 +63,22 @@ public class CaliperService extends EventService {
         }
 
         result = eventConversionService.toCaliperCollection(entities);
+
+        return result;
+    }
+
+    public List<JsonNode> getJson (Map<String, String> filterMap) {
+        List<JsonNode> result = null;
+        List<OpenLRSEntity> entities = null;
+
+        if (filterMap != null && !filterMap.isEmpty()) {
+            entities = getTierTwoStorage().findWithFilters(filterMap);
+        }
+        else {
+            entities = getTierTwoStorage().findAll();
+        }
+
+        result = eventConversionService.toCaliperJsonCollection(entities);
 
         return result;
     }
