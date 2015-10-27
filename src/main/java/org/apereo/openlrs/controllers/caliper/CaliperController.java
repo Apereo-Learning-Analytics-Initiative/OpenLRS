@@ -20,7 +20,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.caliper.CaliperEventResult;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.apereo.openlrs.exceptions.xapi.InvalidXAPIRequestException;
+import org.apereo.openlrs.model.caliper.CaliperEvent;
+import org.apereo.openlrs.model.event.Event;
+import org.apereo.openlrs.model.xapi.StatementResult;
 import org.apereo.openlrs.services.caliper.CaliperService;
+import org.apereo.openlrs.utils.StatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +47,33 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/caliper")
 public class CaliperController {
-
     private final Logger logger = LoggerFactory.getLogger(CaliperController.class);
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private CaliperService caliperService;
+
+    /**
+     * Get statement objects for the specified criteria
+     *
+     * @param actor    the ID of the actor
+     * @param activity the activity
+     * @return JSON string of the statement objects matching the specified filter
+     */
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
+    public List<String> getStatement() {
+//        public List<org.imsglobal.caliper.events.Event> getStatement() {
+
+        try {
+            Map<String, String> filterMap = null;
+            // TODO: enable the following after this method has argument support
+//            filterMap = StatementUtils.createStatementFilterMap(actor, activity, since, until, limit);
+            return caliperService.getStrings(filterMap);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InvalidXAPIRequestException(e.getMessage(), e);
+        }
+    }
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST)
     public String event(@RequestBody String json) throws JsonProcessingException, IOException {
@@ -54,10 +84,5 @@ public class CaliperController {
         CaliperEvent caliperEvent = new CaliperEvent(jsonNode);
         caliperService.post(null, caliperEvent);
         return caliperEvent.getKey();
-    }
-
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-    public CaliperEventResult getRequest() {
-        return caliperService.get(null);
     }
 }
