@@ -36,6 +36,7 @@ import java.util.Map;
 
 /**
  * @author ggilbert
+ * @author Lance E Sloan <lsloan at umich dot edu>
  */
 @RestController
 @RequestMapping("/caliper")
@@ -46,11 +47,11 @@ public class CaliperController {
     @Autowired
     private CaliperService caliperService;
 
+    // TODO: Add support for GET with ID or other filters
+
     /**
      * Get statement objects for the specified criteria
      *
-     * @param actor    the ID of the actor
-     * @param activity the activity
      * @return JSON string of the statement objects matching the specified filter
      */
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
@@ -59,7 +60,7 @@ public class CaliperController {
             Map<String, String> filterMap = null;
             // TODO: enable the following after this method has argument support
 //            filterMap = StatementUtils.createStatementFilterMap(actor, activity, since, until, limit);
-            return caliperService.getJson(filterMap);
+            return caliperService.getJsonNodes(filterMap);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InvalidXAPIRequestException(e.getMessage(), e);
