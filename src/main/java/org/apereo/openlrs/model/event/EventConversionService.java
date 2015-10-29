@@ -145,13 +145,12 @@ public class EventConversionService {
                 }
             }
             else {
-                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper string is not yet supported.", entity.getObjectKey()));
+                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", entity.getObjectKey()));
             }
         }
 
         return caliperJson;
     }
-
 
     public String toCaliperString(OpenLRSEntity entity) {
         String caliperEvent = null;
