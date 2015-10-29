@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * @author ggilbert
- * @author Lance E Sloan <lsloan at umich dot edu>
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Service
 public class CaliperService extends EventService {
@@ -44,6 +44,11 @@ public class CaliperService extends EventService {
         }
 
         getTierOneStorage().save(caliperEvent);
+    }
+
+    public JsonNode getJsonNode(String id) {
+        OpenLRSEntity entity = getTierTwoStorage().findById(id);
+        return eventConversionService.toCaliperJson(entity);
     }
 
     public List<JsonNode> getJsonNodes(Map<String, String> filterMap) {
