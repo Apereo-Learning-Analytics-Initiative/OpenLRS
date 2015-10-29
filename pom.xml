@@ -81,13 +81,12 @@
 		</dependency>
 		
 		<!-- IMS Libraries -->
-		<!-- NOTE: As of 6/2015 you must be an IMS Member to have access to this library -->
         <dependency>
             <groupId>org.imsglobal.caliper</groupId>
-			<artifactId>caliper-java</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
+            <artifactId>caliper-java</artifactId>
+            <version>1.0.0</version>
         </dependency>
-		
+
     </dependencies>
     <build>
 	    <plugins>
