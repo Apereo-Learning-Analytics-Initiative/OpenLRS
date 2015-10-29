@@ -17,6 +17,7 @@ package org.apereo.openlrs.model.caliper;
 
 import org.imsglobal.caliper.actions.Action;
 import org.imsglobal.caliper.entities.DigitalResource;
+import org.imsglobal.caliper.entities.Entity;
 import org.imsglobal.caliper.entities.Targetable;
 import org.imsglobal.caliper.entities.agent.Person;
 import org.imsglobal.caliper.entities.agent.SoftwareApplication;
@@ -67,7 +68,7 @@ public class CaliperUtils {
     SessionEvent sessionEvent = null;
     if (sessionEventJsonNode != null) {
       
-      Action action = CaliperUtils.toAction(sessionEventJsonNode.get("action"));;
+      String action = sessionEventJsonNode.get("action").asText();
       Group group = CaliperUtils.toGroup(sessionEventJsonNode.get("group"));
       
       JsonNode generatedJsonNode = sessionEventJsonNode.get("generated");
@@ -79,10 +80,10 @@ public class CaliperUtils {
           objectJsonNode != null) {
         
         Agent agent = null;
-        Object object = null;
+        Entity object = null;
         Targetable target = null;
         
-        if (action == Action.TIMED_OUT) {
+        if (action == Action.TIMED_OUT.getValue()) {
           agent = CaliperUtils.toSoftwareApplication(actorJsonNode);
           //TODO
           object = CaliperUtils.toSession(objectJsonNode, null, null);
@@ -105,7 +106,7 @@ public class CaliperUtils {
 
         sessionEvent = 
             SessionEvent.builder()
-            .startedAtTime(startedAtTime)
+            .eventTime(startedAtTime)
             .action(action)
             .generated(session)
             .actor(agent)

@@ -15,6 +15,8 @@
  */
 package org.apereo.openlrs.model.event;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +29,6 @@ import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.xapi.InvalidXApiFormatException;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
-import org.apereo.openlrs.model.caliper.CaliperEventResult;
 import org.apereo.openlrs.model.xapi.Statement;
 import org.apereo.openlrs.model.xapi.StatementResult;
 import org.apereo.openlrs.model.xapi.XApiActor;
@@ -40,6 +41,7 @@ import org.imsglobal.caliper.entities.agent.SoftwareApplication;
 import org.imsglobal.caliper.entities.lis.Group;
 import org.imsglobal.caliper.entities.session.Session;
 import org.imsglobal.caliper.entities.w3c.Organization;
+import org.imsglobal.caliper.events.BaseEventContext;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -327,48 +329,55 @@ public class EventConversionService {
 		return event;
 	}
 	
-	public Event fromCaliper(CaliperEvent caliper) {
-    Event event = null;
+	public Event fromCaliper(CaliperEvent caliperEvent) {
+    Event openLRSEvent = null;
     
-    if (caliper != null && caliper.getEvent() != null) {
-      event = new Event();
+    if (caliperEvent != null && caliperEvent.getEvent() != null) {
+      openLRSEvent = new Event();
       org.imsglobal.caliper.events.Event baseCaliperEvent =
-          caliper.getEvent();
+          caliperEvent.getEvent();
       
-      event.setActor(baseCaliperEvent.getActor().getId());
-      event.setVerb(baseCaliperEvent.getAction().getValue());
+      openLRSEvent.setActor(baseCaliperEvent.getActor().getId());
+      openLRSEvent.setVerb(baseCaliperEvent.getAction());
       
       Object caliperEventObject = baseCaliperEvent.getObject();
       if (caliperEventObject instanceof SoftwareApplication) {
         SoftwareApplication softwareApplication = (SoftwareApplication)caliperEventObject;
-        event.setObject(softwareApplication.getId());
-        event.setObjectType(softwareApplication.getType().getValue());
+        openLRSEvent.setObject(softwareApplication.getId());
+        openLRSEvent.setObjectType(softwareApplication.getType());
       }
       else if (caliperEventObject instanceof Session) {
         Session session = (Session)caliperEventObject;
-        event.setObject(session.getId());
-        event.setObjectType(session.getType().getValue());
+        openLRSEvent.setObject(session.getId());
+        openLRSEvent.setObjectType(session.getType());
       }
 
-      event.setRaw(caliper.toJSON());
-      event.setEventFormatType(EventFormatType.CALIPER);
-      event.setSourceId(caliper.getKey());
+      openLRSEvent.setRaw(caliperEvent.toJSON());
+      openLRSEvent.setEventFormatType(EventFormatType.CALIPER);
+      openLRSEvent.setSourceId(caliperEvent.getKey());
 
-      Organization caliperEventGroup = baseCaliperEvent.getGroup();
-      if (caliperEventGroup != null) {
-        event.setContext(caliperEventGroup.getId());
-      }
-      
-      DateTime startedAtTime = baseCaliperEvent.getStartedAtTime();
+        try {
+            Group caliperEventGroup = (Group) baseCaliperEvent.getClass()
+                    .getMethod("getGroup", null).invoke(null, null);
+            if (caliperEventGroup != null) {
+                openLRSEvent.setContext(caliperEventGroup.getId());
+            }
+        } catch (NoSuchMethodException e) {
+            // do nothing; event doesn't have group
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        DateTime startedAtTime = baseCaliperEvent.getEventTime();
       if (startedAtTime != null) {
-        event.setTimestamp(String.valueOf(startedAtTime.getMillis()));
+        openLRSEvent.setTimestamp(String.valueOf(startedAtTime.getMillis()));
       }
       
       //TODO
-      event.setOrganization(null);
+      openLRSEvent.setOrganization(null);
     }
     
-    return event;
+    return openLRSEvent;
 	}
 	
 	private String parseContextXApi(Statement xapi) {
