@@ -130,55 +130,6 @@ public class EventConversionService {
 		return statement;
 	}
 
-    public JsonNode toCaliperJson(OpenLRSEntity entity) {
-        String caliperRawJson = null;
-        JsonNode caliperJson = null;
-        if (entity != null) {
-            if (isCaliper(entity)) {
-                caliperRawJson = entity.toJSON();
-                try {
-                    caliperJson = objectMapper.readTree(caliperRawJson);
-                }
-                catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                    throw new InvalidXApiFormatException();
-                }
-            }
-            else {
-                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", entity.getObjectKey()));
-            }
-        }
-
-        return caliperJson;
-    }
-
-    public String toCaliperString(OpenLRSEntity entity) {
-        String caliperEvent = null;
-        if (entity != null) {
-            if (isCaliper(entity)) {
-                caliperEvent = entity.toJSON();
-            }
-//            else if (isEvent(entity)) {
-//                Event event = (Event) entity;
-//
-//                try {
-//                    // caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), Statement.class);
-//                    // TODO: maybe build Caliper object?
-//                    caliperEvent = org.imsglobal.caliper.events.SessionEvent.builder().build();
-//                }
-//                catch (Exception e) {
-//                    log.error(e.getMessage(), e);
-//                    throw new InvalidXApiFormatException();
-//                }
-//            }
-            else {
-                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper string is not yet supported.", entity.getObjectKey()));
-            }
-        }
-
-        return caliperEvent;
-    }
-
     public org.imsglobal.caliper.events.Event toCaliper(OpenLRSEntity entity) {
         org.imsglobal.caliper.events.Event caliperEvent = null;
         if (entity != null) {
@@ -189,9 +140,7 @@ public class EventConversionService {
                 Event event = (Event) entity;
 
                 try {
-//                    caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), Statement.class);
-                    // TODO: construct proper Caliper object
-                    caliperEvent = org.imsglobal.caliper.events.SessionEvent.builder().build();
+                    caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), org.imsglobal.caliper.events.Event.class);
                 }
                 catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -206,6 +155,44 @@ public class EventConversionService {
         return caliperEvent;
     }
 
+    public JsonNode toCaliperJson(OpenLRSEntity entity) {
+        String caliperRawJson = null;
+        JsonNode caliperJson = null;
+
+        if (entity != null) {
+            if (isCaliper(entity)) {
+                caliperRawJson = entity.toJSON();
+            }
+            else {
+                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", entity.getObjectKey()));
+            }
+        }
+
+        try {
+            caliperJson = objectMapper.readTree(caliperRawJson);
+        }
+        catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new InvalidXApiFormatException();
+        }
+
+        return caliperJson;
+    }
+
+    public List<JsonNode> toCaliperJsonList(Collection<OpenLRSEntity> entities) {
+        List<JsonNode> events = null;
+
+        if (entities != null && !entities.isEmpty()) {
+            events = new ArrayList<JsonNode>();
+
+            for (OpenLRSEntity entity : entities) {
+                events.add(toCaliperJson(entity));
+            }
+
+        }
+
+        return events;
+    }
 
     public Page<Statement> toXApiPage(Page<OpenLRSEntity> page) {
 		Page<Statement> statements = null;
@@ -220,22 +207,6 @@ public class EventConversionService {
     	}
     	
     	return statements;
-	}
-	
-	public Page<org.imsglobal.caliper.events.Event> toCaliperPage(Page<OpenLRSEntity> page) {
-
-	  Page<org.imsglobal.caliper.events.Event> events = null;
-	  if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
-	    List<OpenLRSEntity> entities = page.getContent();
-      List<org.imsglobal.caliper.events.Event> eventList = new ArrayList<org.imsglobal.caliper.events.Event>();
-      for (OpenLRSEntity entity : entities) {
-        eventList.add(toCaliper(entity));
-      }
-
-      events = new PageImpl<org.imsglobal.caliper.events.Event>(eventList);
-	  }
-
-	  return events;
 	}
 	
 	public StatementResult toXApiCollection(Collection<OpenLRSEntity> entities) {
@@ -255,51 +226,6 @@ public class EventConversionService {
 		
 		return statementResult;
 	}
-
-    public List<org.imsglobal.caliper.events.Event> toCaliperCollection(Collection<OpenLRSEntity> entities) {
-        List<org.imsglobal.caliper.events.Event> events = null;
-
-        if (entities != null && !entities.isEmpty()) {
-            events = new ArrayList<org.imsglobal.caliper.events.Event>();
-
-            for (OpenLRSEntity entity : entities) {
-                events.add(toCaliper(entity));
-            }
-
-        }
-
-        return events;
-    }
-
-    public List<JsonNode> toCaliperJsonCollection(Collection<OpenLRSEntity> entities) {
-        List<JsonNode> events = null;
-
-        if (entities != null && !entities.isEmpty()) {
-            events = new ArrayList<JsonNode>();
-
-            for (OpenLRSEntity entity : entities) {
-                events.add(toCaliperJson(entity));
-            }
-
-        }
-
-        return events;
-    }
-
-    public List<String> toCaliperStringCollection(Collection<OpenLRSEntity> entities) {
-        List<String> events = null;
-
-        if (entities != null && !entities.isEmpty()) {
-            events = new ArrayList<String>();
-
-            for (OpenLRSEntity entity : entities) {
-                events.add(toCaliperString(entity));
-            }
-
-        }
-
-        return events;
-    }
 
     public Event fromXAPI(Statement xapi) {
 		Event event = null;

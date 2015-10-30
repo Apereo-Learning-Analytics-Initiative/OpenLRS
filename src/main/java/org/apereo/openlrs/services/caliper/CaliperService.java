@@ -61,7 +61,7 @@ public class CaliperService extends EventService {
             entities = getTierTwoStorage().findAll();
         }
 
-        result = eventConversionService.toCaliperJsonCollection(entities);
+        result = eventConversionService.toCaliperJsonList(entities);
 
         return result;
     }
