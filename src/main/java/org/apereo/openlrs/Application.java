@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 @EnableAutoConfiguration(exclude = {ElasticsearchAutoConfiguration.class,ElasticsearchDataAutoConfiguration.class})
 @ComponentScan(basePackages={"org.apereo.openlrs","lti"})
-public class Application {
+public class Application extends SpringBootServletInitializer {
 	
 	@Autowired private OpenLRSAuthenticationFilter openLRSAuthenticationFilter;
 	@Autowired private XAPIRequestValidationFilter xapiRequestValidationFilter;
