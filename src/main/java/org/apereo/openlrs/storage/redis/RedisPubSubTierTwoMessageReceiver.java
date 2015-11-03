@@ -74,7 +74,9 @@ public class RedisPubSubTierTwoMessageReceiver {
 				throw new InvalidEventFormatException(
                         String.format("unable to parse as Caliper: %s", json), e);
 			}
-		}
+		} else {
+            log.warn("entity is not null");
+        }
 		
 		try {
 			TierTwoStorage<OpenLRSEntity> tierTwoStorage = storageFactory.getTierTwoStorage();
