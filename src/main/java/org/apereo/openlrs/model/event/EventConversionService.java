@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.xapi.InvalidXApiFormatException;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
@@ -43,6 +43,8 @@ import org.imsglobal.caliper.entities.session.Session;
 import org.imsglobal.caliper.entities.w3c.Organization;
 import org.imsglobal.caliper.events.BaseEventContext;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -56,8 +58,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Service
 public class EventConversionService {
-	private Logger log = Logger.getLogger(EventConversionService.class);
-	@Autowired private ObjectMapper objectMapper;
+//	private Logger log = Logger.getLogger(EventConversionService.class);
+    private Logger log = LoggerFactory.getLogger(EventConversionService.class);
+
+    @Autowired private ObjectMapper objectMapper;
 	
 	public boolean isEvent(OpenLRSEntity entity) {
 		return Event.OBJECT_KEY.equals(entity.getObjectKey());
@@ -73,8 +77,11 @@ public class EventConversionService {
 	
 	public Event toEvent(OpenLRSEntity entity) {
 		Event event = null;
+
+        log.warn("object key: {}", entity.getObjectKey());
+
 		if (isEvent(entity)) {
-			event = (Event)event;
+			event = (Event)entity;
 		}
 		else if (isXApi(entity)) {
 			Statement statement = (Statement)entity;
