@@ -46,6 +46,11 @@ public class CaliperUtils {
         
         if (eventType.equals(EventType.SESSION.getValue())) {          
           event = CaliperUtils.toSessionEvent(caliperJsonNode);
+        } else {
+            // TODO: Add Caliper deserialization here
+            // Create a generic event for now
+
+            event = SessionEvent.builder().build();
         }
       }
     }
