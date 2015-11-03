@@ -79,17 +79,11 @@ public class RedisPubSubTierTwoMessageReceiver {
             log.warn("entity is not null");
         }
 
-        if (entity == null) {
-            log.warn("entity is still null after xAPI and Caliper parsing attempts");
-        }
-
         try {
             TierTwoStorage<OpenLRSEntity> tierTwoStorage = storageFactory.getTierTwoStorage();
             tierTwoStorage.save(entity);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-
     }
-
 }

@@ -25,6 +25,8 @@ import org.apereo.openlrs.model.event.Event;
 import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.repositories.event.MongoEventRepository;
 import org.apereo.openlrs.storage.TierTwoStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -38,8 +40,9 @@ import org.springframework.stereotype.Component;
 @Component("NormalizedMongoTierTwoStorage")
 @Profile("mongo")
 public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEntity> {
-	
-	@Autowired private MongoEventRepository mongoEventRepository;
+    private Logger log = LoggerFactory.getLogger(NormalizedMongoTierTwoStorage.class);
+
+    @Autowired private MongoEventRepository mongoEventRepository;
 	@Autowired private EventConversionService eventConversionService;
 
 	@Override
@@ -49,7 +52,13 @@ public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEnti
 
 	@Override
 	public OpenLRSEntity save(OpenLRSEntity entity) {
+        if (entity == null) {
+            log.warn("entity is null");
+        }
 		Event event = eventConversionService.toEvent(entity);
+        if (event == null) {
+            log.warn("event is null");
+        }
 		return mongoEventRepository.save(event);
 	}
 
