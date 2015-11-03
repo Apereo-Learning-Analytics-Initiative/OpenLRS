@@ -263,7 +263,11 @@ public class EventConversionService {
 	
 	public Event fromCaliper(CaliperEvent caliperEvent) {
     Event openLRSEvent = null;
-    
+
+        if (caliperEvent.getEvent() == null) {
+            log.warn("getEvent() fails");
+        }
+
     if (caliperEvent != null && caliperEvent.getEvent() != null) {
       openLRSEvent = new Event();
       org.imsglobal.caliper.events.Event baseCaliperEvent =
