@@ -15,12 +15,14 @@
  */
 package org.apereo.openlrs.storage.redis;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apereo.openlrs.exceptions.InvalidEventFormatException;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.xapi.Statement;
 import org.apereo.openlrs.storage.StorageFactory;
 import org.apereo.openlrs.storage.TierTwoStorage;
+import org.imsglobal.caliper.databind.JsonObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,17 +58,21 @@ public class RedisPubSubTierTwoMessageReceiver {
 			entity = objectMapper.readValue(json.getBytes(), Statement.class);
 		}
 		catch (Exception e) {
-			log.warn("unable to parse {} as xapi",json);
+			log.warn("unable to parse as xAPI: {}", json);
 		}
 		
 		if (entity == null) {
 			// try caliper
+            ObjectMapper mapper = JsonObjectMapper.create(JsonInclude.Include.ALWAYS);
+
 			try {
-			  JsonNode jsonNode = objectMapper.readTree(json);
+//                JsonNode jsonNode = objectMapper.readTree(json);
+                JsonNode jsonNode = mapper.readTree(json);
 				entity = new CaliperEvent(jsonNode);
 			}
 			catch (Exception e) {
-				throw new InvalidEventFormatException(String.format("unable to parse %s",json),e);
+				throw new InvalidEventFormatException(
+                        String.format("unable to parse as Caliper: %s", json), e);
 			}
 		}
 		
