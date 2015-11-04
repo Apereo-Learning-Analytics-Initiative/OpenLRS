@@ -88,8 +88,11 @@ public class EventConversionService {
 			event = fromXAPI(statement);
 		}
 		else if (isCaliper(entity)) {
-		  CaliperEvent caliperEvent = (CaliperEvent)entity;
-		  event = fromCaliper(caliperEvent);
+            log.warn("entity is a Caliper event");
+            CaliperEvent olrsCaliperEvent = (CaliperEvent) entity;
+            //event = fromCaliper(olrsCaliperEvent);
+            event = new Event();
+            event.setRaw(olrsCaliperEvent.toJSON());
 		}
 		else {
 			throw new UnsupportedOperationException(String.format("Conversion from %s to event is not yet supported.", entity.getObjectKey()));
@@ -162,16 +165,18 @@ public class EventConversionService {
         return caliperEvent;
     }
 
-    public JsonNode toCaliperJson(OpenLRSEntity entity) {
+    public JsonNode toCaliperJson(OpenLRSEntity olrsEntity) {
         String caliperRawJson = null;
         JsonNode caliperJson = null;
 
-        if (entity != null) {
-            if (isCaliper(entity)) {
-                caliperRawJson = entity.toJSON();
+        if (olrsEntity != null) {
+            if (isCaliper(olrsEntity)) {
+                caliperRawJson = ((CaliperEvent) olrsEntity).toJSON();
+            } else if (isEvent(olrsEntity)) {
+                caliperRawJson = ((Event) olrsEntity).getRaw();
             }
             else {
-                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", entity.getObjectKey()));
+                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", olrsEntity.getObjectKey()));
             }
         }
 
@@ -186,14 +191,14 @@ public class EventConversionService {
         return caliperJson;
     }
 
-    public List<JsonNode> toCaliperJsonList(Collection<OpenLRSEntity> entities) {
+    public List<JsonNode> toCaliperJsonList(Collection<OpenLRSEntity> olrsEntities) {
         List<JsonNode> events = null;
 
-        if (entities != null && !entities.isEmpty()) {
+        if (olrsEntities != null && !olrsEntities.isEmpty()) {
             events = new ArrayList<JsonNode>();
 
-            for (OpenLRSEntity entity : entities) {
-                events.add(toCaliperJson(entity));
+            for (OpenLRSEntity olrsEntity : olrsEntities) {
+                events.add(toCaliperJson(olrsEntity));
             }
 
         }
