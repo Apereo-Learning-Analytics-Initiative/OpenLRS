@@ -55,11 +55,12 @@ public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEnti
         if (entity == null) {
             log.warn("entity is null");
         }
-		Event event = eventConversionService.toEvent(entity);
-        if (event == null) {
+		Event olrsEvent = eventConversionService.toEvent(entity);
+        if (olrsEvent == null) {
             log.warn("event is null");
+            olrsEvent = new Event();  // throw in a dummy empty event
         }
-		return mongoEventRepository.save(event);
+		return mongoEventRepository.save(olrsEvent);
 	}
 
 	@Override
