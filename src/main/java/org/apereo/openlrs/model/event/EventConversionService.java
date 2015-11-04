@@ -169,6 +169,8 @@ public class EventConversionService {
         String caliperRawJson = null;
         JsonNode caliperJson = null;
 
+        log.warn("toCaliperJson...");
+
         if (olrsEntity != null) {
             if (isCaliper(olrsEntity)) {
                 log.warn("olrsEntity is Caliper");
