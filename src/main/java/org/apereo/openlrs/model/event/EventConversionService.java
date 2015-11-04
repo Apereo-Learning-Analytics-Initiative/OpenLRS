@@ -171,8 +171,10 @@ public class EventConversionService {
 
         if (olrsEntity != null) {
             if (isCaliper(olrsEntity)) {
+                log.warn("olrsEntity is Caliper");
                 caliperRawJson = ((CaliperEvent) olrsEntity).toJSON();
             } else if (isEvent(olrsEntity)) {
+                log.warn("olrsEntity is Event");
 //                caliperRawJson = ((Event) olrsEntity).toJSON();
                 caliperRawJson = ((CaliperEvent) olrsEntity).toJSON();
             }
@@ -180,6 +182,8 @@ public class EventConversionService {
                 throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", olrsEntity.getObjectKey()));
             }
         }
+
+        log.warn("caliperRawJson: {}", caliperRawJson);
 
         try {
             caliperJson = objectMapper.readTree(caliperRawJson);
