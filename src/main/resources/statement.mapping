@@ -1,0 +1,74 @@
+{
+    "statement": {
+        "properties": {
+            "actor": {
+                "type": "nested",
+                "properties": {
+                    "account": {
+                        "type": "nested",
+                        "properties": {
+                            "homePage": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "name": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            }
+                        }
+                    },
+                    "mbox": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "mbox_sha1sum": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "openid": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
+                }
+            },
+            "context": {
+                "type": "nested"
+            },
+            "id": {
+                "type": "string"
+            },
+            "object": {
+                "type": "nested",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
+                }
+            },
+            "result": {
+                "type": "nested"
+            },
+            "stored": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "verb": {
+                "type": "nested",
+                "properties": {
+                    "display": {
+                        "properties": {
+                            "en-US": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "id": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
+                }
+            }
+        }
+    }
+}

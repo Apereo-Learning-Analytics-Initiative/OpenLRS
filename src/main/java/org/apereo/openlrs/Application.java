@@ -16,9 +16,8 @@
 package org.apereo.openlrs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-import lti.oauth.OAuthFilter;
 
 import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +26,20 @@ import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchAutoConfiguration;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lti.oauth.OAuthFilter;
 
 /**
  * @author ggilbert
@@ -116,5 +120,12 @@ public class Application {
 		registrationBean.setOrder(4);
 		return registrationBean;
 	}
-		
+	
+	@Bean
+	public HttpMessageConverters customConverters() {
+	    Collection<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+	    MappingJackson2HttpMessageConverter jacksonHttpMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper());
+	    messageConverters.add(jacksonHttpMessageConverter);
+	    return new HttpMessageConverters(true, messageConverters);
+	}
 }

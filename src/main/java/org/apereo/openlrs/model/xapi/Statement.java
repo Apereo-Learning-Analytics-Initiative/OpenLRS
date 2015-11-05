@@ -41,7 +41,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @JsonInclude(Include.NON_NULL)
 public class Statement implements OpenLRSEntity {
 	
-	@Transient private Logger log = Logger.getLogger(Statement.class);
     private static final long serialVersionUID = 1L;
     @JsonIgnore public static final String OBJECT_KEY = "STATEMENT";
 
@@ -229,6 +228,7 @@ public class Statement implements OpenLRSEntity {
     @JsonIgnore
     @Override
     public String toJSON() {
+    	Logger log = Logger.getLogger(Statement.class);
     	ObjectMapper om = new ObjectMapper();
     	String rawJson = null;
     	try {
