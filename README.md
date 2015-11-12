@@ -60,10 +60,10 @@ Note: If redis and elasticsearch are not running on localhost with the default p
 
 Configure tier1 and tier2 storage options in OpenLRS create a new properties file and include the appropriate Spring profiles and property values. For example, if you wanted to use redis for tier 1 storage and MongoDB for tier 2 storage your properties (let's call it prod.properties) file would contain:
 
-	spring.profiles.include: redis,mongo
-	openlrs.tierOneStorage=RedisPubSubTierOneStorage
-	openlrs.tierTwoStorage=NormalizedMongoTierTwoStorage
-	
+    spring.profiles.include: redis,mongo
+    openlrs.tierOneStorage=RedisPubSubTierOneStorage
+    openlrs.tierTwoStorage=NormalizedMongoTierTwoStorage
+    
 Then build and run OpenLRS as follows:
 
 #### Build
@@ -118,6 +118,14 @@ A list of Spring-Boot properties can be found [here] (http://docs.spring.io/spri
 * spring.data.elasticsearch.cluster-name= # The cluster name (defaults to elasticsearch)
 * spring.data.elasticsearch.cluster-nodes= # The address(es) of the server node (comma-separated; if not specified starts a client node)
 * spring.data.elasticsearch.repositories.enabled=true # if spring data repository support is enabled
+
+
+### Awselasticsearch Configuration Options
+Currently AWS does not support the default transport protocol.  OpenLRS is using the JEST to access Elasticsearch REST API.  This means that spring data configurations above are not valid. Please see the JEST documentation at https://github.com/searchbox-io/Jest/tree/master/jest for further configuration options.
+
+* aws.es.connectionUrl:  # AWS elastic search active domain endpoint
+
+
 
 License
 -------
