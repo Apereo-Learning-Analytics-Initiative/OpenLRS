@@ -92,6 +92,7 @@ public class EventConversionService {
             CaliperEvent olrsCaliperEvent = (CaliperEvent) entity;
             //event = fromCaliper(olrsCaliperEvent);
             event = new Event();
+            event.setSourceId(olrsCaliperEvent.getKey());
             event.setRaw(olrsCaliperEvent.toJSON());
 		}
 		else {
