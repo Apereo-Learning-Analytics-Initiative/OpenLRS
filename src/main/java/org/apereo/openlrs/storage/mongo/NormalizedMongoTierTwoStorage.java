@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Component("NormalizedMongoTierTwoStorage")
 @Profile("mongo")
@@ -52,14 +52,7 @@ public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEnti
 
 	@Override
 	public OpenLRSEntity save(OpenLRSEntity entity) {
-        if (entity == null) {
-            log.warn("entity is null");
-        }
 		Event olrsEvent = eventConversionService.toEvent(entity);
-        if (olrsEvent == null) {
-            log.warn("event is null");
-            olrsEvent = new Event();  // throw in a dummy empty event
-        }
 		return mongoEventRepository.save(olrsEvent);
 	}
 

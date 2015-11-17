@@ -29,6 +29,7 @@ import java.util.UUID;
 
 /**
  * @author ggilbert
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaliperEvent implements OpenLRSEntity {

@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author ggilbert
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Component
 @Profile("redis")
@@ -62,12 +63,9 @@ public class RedisPubSubTierTwoMessageReceiver {
 
         if (entity == null) {
             // try caliper
-            log.warn("trying Caliper...");
-
             ObjectMapper mapper = JsonObjectMapper.create(JsonInclude.Include.ALWAYS);
 
             try {
-//                JsonNode jsonNode = objectMapper.readTree(json);
                 JsonNode jsonNode = mapper.readTree(json);
                 entity = new CaliperEvent(jsonNode);
             } catch (Exception e) {
@@ -75,8 +73,6 @@ public class RedisPubSubTierTwoMessageReceiver {
                 throw new InvalidEventFormatException(
                         String.format("unable to parse as Caliper: %s", json), e);
             }
-        } else {
-            log.warn("entity is not null");
         }
 
         try {

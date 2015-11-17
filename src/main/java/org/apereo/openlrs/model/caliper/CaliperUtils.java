@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 public class CaliperUtils {
   
@@ -44,13 +44,8 @@ public class CaliperUtils {
       if (eventTypeJsonNode != null) {
         String eventType = eventTypeJsonNode.asText();
         
-        if (eventType.equals(EventType.SESSION.getValue())) {          
-          event = CaliperUtils.toSessionEvent(caliperJsonNode);
-        } else {
-            // TODO: Add Caliper deserialization here
-            // Create a generic event for now
-
-            event = SessionEvent.builder().build();
+        if (eventType.equals(EventType.SESSION.getValue())) {
+            event = CaliperUtils.toSessionEvent(caliperJsonNode);
         }
       }
     }
