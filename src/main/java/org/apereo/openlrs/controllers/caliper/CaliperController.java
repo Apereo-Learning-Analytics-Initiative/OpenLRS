@@ -18,7 +18,9 @@ package org.apereo.openlrs.controllers.caliper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.openlrs.exceptions.NotFoundException;
+import org.apereo.openlrs.exceptions.caliper.InvalidCaliperFormatException;
 import org.apereo.openlrs.exceptions.xapi.InvalidXAPIRequestException;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.xapi.About;
@@ -53,12 +55,12 @@ public class CaliperController {
 
 
     /**
-     *
-     * @param statementId ID of the statement to find
+     * @param statementId      ID of the statement to find
      * @param allRequestParams other search parameters
      * @return JSON node of requested Caliper event
      */
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json;charset=utf-8", params = "statementId")
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET,
+            produces = "application/json;charset=utf-8", params = "statementId")
     public JsonNode getByIdHandler(
             @RequestParam(value = "statementId", required = true) String statementId,
             @RequestParam Map<String, String> allRequestParams) {
@@ -89,7 +91,8 @@ public class CaliperController {
      * @param until
      * @return JSON string of the statement objects matching the specified filter
      */
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, produces = "application/json;charset=utf-8", params = "!statementId")
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET,
+            produces = "application/json;charset=utf-8", params = "!statementId")
     public List<JsonNode> getByFiltersHandler(
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity,
@@ -107,16 +110,34 @@ public class CaliperController {
         }
     }
 
-    @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, consumes = "application/json", produces = "application/json;charset=utf-8")
-    public List<String> postHandler(@RequestBody String json) throws JsonProcessingException, IOException {
-        logger.debug(json);
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.POST,
+            consumes = "application/json", produces = "application/json;charset=utf-8")
+    public List<String> postHandler(@RequestBody String json)
+            throws JsonProcessingException, IOException, InvalidCaliperFormatException {
+        List<String> caliperEventIds = null;
 
-        JsonNode jsonNode = objectMapper.readTree(json);
-        logger.debug("Type: " + jsonNode.findValue("@type").textValue());
-        CaliperEvent caliperEvent = new CaliperEvent(jsonNode);
-        caliperService.post(null, caliperEvent);
-        List<String> caliperEventIds = new ArrayList<>();
-        caliperEventIds.add(caliperEvent.getKey());
+        if (StringUtils.isNotBlank(json)) {
+            logger.debug(json);
+
+            JsonNode jsonNode = objectMapper.readTree(json);
+
+            // Future versions of Caliper should do this parsing itself
+            JsonNode dataJsonNodes = jsonNode.path("data");
+
+            if (dataJsonNodes.isArray()) {
+                caliperEventIds = new ArrayList<>();
+
+                for (JsonNode dataJsonNode : dataJsonNodes) {
+                    // should we delete incoming "openlrsSourceId" attributes?
+                    CaliperEvent caliperEvent = new CaliperEvent(dataJsonNode);
+                    caliperService.post(null, caliperEvent);
+                    caliperEventIds.add(caliperEvent.getKey());
+                }
+            } else {
+                throw new InvalidCaliperFormatException("\"data\" attribute must be an array");
+            }
+        }
+
         return caliperEventIds;
     }
 
