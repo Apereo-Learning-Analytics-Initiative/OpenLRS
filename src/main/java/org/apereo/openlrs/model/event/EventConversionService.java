@@ -263,60 +263,20 @@ public class EventConversionService {
 	public Event fromCaliper(CaliperEvent olrsCaliperEvent) {
     Event openLRSEvent = null;
 
-        openLRSEvent = new Event();
-        openLRSEvent.setSourceId(olrsCaliperEvent.getKey());
-        openLRSEvent.setRaw(olrsCaliperEvent.toJSON());
+        if (olrsCaliperEvent != null) {
+            openLRSEvent = new Event();
+            openLRSEvent.setSourceId(olrsCaliperEvent.getKey());
+            openLRSEvent.setEventFormatType(EventFormatType.CALIPER);
+            openLRSEvent.setRaw(olrsCaliperEvent.toJSON());
 
-        // TODO: remove this return and update code below to set event properties
-        return openLRSEvent;
-
-        /*
-        if (olrsCaliperEvent != null && olrsCaliperEvent.getEvent() != null) {
-      openLRSEvent = new Event();
-      org.imsglobal.caliper.events.Event baseCaliperEvent =
-          olrsCaliperEvent.getEvent();
-      
-      openLRSEvent.setActor(baseCaliperEvent.getActor().getId());
-      openLRSEvent.setVerb(baseCaliperEvent.getAction());
-      
-      Object caliperEventObject = baseCaliperEvent.getObject();
-      if (caliperEventObject instanceof SoftwareApplication) {
-        SoftwareApplication softwareApplication = (SoftwareApplication)caliperEventObject;
-        openLRSEvent.setObject(softwareApplication.getId());
-        openLRSEvent.setObjectType(softwareApplication.getType());
-      }
-      else if (caliperEventObject instanceof Session) {
-        Session session = (Session)caliperEventObject;
-        openLRSEvent.setObject(session.getId());
-        openLRSEvent.setObjectType(session.getType());
-      }
-
-      openLRSEvent.setRaw(olrsCaliperEvent.toJSON());
-      openLRSEvent.setEventFormatType(EventFormatType.CALIPER);
-      openLRSEvent.setSourceId(olrsCaliperEvent.getKey());
-
-        try {
-            Group caliperEventGroup = (Group) baseCaliperEvent.getClass()
-                    .getMethod("getGroup", null).invoke(null, null);
-            if (caliperEventGroup != null) {
-                openLRSEvent.setContext(caliperEventGroup.getId());
-            }
-        } catch (NoSuchMethodException e) {
-            // do nothing; event doesn't have group
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            openLRSEvent.setActor(olrsCaliperEvent.getActor());
+            openLRSEvent.setVerb(olrsCaliperEvent.getAction());
+            openLRSEvent.setObject(olrsCaliperEvent.getObject());
+            openLRSEvent.setObjectType(olrsCaliperEvent.getObjectType());
+            openLRSEvent.setTimestamp(olrsCaliperEvent.getEventTime());
         }
 
-        DateTime startedAtTime = baseCaliperEvent.getEventTime();
-      if (startedAtTime != null) {
-        openLRSEvent.setTimestamp(String.valueOf(startedAtTime.getMillis()));
-      }
-      
-      openLRSEvent.setOrganization(null);
-    }
-    
-    return openLRSEvent;
-    */
+        return openLRSEvent;
 	}
 	
 	private String parseContextXApi(Statement xapi) {
