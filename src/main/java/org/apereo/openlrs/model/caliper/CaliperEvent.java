@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.imsglobal.caliper.events.Event;
@@ -43,22 +44,63 @@ public class CaliperEvent implements OpenLRSEntity {
     private String key;
     private Event event;
     private String type;
-    private String json;
-
-    public CaliperEvent() {
-    }
+    private JsonNode jsonNode;
+    private String actor = null;
+    private String action = null;
+    private String object = null;
+    private String objectType = null;
+    private String eventTime = null;
 
     public CaliperEvent(JsonNode jsonNode) {
         // this section: hack to keep ID around for later (needed for tier-two storage)
         this.key = jsonNode.path("openlrsSourceId").asText();
-        if ((this.key == null) || (this.key.isEmpty())) {
+        if (StringUtils.isBlank(this.key)) {
             this.key = UUID.randomUUID().toString();
             ((ObjectNode) jsonNode).put("openlrsSourceId", this.key);
         }
 
-        this.json = jsonNode.toString();
+        this.jsonNode = jsonNode;
         this.event = CaliperUtils.toEvent(jsonNode);
         this.type = CaliperUtils.getType(jsonNode);
+    }
+
+    public String getActor() {
+        if (actor == null) {
+            this.actor = jsonNode.path("actor").path("@id").textValue();
+        }
+
+        return actor;
+    }
+
+    public String getAction() {
+        if (action == null) {
+            this.action = jsonNode.path("action").textValue();
+        }
+
+        return action;
+    }
+
+    public String getObject() {
+        if (object == null) {
+            this.object = jsonNode.path("object").path("@id").textValue();
+        }
+
+        return object;
+    }
+
+    public String getObjectType() {
+        if (objectType == null) {
+            this.objectType = jsonNode.path("object").path("@type").textValue();
+        }
+        return objectType;
+    }
+
+    public String getEventTime() {
+        if (eventTime == null) {
+            this.eventTime = jsonNode.path("eventTime").textValue();
+        }
+
+        return eventTime;
     }
 
     @JsonIgnore
@@ -85,7 +127,7 @@ public class CaliperEvent implements OpenLRSEntity {
 
     @JsonIgnore
     public String toJSON() {
-        return this.json;
+        return this.jsonNode.toString();
     }
 
     @Override
