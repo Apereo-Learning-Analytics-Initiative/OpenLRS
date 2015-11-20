@@ -22,3 +22,5 @@ stacktrace.log
 plugins/
 .buildpath
 data/
+.idea/*
+openlrs.pid
