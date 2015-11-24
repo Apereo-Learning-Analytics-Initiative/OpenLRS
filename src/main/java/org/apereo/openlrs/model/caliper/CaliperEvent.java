@@ -52,11 +52,19 @@ public class CaliperEvent implements OpenLRSEntity {
     private String eventTime = null;
 
     public CaliperEvent(JsonNode jsonNode) {
-        // this section: hack to keep ID around for later (needed for tier-two storage)
-        this.key = jsonNode.path("openlrsSourceId").asText();
+        /*
+         * This section: hack to generate an ID and keep it for later.
+         * The ID will be needed when the event is moved to tier-two storage.
+         * However, Caliper does not yet support an official attribute for
+         * event IDs.  We're using the attribute "openlrsSourceId" for now, but
+         * it could be changed to something else ("@id" perhaps) if Caliper
+         * adds support later.
+         */
+        final String idAttribute = "openlrsSourceId";
+        this.key = jsonNode.path(idAttribute).asText();
         if (StringUtils.isBlank(this.key)) {
             this.key = UUID.randomUUID().toString();
-            ((ObjectNode) jsonNode).put("openlrsSourceId", this.key);
+            ((ObjectNode) jsonNode).put(idAttribute, this.key);
         }
 
         this.jsonNode = jsonNode;
