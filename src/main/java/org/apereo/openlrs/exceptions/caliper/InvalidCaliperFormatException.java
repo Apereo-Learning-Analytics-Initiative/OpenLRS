@@ -18,7 +18,7 @@ package org.apereo.openlrs.exceptions.caliper;
 /**
  * @author Lance E Sloan (lsloan at umich dot edu)
  */
-public class InvalidCaliperFormatException extends RuntimeException {
+public class InvalidCaliperFormatException extends Exception {
 	private static final long serialVersionUID = 1L;
 
     public InvalidCaliperFormatException() {
