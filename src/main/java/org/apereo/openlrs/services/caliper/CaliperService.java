@@ -23,6 +23,7 @@ import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 
@@ -65,24 +66,4 @@ public class CaliperService extends EventService {
 
         return result;
     }
-
-    /*
-    public Page<Event> getByContext(String context, Pageable pageable) {
-    Page<OpenLRSEntity> page = getTierTwoStorage().findByContext(context,pageable);
-    return eventConversionService.toCaliperPage(page);
-  }
-
-  public Page<Event> getByUser(String user, Pageable pageable) {
-    Page<OpenLRSEntity> page = getTierTwoStorage().findByUser(user, pageable);
-    return eventConversionService.toCaliperPage(page);
-  }
-
-  public Page<Event> getByContextAndUser(String context, String user,
-      Pageable pageable) {
-    Page<OpenLRSEntity> page = getTierTwoStorage().findByContextAndUser(
-        context, user, pageable);
-    return eventConversionService.toCaliperPage(page);
-  }
-  */
-
 }

@@ -13,18 +13,26 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.exceptions.caliper;
+package org.apereo.openlrs.exceptions;
 
 /**
  * @author Lance E Sloan (lsloan at umich dot edu)
  */
-public class InvalidCaliperFormatException extends Exception {
+public class InvalidRequestException extends Exception {
 	private static final long serialVersionUID = 1L;
 
-    public InvalidCaliperFormatException() {
+    public InvalidRequestException() {
     }
 
-    public InvalidCaliperFormatException(String message) {
+    public InvalidRequestException(String message) {
         super(message);
+    }
+
+    public InvalidRequestException(Throwable cause) {
+        super(cause);
+    }
+
+    public InvalidRequestException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
