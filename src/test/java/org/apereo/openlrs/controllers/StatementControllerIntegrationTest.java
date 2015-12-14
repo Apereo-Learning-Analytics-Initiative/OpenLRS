@@ -22,10 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.apache.commons.codec.binary.Base64;
 import org.apereo.openlrs.Application;
-import org.apereo.openlrs.Constants;
 import org.apereo.openlrs.OpenLRSAuthenticationFilter;
-import org.apereo.openlrs.XAPIHeaderFilter;
-import org.apereo.openlrs.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.XAPIHeaderFilter;
+import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.XApiConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,7 +95,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 				get("/xAPI/statements")
 					.header("Authorization", "OAuth")
-					.header(Constants.XAPI_VERSION_HEADER, "someversion")
+					.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 					.accept(MediaType.APPLICATION_JSON))
 					.andDo(print())
 					.andExpect(status().isUnauthorized());
@@ -107,7 +107,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 				get("/xAPI/statements")
 					.header("Authorization", oauth)
-					.header(Constants.XAPI_VERSION_HEADER, "someversion")
+					.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 					.accept(MediaType.APPLICATION_JSON))
 					.andDo(print())
 					.andExpect(status().isOk());
@@ -120,7 +120,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 				get("/xAPI/statements")
 					.header("Authorization", "Basic " + new String(encodedBytes))
-					.header(Constants.XAPI_VERSION_HEADER, "someversion")
+					.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 					.accept(MediaType.APPLICATION_JSON))
 					.andDo(print())
 					.andExpect(status().isOk());
@@ -133,7 +133,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 			get("/xAPI/statements")
 				.header("Authorization", "Basic " + new String(encodedBytes))
-				.header(Constants.XAPI_VERSION_HEADER, "someversion")
+				.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
@@ -157,7 +157,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 			post("/xAPI/statements")
 				.header("Authorization", "Basic " + new String(encodedBytes))
-				.header(Constants.XAPI_VERSION_HEADER, "someversion")
+				.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
 				.andDo(print())
@@ -182,7 +182,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 		post("/xAPI/statements")
 			.header("Authorization", "Basic " + new String(encodedBytes))
-			.header(Constants.XAPI_VERSION_HEADER, "someversion")
+			.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body))
 			.andDo(print())
@@ -203,7 +203,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 		post("/xAPI/statements")
 			.header("Authorization", "Basic " + new String(encodedBytes))
-			.header(Constants.XAPI_VERSION_HEADER, "someversion")
+			.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body))
 			.andDo(print())
@@ -239,7 +239,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 		post("/xAPI/statements")
 			.header("Authorization", "Basic " + new String(encodedBytes))
-			.header(Constants.XAPI_VERSION_HEADER, "someversion")
+			.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body))
 			.andDo(print())
@@ -263,7 +263,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 		post("/xAPI/statements")
 			.header("Authorization", "Basic " + new String(encodedBytes))
-			.header(Constants.XAPI_VERSION_HEADER, "someversion")
+			.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body))
 			.andDo(print())
@@ -285,7 +285,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 		post("/xAPI/statements")
 			.header("Authorization", "Basic " + new String(encodedBytes))
-			.header(Constants.XAPI_VERSION_HEADER, "someversion")
+			.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body))
 			.andDo(print())
@@ -305,7 +305,7 @@ public class StatementControllerIntegrationTest {
 		this.mockMvc.perform(
 		post("/xAPI/statements")
 			.header("Authorization", "Basic " + new String(encodedBytes))
-			.header(Constants.XAPI_VERSION_HEADER, "someversion")
+			.header(XApiConstants.XAPI_VERSION_HEADER, "someversion")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body))
 			.andDo(print())

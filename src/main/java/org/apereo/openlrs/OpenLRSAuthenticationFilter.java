@@ -63,28 +63,28 @@ public class OpenLRSAuthenticationFilter extends OncePerRequestFilter {
 		if (!enabled) {
 			log.warn("Authentication is disabled");
 			filterChain.doFilter(request, response);
-		}
-		
-		String authorizationHeader = request.getHeader("Authorization");
-		
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("Authorization Header: %s", authorizationHeader));
-		}
-		
-		if (StringUtils.isNotBlank(authorizationHeader)) {
-			if (StringUtils.containsIgnoreCase(authorizationHeader, "oauth")) {
-				authenticateOAuth(authorizationHeader, request, response, filterChain);
+		} else {
+			String authorizationHeader = request.getHeader("Authorization");
+			
+			if (log.isDebugEnabled()) {
+				log.debug(String.format("Authorization Header: %s", authorizationHeader));
+			}
+			
+			if (StringUtils.isNotBlank(authorizationHeader)) {
+				if (StringUtils.containsIgnoreCase(authorizationHeader, "oauth")) {
+					authenticateOAuth(authorizationHeader, request, response, filterChain);
+				}
+				else {
+					authenticateBasic(authorizationHeader, request, response, filterChain);
+				}
+			}
+			else if ("OPTIONS".equals(request.getMethod())) {
+				log.warn("OPTIONS request - returning no content");
+				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
 			else {
-				authenticateBasic(authorizationHeader, request, response, filterChain);
+				unauthorized(response, "Missing Authorization Header", "None");
 			}
-		}
-		else if ("OPTIONS".equals(request.getMethod())) {
-			log.warn("OPTIONS request - returning no content");
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-		}
-		else {
-			unauthorized(response, "Missing Authorization Header", "None");
 		}
 	}
 	

@@ -40,7 +40,7 @@ OpenLRS is deployed as an executable jar file with Tomcat 7 embedded. Conversion
 * JDK 7+
 * Maven 3+
 
-### Using the default profile
+### Using the default profile (In-memory data store)
 #### Build
 * mvn clean package (this produces openlrs.jar in the target folder)
 
@@ -52,22 +52,32 @@ OpenLRS is deployed as an executable jar file with Tomcat 7 embedded. Conversion
 
 This starts OpenLRS on port 8080. Changing the server port (and other properties) can be done on the command line (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html)
 
-### Using the redisElasticsearch profile
+### Using the other profiles
 
-Note: to use the redisElasticsearch profile you should have access to redis (2.6+) and elasticsearch (1.3.x +) instances. If redis and elasticsearch are not running on localhost with the default ports you will need to update or override the relevant redis and elasticsearch properties - see the Overriding properties section below.
+OpenLRS allows for configurable tier 1 and tier 2 data storage options. Currently OpenLRS supports redis for tier 1 storage and Elasticsearch and MongoDB for tier 2 storage.
+
+Note: If redis and elasticsearch are not running on localhost with the default ports you will need to update or override the relevant redis and elasticsearch properties - see the Overriding properties section below and the application-elasticsearch.properties and application-redis.properties files.
+
+Configure tier1 and tier2 storage options in OpenLRS create a new properties file and include the appropriate Spring profiles and property values. For example, if you wanted to use redis for tier 1 storage and MongoDB for tier 2 storage your properties (let's call it prod.properties) file would contain:
+
+    spring.profiles.include: redis,mongo
+    openlrs.tierOneStorage=RedisPubSubTierOneStorage
+    openlrs.tierTwoStorage=NormalizedMongoTierTwoStorage
+    
+Then build and run OpenLRS as follows:
 
 #### Build
 * mvn clean package (this produces openlrs.jar in the target folder)
 
 #### Run (in place for development purposes)
-* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=redisElasticsearch"
+* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.config.location=/path/to/prod.properties"
 
 #### Run in debug mode
-* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=redisElasticsearch -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
+* mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.config.location=/path/to/prod.properties -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
 
 
 #### Deploy
-java -jar -Dspring.profiles.active=redisElasticsearch openlrs.jar
+java -jar -Dspring.config.location=/path/to/prod.properties openlrs.jar
 
 ### Overriding properties
 
@@ -77,8 +87,6 @@ Some examples
 
 * mvn clean package spring-boot:run -Drun.jvmArguments="-Dspring.config.location=/export/home/prod.properties"
 * java -jar -Dspring.config.location=/export/home/prod.properties openlrs.jar
-
-Note to activate the redisElasticsearch profile be sure to include spring.profiles.active=redisElasticsearch in your external properties file. 
 
 A list of Spring-Boot properties can be found [here] (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html) Some common properties of interest are listed below.
 
@@ -110,6 +118,14 @@ A list of Spring-Boot properties can be found [here] (http://docs.spring.io/spri
 * spring.data.elasticsearch.cluster-name= # The cluster name (defaults to elasticsearch)
 * spring.data.elasticsearch.cluster-nodes= # The address(es) of the server node (comma-separated; if not specified starts a client node)
 * spring.data.elasticsearch.repositories.enabled=true # if spring data repository support is enabled
+
+
+### Awselasticsearch Configuration Options
+Currently AWS does not support the default transport protocol.  OpenLRS is using the JEST to access Elasticsearch REST API.  This means that spring data configurations above are not valid. Please see the JEST documentation at https://github.com/searchbox-io/Jest/tree/master/jest for further configuration options.
+
+* aws.es.connectionUrl:  # AWS elastic search active domain endpoint
+
+
 
 License
 -------

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apereo.openlrs.controllers.xapi.XApiConstants;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -46,7 +47,7 @@ public class CORSFilter extends OncePerRequestFilter {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 		response.setHeader("Access-Control-Max-Age", "3600");
-		response.setHeader("Access-Control-Allow-Headers", "x-requested-with, " + Constants.XAPI_VERSION_HEADER + ", Authorization, Content-Type");
+		response.setHeader("Access-Control-Allow-Headers", "x-requested-with, " + XApiConstants.XAPI_VERSION_HEADER + ", Authorization, Content-Type");
 		filterChain.doFilter(request, response);
 	}
 }

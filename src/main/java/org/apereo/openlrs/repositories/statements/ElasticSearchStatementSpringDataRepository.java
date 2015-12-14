@@ -16,7 +16,7 @@ package org.apereo.openlrs.repositories.statements;
 
 import java.util.Collection;
 
-import org.apereo.openlrs.model.Statement;
+import org.apereo.openlrs.model.xapi.Statement;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-@Profile("redisElasticsearch")
+@Profile("elasticsearch")
 public interface ElasticSearchStatementSpringDataRepository extends
 		ElasticsearchRepository<Statement, String> {
 	Page<Statement> findByIdInOrderByTimestampDesc(Collection<String> ids, Pageable pageable);

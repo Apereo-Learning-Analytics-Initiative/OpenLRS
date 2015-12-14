@@ -20,11 +20,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apereo.openlrs.Application;
-import org.apereo.openlrs.model.Statement;
-import org.apereo.openlrs.model.StatementResult;
-import org.apereo.openlrs.model.statement.XApiActor;
-import org.apereo.openlrs.model.statement.XApiObject;
-import org.apereo.openlrs.model.statement.XApiVerb;
+import org.apereo.openlrs.controllers.xapi.StatementController;
+import org.apereo.openlrs.model.xapi.Statement;
+import org.apereo.openlrs.model.xapi.StatementResult;
+import org.apereo.openlrs.model.xapi.XApiActor;
+import org.apereo.openlrs.model.xapi.XApiObject;
+import org.apereo.openlrs.model.xapi.XApiVerb;
 import org.apereo.openlrs.repositories.statements.ElasticSearchStatementSpringDataRepository;
 import org.junit.After;
 import org.junit.Assert;

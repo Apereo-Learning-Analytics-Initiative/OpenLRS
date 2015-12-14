@@ -21,11 +21,11 @@ import java.util.Map;
 
 import javax.validation.Validator;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.apereo.openlrs.exceptions.InvalidXAPIRequestException;
+import org.apereo.openlrs.controllers.xapi.StatementController;
 import org.apereo.openlrs.exceptions.NotFoundException;
-import org.apereo.openlrs.model.Statement;
-import org.apereo.openlrs.services.StatementService;
+import org.apereo.openlrs.exceptions.xapi.InvalidXAPIRequestException;
+import org.apereo.openlrs.model.xapi.Statement;
+import org.apereo.openlrs.services.xapi.XApiService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class StatementControllerTest {
 
 	@Mock private Statement statement;
-	@Mock private StatementService statementService;
+	@Mock private XApiService xApiService;
 	@Autowired private ObjectMapper objectMapper;
 	@Autowired private Validator validator;
 
@@ -55,13 +55,13 @@ public class StatementControllerTest {
 		this.statementId = "12345678";
 		this.allRequestParams = new HashMap<String,String>();
 		this.allRequestParams.put("statementId", this.statementId);
-		this.controller = new StatementController(this.statementService, this.objectMapper, this.validator);
+		this.controller = new StatementController(this.xApiService, this.objectMapper, this.validator);
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void getStatementMethodShouldThrowExceptionIfStatementNotFound() {
 		// given
-		given(this.statementService.getStatement(this.statementId)).willReturn(null);
+		given(this.xApiService.get(this.statementId)).willReturn(null);
 		// when
 		this.controller.getStatement(this.statementId, this.allRequestParams);
 	}
@@ -69,15 +69,10 @@ public class StatementControllerTest {
 	@Test(expected = InvalidXAPIRequestException.class)
 	public void getStatementMethodShouldThrowExceptionIfBothStatementIdAndVoidedStatementIdParametersAreSubmitted() {
 		// given
-		given(this.statementService.getStatement(this.statementId)).willReturn(null);
+		given(this.xApiService.get(this.statementId)).willReturn(null);
 		this.allRequestParams.put("voidedStatementId", "112233");
 		// when
 		this.controller.getStatement(this.statementId, this.allRequestParams);
 	}
 
-	@Test(expected = NotImplementedException.class)
-	public void putStatementMethodShouldThrowExceptionIfStatementNotFound() {
-		// when
-		this.controller.putStatement(this.statement);
-	}	
 }

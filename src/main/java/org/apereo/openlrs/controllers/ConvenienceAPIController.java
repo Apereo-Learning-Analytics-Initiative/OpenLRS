@@ -16,12 +16,17 @@ package org.apereo.openlrs.controllers;
 
 import java.util.List;
 
-import org.apereo.openlrs.model.Statement;
-import org.apereo.openlrs.services.StatementService;
+import org.apereo.openlrs.model.OpenLRSEntity;
+import org.apereo.openlrs.model.xapi.Statement;
+import org.apereo.openlrs.services.NormalizedEventService;
+import org.apereo.openlrs.services.xapi.XApiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,24 +36,68 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ConvenienceAPIController {
 	
-	@Autowired private StatementService service;
+	@Autowired private XApiService xapiService;
+	@Autowired private NormalizedEventService normalizedEventService;
+	
+	public static final String XAPI = "xapi";
 	
 	@RequestMapping(value = "/api/context/{id}", method = RequestMethod.GET, 
 			produces = "application/json;charset=utf-8")
-	public List<Statement> getStatementsForContext(@PathVariable("id") String contextId) {
-		return service.getByContext(contextId);
+	public Page<OpenLRSEntity> getEventsForContext(@PathVariable("id") String contextId,
+								@RequestParam(value = "page", required = false, defaultValue = "0") String page,
+								@RequestParam(value = "limit", required = false, defaultValue = "100") String limit,
+								@RequestParam(value = "format", required = false) String format) {
+		Page<OpenLRSEntity> entities = null;
+		PageRequest pageRequest = new PageRequest(Integer.parseInt(page), Integer.parseInt(limit));
+
+		if (XAPI.equalsIgnoreCase(format)) {
+			entities = (Page<OpenLRSEntity>)(Page<?>)xapiService.getByContext(contextId, pageRequest);
+		}
+		else {
+			entities = (Page<OpenLRSEntity>)(Page<?>)normalizedEventService.getByContext(contextId, pageRequest);
+		}
+		
+		return entities;
 	}
 
 	@RequestMapping(value = "/api/user/{id}", method = RequestMethod.GET, 
 			produces = "application/json;charset=utf-8")
-	public List<Statement> getStatementsForUser(@PathVariable("id") String userId) {
-		return service.getByUser(userId);
+	public Page<OpenLRSEntity> getEventsForUser(@PathVariable("id") String userId,
+			@RequestParam(value = "page", required = false, defaultValue = "0") String page,
+			@RequestParam(value = "limit", required = false, defaultValue = "100") String limit,
+			@RequestParam(value = "format", required = false) String format) {
+		
+		Page<OpenLRSEntity> entities = null;
+		PageRequest pageRequest = new PageRequest(Integer.parseInt(page), Integer.parseInt(limit));
+
+		if (XAPI.equalsIgnoreCase(format)) {
+			entities = (Page<OpenLRSEntity>)(Page<?>)xapiService.getByUser(userId, pageRequest);
+		}
+		else {
+			entities = (Page<OpenLRSEntity>)(Page<?>)normalizedEventService.getByUser(userId, pageRequest);
+		}
+		
+		return entities;
 	}
 
 	@RequestMapping(value = "/api/user/{userId}/context/{contextId}", method = RequestMethod.GET, 
 			produces = "application/json;charset=utf-8")
-	public List<Statement> getStatementsForUser(@PathVariable("contextId") String contextId, @PathVariable("userId") String userId) {
-		return service.getByContextAndUser(contextId, userId);
+	public Page<OpenLRSEntity> getEventsForContextAndUser(@PathVariable("contextId") String contextId, @PathVariable("userId") String userId,
+			@RequestParam(value = "page", required = false, defaultValue = "0") String page,
+			@RequestParam(value = "limit", required = false, defaultValue = "100") String limit,
+			@RequestParam(value = "format", required = false) String format) {
+		
+		Page<OpenLRSEntity> entities = null;
+		PageRequest pageRequest = new PageRequest(Integer.parseInt(page), Integer.parseInt(limit));
+
+		if (XAPI.equalsIgnoreCase(format)) {
+			entities = (Page<OpenLRSEntity>)(Page<?>)xapiService.getByContextAndUser(contextId, userId, pageRequest);
+		}
+		else {
+			entities = (Page<OpenLRSEntity>)(Page<?>)normalizedEventService.getByContextAndUser(contextId, userId, pageRequest);
+		}
+		
+		return entities;
 	}
 
 }
