@@ -1,0 +1,124 @@
+## Created by Steve Cody scody@unicon.net
+
+The following are curl samples that will help facilitate development and testing.
+Some samples use formatted for reference only.
+
+To post an XAPI Statment with a Missing Auth
+---------
+curl -X POST -H "Content-Type: application/json" -H "X-Experience-API-Version: 1.0.1" -H "Cache-Control: no-cache" -H "Postman-Token: 609c4fb7-6536-5722-d874-d1d042ec8321" -d '{
+    "actor":{
+        "mbox":"mailto:xapi@adlnet.gov"
+    },
+    "verb":{
+        "id":"http://adlnet.gov/expapi/verbs/created",
+        "display":{
+            "en-US":"created"
+        }
+    },
+    "object":{
+        "id":"http://example.adlnet.gov/xapi/example/activity"
+    }
+}' http://localhost:8080/xAPI/statements
+---------
+
+
+To Get an XAPI Statement - No Version - No OAuth
+---------
+curl -X GET -H "Content-Type: application/json" -H "Authorization: OAuth realm="http://localhost:8080/xAPI/statements",oauth_consumer_key="openlrs",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1409013795",oauth_nonce="yuWmHJ",oauth_version="1.0",oauth_signature="waN9Q%2Fxwj81lqmPb0QynIy0IdT8%3D"" -H "Cache-Control: no-cache" -H "Postman-Token: 93dfa0d7-0f10-0520-f7e5-23cefab7ce7b" http://localhost:8080/xAPI/statements
+---------
+
+To Get an XAPI Statement with OAuth
+---------
+curl -X GET -H "Content-Type: application/json" -H "Authorization: OAuth realm="http://localhost:8080/xAPI/statements",oauth_consumer_key="openlrs",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1409013795",oauth_nonce="yuWmHJ",oauth_version="1.0",oauth_signature="waN9Q%2Fxwj81lqmPb0QynIy0IdT8%3D"" -H "X-Experience-API-Version: 1.0.1" -H "Cache-Control: no-cache" -H "Postman-Token: 98865576-26aa-308f-0215-b06296ae834a" http://localhost:8080/xAPI/statements
+---------
+
+
+
+
+
+To Post a Caliper Event - Log In (json is formatted for reference only, further samples will not be formatted)
+---------
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic b3BlbmxyczpvcGVubHJz" -H "X-Experience-API-Version: 1.0.1" -H "Cache-Control: no-cache" -H "Postman-Token: 7cc710e7-8f96-bb1a-a8ac-b561a41570ec" -d '[  
+   {  
+      "id":"caliper-java_ae7d638e-1eed-4e6d-a9cd-5a855204d734",
+      "type":"caliperEvent",
+      "time":"2015-02-03T19:56:44.886-05:00",
+      "data":{  
+         "@context":"http://purl.imsglobal.org/ctx/caliper/v1/SessionEvent",
+         "@type":"http://purl.imsglobal.org/caliper/v1/SessionEvent",
+         "actor":{  
+            "@id":"https://some-university.edu/user/554433",
+            "@type":"http://purl.imsglobal.org/caliper/v1/lis/Person",
+            "name":null,
+            "lastModifiedTime":"2015-02-02T11:30:00Z"
+         },
+         "action":"logged in",
+         "object":null,
+         "target":{  
+            "@id":"AmRev-101-landingPage",
+            "@type":"http://purl.imsglobal.org/caliper/v1/WebPage",
+            "name":"American Revolution 101 Landing Page",
+            "objectType":[  
+
+            ],
+            "alignedLearningObjective":[  
+
+            ],
+            "keyword":[  
+
+            ],
+            "partOf":{  
+               "@id":"https://some-university.edu/politicalScience/2014/american-revolution-101",
+               "@type":"http://purl.imsglobal.org/caliper/v1/lis/CourseSection",
+               "semester":"Spring-2014",
+               "courseNumber":"AmRev-101",
+               "label":"Am Rev 101",
+               "name":"American Revolution 101",
+               "parentOrg":null,
+               "lastModifiedTime":"2015-02-02T11:30:00Z"
+            },
+            "lastModifiedTime":"2015-02-02T11:30:00Z"
+         },
+         "generated":null,
+         "startedAtTime":"2015-02-04T00:40:04Z",
+         "endedAtTime":null,
+         "duration":null,
+         "edApp":{  
+            "@id":"https://github.com/readium/readium-js-viewer",
+            "@type":"http://purl.imsglobal.org/caliper/v1/SoftwareApplication",
+            "name":"Readium",
+            "lastModifiedTime":"2015-02-02T11:30:00Z"
+         },
+         "group":{  
+            "@id":"https://some-university.edu/politicalScience/2014/american-revolution-101",
+            "@type":"http://purl.imsglobal.org/caliper/v1/lis/CourseSection",
+            "semester":"Spring-2014",
+            "courseNumber":"AmRev-101",
+            "label":"Am Rev 101",
+            "name":"American Revolution 101",
+            "parentOrg":null,
+            "lastModifiedTime":"2015-02-02T11:30:00Z"
+         }
+      }
+   }
+]' http://localhost:8080/caliper/events
+---------
+
+To POST a Caliper Event - Lot Out
+---------
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic b3BlbmxyczpvcGVubHJz" -H "X-Experience-API-Version: 1.0.1" -H "Cache-Control: no-cache" -H "Postman-Token: bd5607e0-d657-e58c-251f-ac793c3445cb" -d '[{"id":"caliper-java_fd377f36-49e5-4101-aba1-a30a26f42f74","type":"caliperEvent","time":"2015-02-03T19:56:45.518-05:00","data":{"@context":"http://purl.imsglobal.org/ctx/caliper/v1/SessionEvent","@type":"http://purl.imsglobal.org/caliper/v1/SessionEvent","actor":{"@id":"https://some-university.edu/user/554433","@type":"http://purl.imsglobal.org/caliper/v1/lis/Person","name":null,"lastModifiedTime":"2015-02-02T11:30:00Z"},"action":"logged out","object":null,"target":{"@id":"https://github.com/readium/session-123456789","@type":"http://purl.imsglobal.org/caliper/v1/Session","name":"session-123456789","lastModifiedTime":"2015-02-02T11:30:00Z","actor":{"@id":"https://some-university.edu/user/554433","@type":"http://purl.imsglobal.org/caliper/v1/lis/Person","name":null,"lastModifiedTime":"2015-02-02T11:30:00Z"},"startedAtTime":"2015-02-02T11:30:00Z","endedAtTime":"2015-02-02T11:30:00Z","duration":null},"generated":null,"startedAtTime":"2015-02-04T00:40:05Z","endedAtTime":null,"duration":null,"edApp":{"@id":"https://github.com/readium/readium-js-viewer","@type":"http://purl.imsglobal.org/caliper/v1/SoftwareApplication","name":"Readium","lastModifiedTime":"2015-02-02T11:30:00Z"},"group":{"@id":"https://some-university.edu/politicalScience/2014/american-revolution-101","@type":"http://purl.imsglobal.org/caliper/v1/lis/CourseSection","semester":"Spring-2014","courseNumber":"AmRev-101","label":"Am Rev 101","name":"American Revolution 101","parentOrg":null,"lastModifiedTime":"2015-02-02T11:30:00Z"}}}]' http://localhost:8080/caliper/events
+---------
+
+To GET a Caliper Event by Id - 
+---------
+curl -X GET -H "Content-Type: application/json" -H "X-Experience-API-Version: 1.0.1" -H "Authorization: Basic b3BlbmxyczpvcGVubHJz" -H "Cache-Control: no-cache" -H "Postman-Token: e3169a37-8c1b-c007-938d-296af02412dc" http://localhost:8080/caliper/events?statementId=caliper-java_ae7d638e-1eed-4e6d-a9cd-5a855204d734
+---------
+
+To GET all Caliper Events
+---------
+curl -X GET -H "Content-Type: application/json" -H "Authorization: OAuth realm="http://localhost:8080/xAPI/statements",oauth_consumer_key="openlrs",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1409013795",oauth_nonce="yuWmHJ",oauth_version="1.0",oauth_signature="waN9Q%2Fxwj81lqmPb0QynIy0IdT8%3D"" -H "Cache-Control: no-cache" -H "Postman-Token: 25ec18c5-8d15-63d6-90c4-e7af8f0511e3" http://localhost:8080/caliper/events
+---------
+
+
+
+
