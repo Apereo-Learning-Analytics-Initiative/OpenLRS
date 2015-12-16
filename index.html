@@ -338,6 +338,33 @@
             The OpenLRS gh-pages branch contains the HTML and supporting assets for this web page.
           </p>
         </div>
+        <h2 class="title text-center">Storage Options</h2>
+        <div class="block">
+          <p>
+            OpenLRS was designed such that backend storage solutions can be swapped out as needed depending on cost, performance, and infrastructure needs.
+            OpenLRS supports a two-tier storage solution capability which allows the ability to leverage separate storage solutions, 
+            one that provides high speed writes and another that provides high speed reads. Of course, it is still possible to use just a single storage product for both reads and writes, if that is desired.
+          </p>
+          <h3 class="sub-title text-center">Tier 1 Storage</h3>
+          <p>
+            The key considerations for a tier 1 storage option are the ability to handle a high throughput volume, to support high speed writes and to maintain transactional accuracy. Currently supported
+            tier 1 storage options in OpenLRS are:
+          </p>
+          <ul>
+            <li>Redis (Pub-Sub)</li>
+            <li>AWS Kinesis <sup>in-progress</sup></li>
+          </ul>
+          <h3 class="sub-title text-center">Tier 2 Storage</h3>
+          <p>
+            The key considerations for a tier 2 storage option are the ability to handle a high write volume, to support fast reads, and easy querying. Currently supported
+            tier 2 storage options in OpenLRS are:
+          </p>
+          <ul>
+            <li>Elasticsearch</li>
+            <li>MongoDB</li>
+            <li>AWS Elasticsearch Service</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
