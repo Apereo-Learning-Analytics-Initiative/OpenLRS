@@ -448,6 +448,79 @@ spring.profiles.include=awselasticsearch
             </pre>
           </div>
         </div>
+        
+        <h2 class="title text-center">API Endpoints</h2>
+        <h3 class="sub-title text-center">Convenience API</h3>
+          <p>
+            Optional filters:
+          </p>
+          <ul>
+            <li>page (default value 0)</li>
+            <li>limit (default value 100)</li>
+            <li>format (xapi or caliper; if none specified then the flatten structure is returned)</li>
+          </ul>
+        <h4 class="">Get By Context /api/context/{contextID}</h4>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example (HTTP Headers removed for brevity)              
+GET http(s)://openlrshostname:port/api/context/123?format=xapi
+              </code>
+            </pre>
+          </div>
+        <h4 class="">Get By User /api/user/{userID}</h4>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example (HTTP Headers removed for brevity)
+GET http(s)://openlrshostname:port/api/user/456?format=xapi&limit=10
+              </code>
+            </pre>
+          </div>
+        <h4 class="">Get By Context and User /api/user/{userID}/context/{userID}</h4>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example (HTTP Headers removed for brevity)
+GET http(s)://openlrshostname:port/api/user/456/context/123?format=xapi&limit=10&page=3
+              </code>
+            </pre>
+          </div>
+        <h3 class="sub-title text-center">xAPI</h3>
+          <p>
+            Supported filters for GET requests:
+          </p>
+          <ul>
+            <li>statementId</li>
+            <li>limit</li>
+            <li>actor</li>
+            <li>activity</li>
+            <li>since</li>
+            <li>until</li>
+          </ul>
+        <h4 class="">Create a statement /xAPI/statements</h4>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example (HTTP Headers removed for brevity)
+POST http(s)://openlrshostname:port/xAPI/statements
+              </code>
+            </pre>
+          </div>
+        <h4 class="">Get statements /xAPI/statements</h4>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example (HTTP Headers removed for brevity)
+
+// All statements
+GET http(s)://openlrshostname:port/xAPI/statements
+
+// Single statement
+GET http(s)://openlrshostname:port/xAPI/statements?statementId=90210
+              </code>
+            </pre>
+          </div>
       </div>
     </div>
   </section>
