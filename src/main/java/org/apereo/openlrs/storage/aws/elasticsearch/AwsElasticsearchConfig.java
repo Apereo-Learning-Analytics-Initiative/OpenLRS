@@ -1,7 +1,11 @@
 package org.apereo.openlrs.storage.aws.elasticsearch;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
@@ -60,8 +65,9 @@ public class AwsElasticsearchConfig {
             log.error(e.getMessage(),e);
             e.printStackTrace();
         }
-        Resource resource = new ClassPathResource("statement.mapping");
-        FileReader statementFileReader = new FileReader(resource.getFile());
+        URL loadedResource = this.getClass().getClassLoader().getResource("statement.mapping");
+        InputStream inputStream = loadedResource.openStream();
+        InputStreamReader statementFileReader = new InputStreamReader(inputStream);
         JSONParser jsonParser = new JSONParser();
         JSONObject statementJSONObject = (JSONObject) jsonParser.parse(statementFileReader);
         log.debug("statment {}",  statementJSONObject.toJSONString());
@@ -87,8 +93,9 @@ public class AwsElasticsearchConfig {
             log.error(e.getMessage(),e);
             e.printStackTrace();
         }
-        Resource resource = new ClassPathResource("metadata.mapping");
-        FileReader metadataFileReader = new FileReader(resource.getFile());
+        URL loadedResource = this.getClass().getClassLoader().getResource("metadata.mapping");
+        InputStream inputStream = loadedResource.openStream();
+        InputStreamReader metadataFileReader = new InputStreamReader(inputStream);
         JSONParser jsonParser = new JSONParser();
         JSONObject metadataJSONObject = (JSONObject) jsonParser.parse(metadataFileReader);
         PutMapping metadataMapping = new PutMapping.Builder(
