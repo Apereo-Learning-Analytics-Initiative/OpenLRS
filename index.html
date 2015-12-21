@@ -371,6 +371,83 @@
             or to use one of the existing implementations that does not normalize the data (e.g., XApiOnlyAwsElasticsearchTierTwoStorage).
           </p>
         </div>
+        <h2 class="title text-center">Profiles</h2>
+        <p>OpenLRS, and all of the Apereo LAI components, make heavy use of <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html" target="_blank">Spring Profiles</a>.
+        If you are not familiar with Spring Profile we highly recommend brushing up by reading the excellent Spring documentation.</p>
+        <div class="block">
+          <h3 class="sub-title text-center">Default</h3>
+          <p>
+          This profile is activated when you do not specify any other active profiles. This will start the application with an in-memory data store (you will lose all data when the application is stopped).
+          </p>
+          <h3 class="sub-title text-center">Mongo</h3>
+          <p>
+          This profile will start the application with MongoDB as the tier two data store. You will need to specify the relevant MongoDB properties 
+          in your properties file to overide the defaults.
+          </p>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example of using the mongo profile
+
+// Start with mongo profile for dev purposes
+mvn -Drun.jvmArguments="-Dspring.profiles.active=mongo" 
+  -Dspring.profiles.active=mongo clean package spring-boot:run
+
+// Run with mongo profile
+java -jar -Dspring.profiles.active=mongo openlrs*.jar
+
+// Active from a properties file
+spring.profiles.include=redis, mongo
+              </code>
+            </pre>
+          </div>
+          
+          <h3 class="sub-title text-center">Elasticsearch</h3>
+          <p>
+          This profile will start the application with Elasticsearch (a cluster that you maintain) as the tier two data store. You will need to specify the relevant Elastisearch properties 
+          in your properties file to overide the defaults.
+          </p>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example of using the elasticsearch profile
+
+// Start with mongo profile for dev purposes
+mvn -Drun.jvmArguments="-Dspring.profiles.active=elasticsearch" 
+  -Dspring.profiles.active=elasticsearch clean package spring-boot:run
+
+// Run with mongo profile
+java -jar -Dspring.profiles.active=elasticsearch openlrs*.jar
+
+// Active from a properties file
+spring.profiles.include=elasticsearch
+              </code>
+            </pre>
+          </div>
+          
+          <h3 class="sub-title text-center">AWS Elasticsearch</h3>
+          <p>
+          This profile will start the application with AWS Elasticsearch (the managed service) as the tier two data store. You will need to specify the relevant AWS Elastisearch properties 
+          in your properties file to overide the defaults.
+          </p>
+          <div class="code-block">
+             <pre>
+              <code class="language-markup">
+// Example of using the elasticsearch profile
+
+// Start with mongo profile for dev purposes
+mvn -Drun.jvmArguments="-Dspring.profiles.active=awselasticsearch" 
+  -Dspring.profiles.active=awselasticsearch clean package spring-boot:run
+
+// Run with mongo profile
+java -jar -Dspring.profiles.active=awselasticsearch openlrs*.jar
+
+// Active from a properties file
+spring.profiles.include=awselasticsearch
+              </code>
+            </pre>
+          </div>
+        </div>
       </div>
     </div>
   </section>
