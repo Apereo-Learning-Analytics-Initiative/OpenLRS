@@ -133,12 +133,8 @@
       OpenLRS was built to fill the need for a high i/o storage mechanism for an open learning analytics environment, as displayed in the diagram on the right. 
       Built on a scaleable architecture, using modern web technologies, OpenLRS provides the fast reads and writes necessary for a dynamic analytics environment.
       </p>
-      <div class="row">
-        <div class="item col-xs-12">
-          <div class="embed-responsive embed-responsive-16by9">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/Tm8KTqmDj6c" frameborder="0" allowfullscreen></iframe>
-          </div>
-        </div>
+      <div class="embed-responsive embed-responsive-4by3">
+        <iframe src="https://www.youtube.com/embed/Tm8KTqmDj6c" class="embed-responsive-item" allowfullscreen></iframe>
       </div>
       
 <!--       <div class="row"> -->
@@ -364,6 +360,16 @@
             <li>MongoDB</li>
             <li>AWS Elasticsearch Service</li>
           </ul>
+        </div>
+        <h2 class="title text-center">A Word about Data Normalization</h2>
+        <div class="block">
+          <p>
+            OpenLRS has made a choice, in most of the tier two storage options, to normalize the data into a flattened structure before persisting. This choice was made for a number of reasons include the need to
+            support multiple input formats, ease of querying and simplification of programming logic within OpenLRS but comes as the cost of some potential data loss (i.e., OpenLRS does not necessarily persist 
+            everything from the incoming message just want it deems most important). This decision was not made lightly and, frankly, is likely to be revisited in the future. If there
+            is a change in strategy a migration plan will of course be developed. If you feel strongly about maintaining the complete event record you have the option to develop your own tier two storage implementation
+            or to use one of the existing implementations that does not normalize the data (e.g., XApiOnlyAwsElasticsearchTierTwoStorage).
+          </p>
         </div>
       </div>
     </div>
