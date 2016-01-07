@@ -42,8 +42,8 @@ public class CaliperEvent implements OpenLRSEntity {
     private ObjectMapper objectMapper;
     private Logger log = Logger.getLogger(CaliperEvent.class);
     private String key;
-    private Event event;
-    private String type;
+    private Event event = null;
+    private String type = null;
     private JsonNode jsonNode;
     private String actor = null;
     private String action = null;
@@ -68,8 +68,6 @@ public class CaliperEvent implements OpenLRSEntity {
         }
 
         this.jsonNode = jsonNode;
-        this.event = CaliperUtils.toEvent(jsonNode);
-        this.type = CaliperUtils.getType(jsonNode);
     }
 
     public String getActor() {
