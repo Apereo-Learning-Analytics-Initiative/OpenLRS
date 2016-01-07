@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Unicon (R) Licensed under the
+ * Copyright 2015 Unicon (R) Licensed under the
  * Educational Community License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may
  * obtain a copy of the License at
@@ -13,34 +13,18 @@
  * permissions and limitations under the License.
  *
  */
-package org.apereo.openlrs.model.caliper;
-
-import org.apereo.openlrs.model.xapi.Statement;
-
-import java.util.List;
+package org.apereo.openlrs.exceptions.caliper;
 
 /**
- * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
-public class CaliperEventResult {
+public class InvalidCaliperFormatException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-	private List<CaliperEvent> events;
+    public InvalidCaliperFormatException() {
+    }
 
-	public CaliperEventResult(List<CaliperEvent> events) {
-		this.events = events;
-	}
-
-	public List<CaliperEvent> getEvents() {
-		return events;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "CaliperEventResult [events=" + events + "]";
-	}
-
+    public InvalidCaliperFormatException(String message) {
+        super(message);
+    }
 }

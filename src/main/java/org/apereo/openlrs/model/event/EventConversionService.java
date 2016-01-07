@@ -15,18 +15,19 @@
  */
 package org.apereo.openlrs.model.event;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.apereo.openlrs.exceptions.xapi.InvalidXApiFormatException;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
-import org.apereo.openlrs.model.caliper.CaliperEventResult;
 import org.apereo.openlrs.model.xapi.Statement;
 import org.apereo.openlrs.model.xapi.StatementResult;
 import org.apereo.openlrs.model.xapi.XApiActor;
@@ -39,7 +40,10 @@ import org.imsglobal.caliper.entities.agent.SoftwareApplication;
 import org.imsglobal.caliper.entities.lis.Group;
 import org.imsglobal.caliper.entities.session.Session;
 import org.imsglobal.caliper.entities.w3c.Organization;
+import org.imsglobal.caliper.events.BaseEventContext;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -49,12 +53,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Service
 public class EventConversionService {
-	private Logger log = Logger.getLogger(EventConversionService.class);
-	@Autowired private ObjectMapper objectMapper;
+    private Logger log = LoggerFactory.getLogger(EventConversionService.class);
+
+    @Autowired private ObjectMapper objectMapper;
 	
 	public boolean isEvent(OpenLRSEntity entity) {
 		return Event.OBJECT_KEY.equals(entity.getObjectKey());
@@ -70,16 +75,17 @@ public class EventConversionService {
 	
 	public Event toEvent(OpenLRSEntity entity) {
 		Event event = null;
+
 		if (isEvent(entity)) {
-			event = (Event)event;
+			event = (Event)entity;
 		}
 		else if (isXApi(entity)) {
 			Statement statement = (Statement)entity;
 			event = fromXAPI(statement);
 		}
 		else if (isCaliper(entity)) {
-		  CaliperEvent caliperEvent = (CaliperEvent)entity;
-		  event = fromCaliper(caliperEvent);
+            CaliperEvent olrsCaliperEvent = (CaliperEvent) entity;
+            event = fromCaliper(olrsCaliperEvent);
 		}
 		else {
 			throw new UnsupportedOperationException(String.format("Conversion from %s to event is not yet supported.", entity.getObjectKey()));
@@ -127,33 +133,6 @@ public class EventConversionService {
 		return statement;
 	}
 
-    public String toCaliperString(OpenLRSEntity entity) {
-        String caliperEvent = null;
-        if (entity != null) {
-            if (isCaliper(entity)) {
-                caliperEvent = entity.toJSON();
-            }
-//            else if (isEvent(entity)) {
-//                Event event = (Event) entity;
-//
-//                try {
-//                    // caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), Statement.class);
-//                    // TODO: maybe build Caliper object?
-//                    caliperEvent = org.imsglobal.caliper.events.SessionEvent.builder().build();
-//                }
-//                catch (Exception e) {
-//                    log.error(e.getMessage(), e);
-//                    throw new InvalidXApiFormatException();
-//                }
-//            }
-            else {
-                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper string is not yet supported.", entity.getObjectKey()));
-            }
-        }
-
-        return caliperEvent;
-    }
-
     public org.imsglobal.caliper.events.Event toCaliper(OpenLRSEntity entity) {
         org.imsglobal.caliper.events.Event caliperEvent = null;
         if (entity != null) {
@@ -164,9 +143,7 @@ public class EventConversionService {
                 Event event = (Event) entity;
 
                 try {
-//                    caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), Statement.class);
-                    // TODO: construct proper Caliper object
-                    caliperEvent = org.imsglobal.caliper.events.SessionEvent.builder().build();
+                    caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), org.imsglobal.caliper.events.Event.class);
                 }
                 catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -181,6 +158,47 @@ public class EventConversionService {
         return caliperEvent;
     }
 
+    public JsonNode toCaliperJson(OpenLRSEntity olrsEntity) {
+        String caliperRawJson = null;
+        JsonNode caliperJson = null;
+
+        if (olrsEntity != null) {
+            if (isCaliper(olrsEntity)) {
+                caliperRawJson = ((CaliperEvent) olrsEntity).toJSON();
+            } else if (isEvent(olrsEntity)) {
+                caliperRawJson = ((Event) olrsEntity).getRaw();
+            }
+            else {
+                throw new UnsupportedOperationException(String.format("Conversion from %s to Caliper JSON is not yet supported.", olrsEntity.getObjectKey()));
+            }
+        }
+
+        if (caliperRawJson != null) {
+            try {
+                caliperJson = objectMapper.readTree(caliperRawJson);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new InvalidXApiFormatException();
+            }
+        }
+
+        return caliperJson;
+    }
+
+    public List<JsonNode> toCaliperJsonList(Collection<OpenLRSEntity> olrsEntities) {
+        List<JsonNode> events = null;
+
+        if (olrsEntities != null && !olrsEntities.isEmpty()) {
+            events = new ArrayList<JsonNode>();
+
+            for (OpenLRSEntity olrsEntity : olrsEntities) {
+                events.add(toCaliperJson(olrsEntity));
+            }
+
+        }
+
+        return events;
+    }
 
     public Page<Statement> toXApiPage(Page<OpenLRSEntity> page) {
 		Page<Statement> statements = null;
@@ -195,22 +213,6 @@ public class EventConversionService {
     	}
     	
     	return statements;
-	}
-	
-	public Page<org.imsglobal.caliper.events.Event> toCaliperPage(Page<OpenLRSEntity> page) {
-
-	  Page<org.imsglobal.caliper.events.Event> events = null;
-	  if (page != null && page.getContent() != null && !page.getContent().isEmpty()) {
-	    List<OpenLRSEntity> entities = page.getContent();
-      List<org.imsglobal.caliper.events.Event> eventList = new ArrayList<org.imsglobal.caliper.events.Event>();
-      for (OpenLRSEntity entity : entities) {
-        eventList.add(toCaliper(entity));
-      }
-
-      events = new PageImpl<org.imsglobal.caliper.events.Event>(eventList);
-	  }
-
-	  return events;
 	}
 	
 	public StatementResult toXApiCollection(Collection<OpenLRSEntity> entities) {
@@ -230,36 +232,6 @@ public class EventConversionService {
 		
 		return statementResult;
 	}
-
-    public List<org.imsglobal.caliper.events.Event> toCaliperCollection(Collection<OpenLRSEntity> entities) {
-        List<org.imsglobal.caliper.events.Event> events = null;
-
-        if (entities != null && !entities.isEmpty()) {
-            events = new ArrayList<org.imsglobal.caliper.events.Event>();
-
-            for (OpenLRSEntity entity : entities) {
-                events.add(toCaliper(entity));
-            }
-
-        }
-
-        return events;
-    }
-
-    public List<String> toCaliperStringCollection(Collection<OpenLRSEntity> entities) {
-        List<String> events = null;
-
-        if (entities != null && !entities.isEmpty()) {
-            events = new ArrayList<String>();
-
-            for (OpenLRSEntity entity : entities) {
-                events.add(toCaliperString(entity));
-            }
-
-        }
-
-        return events;
-    }
 
     public Event fromXAPI(Statement xapi) {
 		Event event = null;
@@ -288,48 +260,23 @@ public class EventConversionService {
 		return event;
 	}
 	
-	public Event fromCaliper(CaliperEvent caliper) {
-    Event event = null;
-    
-    if (caliper != null && caliper.getEvent() != null) {
-      event = new Event();
-      org.imsglobal.caliper.events.Event baseCaliperEvent =
-          caliper.getEvent();
-      
-      event.setActor(baseCaliperEvent.getActor().getId());
-      event.setVerb(baseCaliperEvent.getAction().getValue());
-      
-      Object caliperEventObject = baseCaliperEvent.getObject();
-      if (caliperEventObject instanceof SoftwareApplication) {
-        SoftwareApplication softwareApplication = (SoftwareApplication)caliperEventObject;
-        event.setObject(softwareApplication.getId());
-        event.setObjectType(softwareApplication.getType().getValue());
-      }
-      else if (caliperEventObject instanceof Session) {
-        Session session = (Session)caliperEventObject;
-        event.setObject(session.getId());
-        event.setObjectType(session.getType().getValue());
-      }
+	public Event fromCaliper(CaliperEvent olrsCaliperEvent) {
+    Event openLRSEvent = null;
 
-      event.setRaw(caliper.toJSON());
-      event.setEventFormatType(EventFormatType.CALIPER);
-      event.setSourceId(caliper.getKey());
+        if (olrsCaliperEvent != null) {
+            openLRSEvent = new Event();
+            openLRSEvent.setSourceId(olrsCaliperEvent.getKey());
+            openLRSEvent.setEventFormatType(EventFormatType.CALIPER);
+            openLRSEvent.setRaw(olrsCaliperEvent.toJSON());
 
-      Organization caliperEventGroup = baseCaliperEvent.getGroup();
-      if (caliperEventGroup != null) {
-        event.setContext(caliperEventGroup.getId());
-      }
-      
-      DateTime startedAtTime = baseCaliperEvent.getStartedAtTime();
-      if (startedAtTime != null) {
-        event.setTimestamp(String.valueOf(startedAtTime.getMillis()));
-      }
-      
-      //TODO
-      event.setOrganization(null);
-    }
-    
-    return event;
+            openLRSEvent.setActor(olrsCaliperEvent.getActor());
+            openLRSEvent.setVerb(olrsCaliperEvent.getAction());
+            openLRSEvent.setObject(olrsCaliperEvent.getObject());
+            openLRSEvent.setObjectType(olrsCaliperEvent.getObjectType());
+            openLRSEvent.setTimestamp(olrsCaliperEvent.getEventTime());
+        }
+
+        return openLRSEvent;
 	}
 	
 	private String parseContextXApi(Statement xapi) {

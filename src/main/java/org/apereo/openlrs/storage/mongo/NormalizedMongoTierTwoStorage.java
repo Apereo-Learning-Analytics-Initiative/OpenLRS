@@ -25,6 +25,8 @@ import org.apereo.openlrs.model.event.Event;
 import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.repositories.event.MongoEventRepository;
 import org.apereo.openlrs.storage.TierTwoStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -33,77 +35,78 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Component("NormalizedMongoTierTwoStorage")
 @Profile("mongo")
 public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEntity> {
-	
-	@Autowired private MongoEventRepository mongoEventRepository;
-	@Autowired private EventConversionService eventConversionService;
+    private Logger log = LoggerFactory.getLogger(NormalizedMongoTierTwoStorage.class);
 
-	@Override
-	public OpenLRSEntity findById(String id) {
-		return mongoEventRepository.findBySourceId(id);
-	}
+    @Autowired private MongoEventRepository mongoEventRepository;
+    @Autowired private EventConversionService eventConversionService;
 
-	@Override
-	public OpenLRSEntity save(OpenLRSEntity entity) {
-		Event event = eventConversionService.toEvent(entity);
-		return mongoEventRepository.save(event);
-	}
+    @Override
+    public OpenLRSEntity findById(String id) {
+        return mongoEventRepository.findBySourceId(id);
+    }
 
-	@Override
-	public List<OpenLRSEntity> saveAll(Collection<OpenLRSEntity> entities) {
-		List<OpenLRSEntity> retval = null;
-		
-		if (entities != null && !entities.isEmpty()) {
-			List<Event> events = new ArrayList<Event>();
-			for (OpenLRSEntity openLRSEntity : entities) {
-				events.add(eventConversionService.toEvent(openLRSEntity));
-			}
-			
-			retval = (List<OpenLRSEntity>)(List<?>)mongoEventRepository.save(events);
-			
-		}
-		
-		return retval;
-	}
+    @Override
+    public OpenLRSEntity save(OpenLRSEntity entity) {
+        Event olrsEvent = eventConversionService.toEvent(entity);
+        return mongoEventRepository.save(olrsEvent);
+    }
 
-	@Override
-	public Page<OpenLRSEntity> findAll(Pageable pageable) {
-		return (Page<OpenLRSEntity>)(Page<?>)mongoEventRepository.findAll(pageable);
-	}
+    @Override
+    public List<OpenLRSEntity> saveAll(Collection<OpenLRSEntity> entities) {
+        List<OpenLRSEntity> retval = null;
 
-	@Override
-	public Page<OpenLRSEntity> findWithFilters(Map<String, String> filters, Pageable pageable) {
-		throw new UnsupportedOperationException();
-	}
+        if (entities != null && !entities.isEmpty()) {
+            List<Event> events = new ArrayList<Event>();
+            for (OpenLRSEntity openLRSEntity : entities) {
+                events.add(eventConversionService.toEvent(openLRSEntity));
+            }
 
-	@Override
-	public List<OpenLRSEntity> findAll() {
-		return (List<OpenLRSEntity>)(List<?>)mongoEventRepository.findAll();
-	}
+            retval = (List<OpenLRSEntity>) (List<?>) mongoEventRepository.save(events);
 
-	@Override
-	public List<OpenLRSEntity> findWithFilters(Map<String, String> filters) {
-		throw new UnsupportedOperationException();
-	}
+        }
 
-	@Override
-	public Page<OpenLRSEntity> findByContext(String context, Pageable pageable) {
-		return (Page<OpenLRSEntity>)(Page<?>)mongoEventRepository.findByContext(context,pageable);
-	}
+        return retval;
+    }
 
-	@Override
-	public Page<OpenLRSEntity> findByUser(String user, Pageable pageable) {
-		return (Page<OpenLRSEntity>)(Page<?>)mongoEventRepository.findByActor(user,pageable);	
-	}
+    @Override
+    public Page<OpenLRSEntity> findAll(Pageable pageable) {
+        return (Page<OpenLRSEntity>) (Page<?>) mongoEventRepository.findAll(pageable);
+    }
 
-	@Override
-	public Page<OpenLRSEntity> findByContextAndUser(String context,
-			String user, Pageable pageable) {
-		return (Page<OpenLRSEntity>)(Page<?>)mongoEventRepository.findByActorAndContext(user,context,pageable);	
-	}
-	
+    @Override
+    public Page<OpenLRSEntity> findWithFilters(Map<String, String> filters, Pageable pageable) {
+        throw new UnsupportedOperationException("OpenLRS searching by filters not yet implemented for MongoDB");
+    }
+
+    @Override
+    public List<OpenLRSEntity> findAll() {
+        return (List<OpenLRSEntity>) (List<?>) mongoEventRepository.findAll();
+    }
+
+    @Override
+    public List<OpenLRSEntity> findWithFilters(Map<String, String> filters) {
+        throw new UnsupportedOperationException("OpenLRS searching by filters not yet implemented for MongoDB");
+    }
+
+    @Override
+    public Page<OpenLRSEntity> findByContext(String context, Pageable pageable) {
+        return (Page<OpenLRSEntity>) (Page<?>) mongoEventRepository.findByContext(context, pageable);
+    }
+
+    @Override
+    public Page<OpenLRSEntity> findByUser(String user, Pageable pageable) {
+        return (Page<OpenLRSEntity>) (Page<?>) mongoEventRepository.findByActor(user, pageable);
+    }
+
+    @Override
+    public Page<OpenLRSEntity> findByContextAndUser(String context,
+                                                    String user, Pageable pageable) {
+        return (Page<OpenLRSEntity>) (Page<?>) mongoEventRepository.findByActorAndContext(user, context, pageable);
+    }
+
 }

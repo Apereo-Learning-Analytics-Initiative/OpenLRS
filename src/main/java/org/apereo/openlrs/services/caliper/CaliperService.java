@@ -15,23 +15,21 @@
  */
 package org.apereo.openlrs.services.caliper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.log4j.Logger;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.caliper.CaliperEvent;
-import org.apereo.openlrs.model.caliper.CaliperEventResult;
 import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.imsglobal.caliper.events.Event;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author ggilbert
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Service
 public class CaliperService extends EventService {
@@ -49,55 +47,23 @@ public class CaliperService extends EventService {
         getTierOneStorage().save(caliperEvent);
     }
 
-    public List<Event> get(Map<String, String> filterMap) {
+    public JsonNode getJsonNode(String id) {
+        OpenLRSEntity entity = getTierTwoStorage().findById(id);
+        return eventConversionService.toCaliperJson(entity);
+    }
 
-        List<Event> result = null;
+    public List<JsonNode> getJsonNodes(Map<String, String> filterMap) {
+        List<JsonNode> result = null;
         List<OpenLRSEntity> entities = null;
 
         if (filterMap != null && !filterMap.isEmpty()) {
             entities = getTierTwoStorage().findWithFilters(filterMap);
-        }
-        else {
+        } else {
             entities = getTierTwoStorage().findAll();
         }
 
-        result = eventConversionService.toCaliperCollection(entities);
+        result = eventConversionService.toCaliperJsonList(entities);
 
         return result;
     }
-
-    public List<String> getStrings(Map<String, String> filterMap) {
-
-        List<String> result = null;
-        List<OpenLRSEntity> entities = null;
-
-        if (filterMap != null && !filterMap.isEmpty()) {
-            entities = getTierTwoStorage().findWithFilters(filterMap);
-        }
-        else {
-            entities = getTierTwoStorage().findAll();
-        }
-
-        result = eventConversionService.toCaliperStringCollection(entities);
-
-        return result;
-    }
-
-    public Page<Event> getByContext(String context, Pageable pageable) {
-    Page<OpenLRSEntity> page = getTierTwoStorage().findByContext(context,pageable);
-    return eventConversionService.toCaliperPage(page);
-  }
-
-  public Page<Event> getByUser(String user, Pageable pageable) {
-    Page<OpenLRSEntity> page = getTierTwoStorage().findByUser(user, pageable);
-    return eventConversionService.toCaliperPage(page);
-  }
-
-  public Page<Event> getByContextAndUser(String context, String user,
-      Pageable pageable) {
-    Page<OpenLRSEntity> page = getTierTwoStorage().findByContextAndUser(
-        context, user, pageable);
-    return eventConversionService.toCaliperPage(page);
-  }
-
 }

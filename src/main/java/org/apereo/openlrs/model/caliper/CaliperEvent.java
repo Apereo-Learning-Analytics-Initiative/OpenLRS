@@ -15,75 +15,133 @@
  */
 package org.apereo.openlrs.model.caliper;
 
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.apereo.openlrs.model.OpenLRSEntity;
-import org.imsglobal.caliper.events.Event;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.apereo.openlrs.model.OpenLRSEntity;
+import org.imsglobal.caliper.events.Event;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaliperEvent implements OpenLRSEntity {
 
-  private static final long serialVersionUID = 1L;
-  private Logger log = Logger.getLogger(CaliperEvent.class);
-  @JsonIgnore
-  public static final String OBJECT_KEY = "CALIPEREVENT";
-  
-  public CaliperEvent() {
-    
-  }
-  
-  public CaliperEvent(JsonNode jsonNode) {
-    this.json = jsonNode.toString();
-    this.key = UUID.randomUUID().toString();
-    this.event = CaliperUtils.toEvent(jsonNode);
-    this.type = CaliperUtils.getType(jsonNode);
-  }
+    @JsonIgnore
+    public static final String OBJECT_KEY = "CALIPEREVENT";
+    private static final long serialVersionUID = 1L;
+    @Autowired
+    private ObjectMapper objectMapper;
+    private Logger log = Logger.getLogger(CaliperEvent.class);
+    private String key;
+    private Event event;
+    private String type;
+    private JsonNode jsonNode;
+    private String actor = null;
+    private String action = null;
+    private String object = null;
+    private String objectType = null;
+    private String eventTime = null;
 
-  private String key;
-  private Event event;
-  private String type;
-  private String json;
+    public CaliperEvent(JsonNode jsonNode) {
+        /*
+         * This section: hack to generate an ID and keep it for later.
+         * The ID will be needed when the event is moved to tier-two storage.
+         * However, Caliper does not yet support an official attribute for
+         * event IDs.  We're using the attribute "openlrsSourceId" for now, but
+         * it could be changed to something else ("@id" perhaps) if Caliper
+         * adds support later.
+         */
+        final String idAttribute = "openlrsSourceId";
+        this.key = jsonNode.path(idAttribute).asText();
+        if (StringUtils.isBlank(this.key)) {
+            this.key = UUID.randomUUID().toString();
+            ((ObjectNode) jsonNode).put(idAttribute, this.key);
+        }
 
-  @JsonIgnore
-  public Event getEvent() {
-    return event;
-  }
+        this.jsonNode = jsonNode;
+        this.event = CaliperUtils.toEvent(jsonNode);
+        this.type = CaliperUtils.getType(jsonNode);
+    }
 
-  @JsonIgnore
-  public String getType() {
-    return type;
-  }
+    public String getActor() {
+        if (actor == null) {
+            this.actor = jsonNode.path("actor").path("@id").textValue();
+        }
 
-  @Override
-  @JsonIgnore
-  public String getKey() {
-    return key;
-  }
+        return actor;
+    }
 
-  @Override
-  @JsonIgnore
-  public String getObjectKey() {
-    return OBJECT_KEY;
-  }
+    public String getAction() {
+        if (action == null) {
+            this.action = jsonNode.path("action").textValue();
+        }
 
-  @JsonIgnore
-  public String toJSON() {
-    return this.json;
-  }
+        return action;
+    }
 
-  @Override
-  public String toString() {
-    return "CaliperEvent [getKey()="
-        + getKey() + ", getObjectKey()=" + getObjectKey() + "]";
-  }
+    public String getObject() {
+        if (object == null) {
+            this.object = jsonNode.path("object").path("@id").textValue();
+        }
+
+        return object;
+    }
+
+    public String getObjectType() {
+        if (objectType == null) {
+            this.objectType = jsonNode.path("object").path("@type").textValue();
+        }
+        return objectType;
+    }
+
+    public String getEventTime() {
+        if (eventTime == null) {
+            this.eventTime = jsonNode.path("eventTime").textValue();
+        }
+
+        return eventTime;
+    }
+
+    @JsonIgnore
+    public Event getEvent() {
+        return event;
+    }
+
+    @JsonIgnore
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getObjectKey() {
+        return OBJECT_KEY;
+    }
+
+    @JsonIgnore
+    public String toJSON() {
+        return this.jsonNode.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "CaliperEvent [getKey()="
+                + getKey() + ", getObjectKey()=" + getObjectKey() + "]";
+    }
 
 }
