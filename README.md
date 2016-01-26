@@ -125,7 +125,11 @@ Currently AWS does not support the default transport protocol.  OpenLRS is using
 
 * aws.es.connectionUrl:  # AWS elastic search active domain endpoint
 
-
+### MongoDB configuration options
+For details see the source of org.springframework.boot.autoconfigure.mongo.MongoProperties (https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mongo/MongoProperties.java)
+* spring.data.mongodb.host=localhost
+* spring.data.mongodb.port=27017
+* spring.data.mongodb.database=test
 
 License
 -------
