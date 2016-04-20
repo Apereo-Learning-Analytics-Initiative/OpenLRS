@@ -15,8 +15,6 @@
  */
 package org.apereo.openlrs.model.event;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,17 +34,12 @@ import org.apereo.openlrs.model.xapi.XApiContextActivities;
 import org.apereo.openlrs.model.xapi.XApiObject;
 import org.apereo.openlrs.model.xapi.XApiObjectDefinition;
 import org.apereo.openlrs.model.xapi.XApiVerb;
-import org.imsglobal.caliper.entities.agent.SoftwareApplication;
-import org.imsglobal.caliper.entities.lis.Group;
-import org.imsglobal.caliper.entities.session.Session;
-import org.imsglobal.caliper.entities.w3c.Organization;
-import org.imsglobal.caliper.events.BaseEventContext;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,7 +50,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Service
 public class EventConversionService {
-    private Logger log = LoggerFactory.getLogger(EventConversionService.class);
+    private Logger logger = LoggerFactory.getLogger(EventConversionService.class);
 
     @Autowired private ObjectMapper objectMapper;
 	
@@ -121,7 +114,7 @@ public class EventConversionService {
 					statement = objectMapper.readValue(event.getRaw().getBytes(), Statement.class);
 				} 
 				catch (Exception e) {
-					log.error(e.getMessage(), e);
+					logger.error(e.getMessage(), e);
 					throw new InvalidXApiFormatException();
 				} 
 			}
@@ -146,7 +139,7 @@ public class EventConversionService {
                     caliperEvent = objectMapper.readValue(event.getRaw().getBytes(), org.imsglobal.caliper.events.Event.class);
                 }
                 catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                     throw new InvalidXApiFormatException();
                 }
             }
@@ -177,7 +170,7 @@ public class EventConversionService {
             try {
                 caliperJson = objectMapper.readTree(caliperRawJson);
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
                 throw new InvalidXApiFormatException();
             }
         }
@@ -198,6 +191,31 @@ public class EventConversionService {
         }
 
         return events;
+    }
+
+    /**
+     * Convert a Page of OpenLRSEntity objects to a Page of JsonNode objects.  Each JsonNode represents
+     * the raw JSON of an event entity.
+     *
+     * @param olrsEntitiesPage Page of OpenLRSEntity objects.
+     * @param pageable         Pageable from which new Page of JsonNode gets its properties.  Can be {@literal null}.
+     * @return Page of JsonNode, created from raw event JSON documents contained within Page of OpenLRSEntity
+     */
+    public Page<JsonNode> toCaliperJsonPage(Page<OpenLRSEntity> olrsEntitiesPage, Pageable pageable) {
+        List<JsonNode> eventsJsonList = new ArrayList<>();
+        Page<JsonNode> eventsJsonPage;
+
+        if (olrsEntitiesPage != null && olrsEntitiesPage.hasContent()) {
+            for (OpenLRSEntity olrsEntity : olrsEntitiesPage) {
+                eventsJsonList.add(toCaliperJson(olrsEntity));
+            }
+
+			eventsJsonPage = new PageImpl<>(eventsJsonList, pageable, olrsEntitiesPage.getTotalElements());
+        } else {
+            eventsJsonPage = new PageImpl<>(eventsJsonList); // Avoid returning an empty response.
+        }
+
+		return eventsJsonPage;
     }
 
     public Page<Statement> toXApiPage(Page<OpenLRSEntity> page) {
@@ -261,7 +279,7 @@ public class EventConversionService {
 	}
 	
 	public Event fromCaliper(CaliperEvent olrsCaliperEvent) {
-    Event openLRSEvent = null;
+        Event openLRSEvent = null;
 
         if (olrsCaliperEvent != null) {
             openLRSEvent = new Event();
