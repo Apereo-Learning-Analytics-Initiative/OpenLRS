@@ -109,6 +109,12 @@ public class XApiService extends EventService {
     return result;
   }
 
+  public Statement getBySourceId(String sourceId) {
+    OpenLRSEntity openLRSEntity = getTierTwoStorage().findBySourceId(sourceId);
+
+    return eventConversionService.toXApi(openLRSEntity);
+  }
+
   public Page<Statement> getByContext(String context, Pageable pageable) {
     Page<OpenLRSEntity> page = getTierTwoStorage().findByContext(context,
         pageable);
