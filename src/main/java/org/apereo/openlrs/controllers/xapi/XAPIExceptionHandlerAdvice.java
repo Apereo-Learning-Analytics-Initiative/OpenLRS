@@ -159,7 +159,7 @@ public class XAPIExceptionHandlerAdvice {
     @ResponseBody
     public XAPIErrorInfo exception(final HttpServletRequest request, Exception e) throws Exception {
         final String logMessageReferenceId = RandomStringUtils.randomAlphanumeric(8);
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected error [reference ID: " + logMessageReferenceId + "].");
+        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected error [reference ID: " + logMessageReferenceId + "]: " + e.getMessage());
         logger.debug("Unexpected XAPI exception [refId: {}]: {}", logMessageReferenceId, e);
         this.logError(result);
         return result;
