@@ -64,6 +64,39 @@ public class CaliperController {
     @Value("${caliper.limitMaximum ?: 100}")
     private Integer limitMaximum;
 
+    public Integer getPageDefault() {
+        Integer pageDefault = this.pageDefault;
+
+        if (pageDefault < 0) {
+            logger.warn("pageDefault < 0.  Using value of 0 instead.");
+            pageDefault = 0;
+        }
+
+        return pageDefault;
+    }
+
+    public Integer getLimitDefault() {
+        Integer limitDefault = this.limitDefault;
+
+        if (limitDefault < 1) {
+            logger.warn("limitDefault < 1.  Using value of 1 instead.");
+            limitDefault = 1;
+        }
+
+        return limitDefault;
+    }
+
+    public Integer getLimitMaximum() {
+        Integer limitMaximum = this.limitMaximum;
+        Integer limitDefault = this.getLimitDefault();
+
+        if (limitMaximum < limitDefault) {
+            logger.warn("limitMaximum < limitDefault.  Using value of limitDefault ({}) instead.", limitDefault);
+            limitMaximum = limitDefault;
+        }
+
+        return limitMaximum;
+    }
 
     /**
      * @param statementId      ID of the statement to find
@@ -99,8 +132,10 @@ public class CaliperController {
      * @param actor
      * @param since
      * @param until
-     * @param pageString Number of the requested page
-     * @param limitString Number of results per page
+     * @param pageParam Number of the requested page
+     * @param limitParam Number of results per page
+     * @param numberParam Alias for pageParam, corresponds with "number" response attribute (pageParam has priority)
+     * @param sizeParam Alias for limitParam, corresponds with "size" response attribute (limitParam has priority)
      * @return JSON string of the statement objects matching the specified filter
      */
     @RequestMapping(
@@ -109,43 +144,61 @@ public class CaliperController {
             params = {"!statementId",},
             produces = "application/json;charset=utf-8"
     )
+    @ResponseBody
     public Page<JsonNode> getByFiltersHandler(
             @RequestParam(value = "actor", required = false) String actor,
             @RequestParam(value = "activity", required = false) String activity,
             @RequestParam(value = "since", required = false) String since,
             @RequestParam(value = "until", required = false) String until,
-            @RequestParam(value = "page", required = false) String pageString,
-            @RequestParam(value = "limit", required = false) String limitString
-    ) throws InvalidRequestException {
-        try {
-            Map<String, String> filterMap =
-                    StatementUtils.createStatementFilterMap(actor, activity, since, until, limitString);
-            Integer page = pageDefault;
-            Integer limit = limitDefault;
+            @RequestParam(value = "page", required = false) String pageParam,
+            @RequestParam(value = "limit", required = false) String limitParam,
+            @RequestParam(value = "number", required = false) String numberParam,
+            @RequestParam(value = "size", required = false) String sizeParam
+    ) throws NumberFormatException {
+        Map<String, String> filterMap =
+                StatementUtils.createStatementFilterMap(actor, activity, since, until, limitParam);
+        Integer page = this.getPageDefault();
+        String pageParamName = "page";
+        Integer limit = this.getLimitDefault();
+        String limitParamName = "limit";
+        Integer limitMaximum = this.getLimitMaximum();
 
-            if (pageString != null) {
-                page = Integer.parseInt(pageString);
+        if ((pageParam == null) && (numberParam != null)) {
+            pageParam = numberParam;
+            pageParamName = "number";
+        }
+
+        if (pageParam != null) {
+            try {
+                page = Integer.parseInt(pageParam);
 
                 if (page < 0) {
-                    page = pageDefault;
+                    throw new NumberFormatException("For input string: \"" + pageParam + "\"");
                 }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException(pageParamName + " must be a positive integer (" + e.getMessage() + ")");
             }
-
-            if (limitString != null) {
-                limit = Integer.parseInt(limitString);
-
-                if (limit < 0) {
-                    limit = limitDefault;
-                } else if (limit > limitMaximum) {
-                    limit = limitMaximum;
-                }
-            }
-
-            return caliperService.getJsonNodes(filterMap, new PageRequest(page, limit));
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new InvalidRequestException(e.getMessage(), e);
         }
+
+        if ((limitParam == null) && (sizeParam != null)) {
+            limitParam = sizeParam;
+            limitParamName = "size";
+        }
+
+        if (limitParam != null) {
+            try {
+                limit = Integer.parseInt(limitParam);
+
+                if ((limit < 1) || (limit > limitMaximum)) {
+                    throw new NumberFormatException("For input string: \"" + limitParam + "\"");
+                }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException(limitParamName + " must be an integer between 1 and " +
+                        limitMaximum + " (" + e.getMessage() + ")");
+            }
+        }
+
+        return caliperService.getJsonNodes(filterMap, new PageRequest(page, limit));
     }
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST,
