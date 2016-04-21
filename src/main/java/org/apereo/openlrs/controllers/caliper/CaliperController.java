@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -198,7 +199,8 @@ public class CaliperController {
             }
         }
 
-        return caliperService.getJsonNodes(filterMap, new PageRequest(page, limit));
+        return caliperService.getJsonNodes(filterMap,
+                new PageRequest(page, limit, new Sort(Sort.Direction.DESC, "id")));
     }
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST,
