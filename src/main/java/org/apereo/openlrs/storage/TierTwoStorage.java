@@ -37,6 +37,7 @@ public interface TierTwoStorage<V extends OpenLRSEntity> {
 	V save(OpenLRSEntity entity);
 	List<V> saveAll(Collection<V> entities);
 	
+	V findBySourceId(String sourceId);
 	Page<V> findByContext(String context, Pageable pageable);
 	Page<V> findByUser(String user, Pageable pageable);
 	Page<V>	findByContextAndUser(String context, String user, Pageable pageable);
