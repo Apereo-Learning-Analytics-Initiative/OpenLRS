@@ -49,6 +49,10 @@ public class NormalizedElasticsearchTierTwoStorage implements TierTwoStorage<Ope
 	}
 
 	@Override
+	public OpenLRSEntity findBySourceId(String sourceId) { throw new UnsupportedOperationException(); }
+
+
+		@Override
 	public OpenLRSEntity save(OpenLRSEntity entity) {
 		Event event = eventConversionService.toEvent(entity);
 		return elasticsearchEventRepository.save(event);

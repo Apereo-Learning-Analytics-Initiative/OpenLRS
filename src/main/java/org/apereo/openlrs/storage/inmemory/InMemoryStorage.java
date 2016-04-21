@@ -61,6 +61,9 @@ public class InMemoryStorage implements TierOneStorage<OpenLRSEntity>, TierTwoSt
 	}
 
 	@Override
+	public OpenLRSEntity findBySourceId(String sourceId) { throw new UnsupportedOperationException(); }
+
+	@Override
 	public List<OpenLRSEntity> findAll() {
 		return new ArrayList<OpenLRSEntity>(store.values());
 	}

@@ -45,6 +45,12 @@ public class NoOpTierTwoStorage implements TierTwoStorage<OpenLRSEntity> {
 	}
 
 	@Override
+	public OpenLRSEntity findBySourceId(String sourceId) {
+		log.warn("Using NoOp Tier Two Storage");
+		return null;
+	}
+
+	@Override
 	public OpenLRSEntity save(OpenLRSEntity entity) {
 		log.warn("Using NoOp Tier Two Storage");
 		return entity;

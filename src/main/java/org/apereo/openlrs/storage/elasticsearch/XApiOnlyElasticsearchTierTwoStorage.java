@@ -131,7 +131,10 @@ public class XApiOnlyElasticsearchTierTwoStorage implements TierTwoStorage<OpenL
 	public OpenLRSEntity findById(String id) {
 		return esSpringDataRepository.findOne(id);
 	}
-	
+
+	@Override
+	public OpenLRSEntity findBySourceId(String sourceId) { throw new UnsupportedOperationException(); }
+
 	@Override
 	public OpenLRSEntity save(OpenLRSEntity entity) {
 		
