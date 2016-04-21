@@ -25,20 +25,28 @@ import org.springframework.data.domain.Pageable;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 public interface TierTwoStorage<V extends OpenLRSEntity> {
-	
-	List<V> findAll();
-	Page<V> findAll(Pageable pageable);
-	V findById(String id);
-	List<V> findWithFilters(Map<String,String> filters);
-	Page<V> findWithFilters(Map<String,String> filters, Pageable pageable);
-	V save(OpenLRSEntity entity);
-	List<V> saveAll(Collection<V> entities);
-	
-	V findBySourceId(String sourceId);
-	Page<V> findByContext(String context, Pageable pageable);
-	Page<V> findByUser(String user, Pageable pageable);
-	Page<V>	findByContextAndUser(String context, String user, Pageable pageable);
+    V findById(String id);
+
+    V findBySourceId(String sourceId);
+
+    List<V> findAll();
+
+    Page<V> findAll(Pageable pageable);
+
+    List<V> findWithFilters(Map<String, String> filters);
+
+    Page<V> findWithFilters(Map<String, String> filters, Pageable pageable);
+
+    Page<V> findByContext(String context, Pageable pageable);
+
+    Page<V> findByUser(String user, Pageable pageable);
+
+    Page<V> findByContextAndUser(String context, String user, Pageable pageable);
+
+    V save(OpenLRSEntity entity);
+
+    List<V> saveAll(Collection<V> entities);
 }
