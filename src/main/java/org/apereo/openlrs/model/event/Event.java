@@ -29,9 +29,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Document(indexName="event")
+@org.springframework.data.mongodb.core.mapping.Document
 @JsonInclude(Include.NON_NULL)
 public class Event implements OpenLRSEntity {
 
