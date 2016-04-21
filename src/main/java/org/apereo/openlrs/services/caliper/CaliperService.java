@@ -50,7 +50,7 @@ public class CaliperService extends EventService {
     }
 
     public JsonNode getJsonNode(String id) {
-        OpenLRSEntity entity = getTierTwoStorage().findById(id);
+        OpenLRSEntity entity = getTierTwoStorage().findBySourceId(id);
         return eventConversionService.toCaliperJson(entity);
     }
 
