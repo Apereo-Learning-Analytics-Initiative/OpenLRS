@@ -19,17 +19,26 @@ import org.apereo.openlrs.model.event.Event;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Repository
 @Profile("mongo")
 public interface MongoEventRepository extends MongoRepository<Event, String> {
+	List<Event> findAll();
+	List<Event> findAll(Sort sort);
+
+	Event findById(String sourceId);
 	Event findBySourceId(String sourceId);
+
+    Page<Event> findBySourceId(String sourceId, Pageable pageable);
 	Page<Event> findByActor(String actor, Pageable pageable);
 	Page<Event> findByContext(String context, Pageable pageable);
 	Page<Event> findByActorAndContext(String actor, String context, Pageable pageable);
