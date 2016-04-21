@@ -18,6 +18,8 @@ package org.apereo.openlrs.services;
 import org.apereo.openlrs.model.OpenLRSEntity;
 import org.apereo.openlrs.model.event.Event;
 import org.apereo.openlrs.model.event.EventConversionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +27,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author ggilbert
- *
+ * @author Lance E Sloan (lsloan at umich dot edu)
  */
 @Service
 public class NormalizedEventService extends EventService {
-	
+	private final Logger logger = LoggerFactory.getLogger(NormalizedEventService.class);
+
 	@Autowired private EventConversionService eventConversionService;
 
     public Page<Event> getByContext(String context, Pageable pageable) {
@@ -37,6 +40,11 @@ public class NormalizedEventService extends EventService {
     	return eventConversionService.toEventPage(page);
     }
     
+    public Event getBySourceId(String sourceId) {
+    	OpenLRSEntity entity = getTierTwoStorage().findBySourceId(sourceId);
+    	return eventConversionService.toEvent(entity);
+    }
+
     public Page<Event> getByUser(String user, Pageable pageable) {
     	Page<OpenLRSEntity> page = getTierTwoStorage().findByUser(user,pageable);
     	return eventConversionService.toEventPage(page);
