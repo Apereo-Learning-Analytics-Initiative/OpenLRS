@@ -22,6 +22,8 @@ import org.apereo.openlrs.model.caliper.CaliperEvent;
 import org.apereo.openlrs.model.event.EventConversionService;
 import org.apereo.openlrs.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,5 +67,10 @@ public class CaliperService extends EventService {
         result = eventConversionService.toCaliperJsonList(entities);
 
         return result;
+    }
+
+    public Page<JsonNode> getJsonNodes(Map<String, String> filterMap, Pageable pageable) {
+        Page<OpenLRSEntity> entities = getTierTwoStorage().findAll(pageable);
+        return eventConversionService.toCaliperJsonPage(entities, pageable);
     }
 }
