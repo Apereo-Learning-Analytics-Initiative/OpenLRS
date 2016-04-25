@@ -210,12 +210,12 @@ public class EventConversionService {
                 eventsJsonList.add(toCaliperJson(olrsEntity));
             }
 
-			eventsJsonPage = new PageImpl<>(eventsJsonList, pageable, olrsEntitiesPage.getTotalElements());
+            eventsJsonPage = new PageImpl<>(eventsJsonList, pageable, olrsEntitiesPage.getTotalElements());
         } else {
             eventsJsonPage = new PageImpl<>(eventsJsonList); // Avoid returning an empty response.
         }
 
-		return eventsJsonPage;
+        return eventsJsonPage;
     }
 
     public Page<Statement> toXApiPage(Page<OpenLRSEntity> page) {
