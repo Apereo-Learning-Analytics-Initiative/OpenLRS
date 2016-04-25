@@ -169,16 +169,20 @@ public class CaliperController {
             pageParamName = "number";
         }
 
+        String pageParamError = null;
         if (pageParam != null) {
             try {
                 page = Integer.parseInt(pageParam);
 
                 if (page < 0) {
-                    throw new NumberFormatException("For input string: \"" + pageParam + "\"");
+                    pageParamError = "For input string: \"" + pageParam + "\"";
                 }
             } catch (NumberFormatException e) {
-                throw new NumberFormatException(pageParamName + " must be a positive integer (" + e.getMessage() + ")");
+                pageParamError = e.getMessage();
             }
+        }
+        if (pageParamError != null) {
+            throw new NumberFormatException(pageParamName + " must be a positive integer (" + pageParamError + ")");
         }
 
         if ((limitParam == null) && (sizeParam != null)) {
@@ -186,17 +190,22 @@ public class CaliperController {
             limitParamName = "size";
         }
 
+        String limitParamError = null;
         if (limitParam != null) {
             try {
                 limit = Integer.parseInt(limitParam);
 
                 if ((limit < 1) || (limit > limitMaximum)) {
-                    throw new NumberFormatException("For input string: \"" + limitParam + "\"");
+                  limitParamError = "For input string: \"" + limitParam + "\"";
                 }
             } catch (NumberFormatException e) {
-                throw new NumberFormatException(limitParamName + " must be an integer between 1 and " +
-                        limitMaximum + " (" + e.getMessage() + ")");
+                limitParamError = e.getMessage();
             }
+        }
+
+        if (limitParamError != null) {
+            throw new NumberFormatException(limitParamName + " must be an integer between 1 and " +
+                limitMaximum + " (" + limitParamError + ")");
         }
 
         return caliperService.getJsonNodes(filterMap,
