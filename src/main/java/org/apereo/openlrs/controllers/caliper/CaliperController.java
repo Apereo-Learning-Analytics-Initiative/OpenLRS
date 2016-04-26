@@ -182,7 +182,8 @@ public class CaliperController {
             }
         }
         if (pageParamError != null) {
-            throw new NumberFormatException(pageParamName + " must be a positive integer (" + pageParamError + ")");
+            throw new NumberFormatException("Parameter \"" + pageParamName + "\" must be a positive integer (" +
+                pageParamError + ")");
         }
 
         if ((limitParam == null) && (sizeParam != null)) {
@@ -204,7 +205,7 @@ public class CaliperController {
         }
 
         if (limitParamError != null) {
-            throw new NumberFormatException(limitParamName + " must be an integer between 1 and " +
+            throw new NumberFormatException("Parameter \"" + limitParamName + "\" must be an integer between 1 and " +
                 limitMaximum + " (" + limitParamError + ")");
         }
 
