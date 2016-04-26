@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,14 +42,19 @@ import org.springframework.stereotype.Component;
 @Component("NormalizedMongoTierTwoStorage")
 @Profile("mongo")
 public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEntity> {
-    private Logger log = LoggerFactory.getLogger(NormalizedMongoTierTwoStorage.class);
+    private Logger logger = LoggerFactory.getLogger(NormalizedMongoTierTwoStorage.class);
 
     @Autowired private MongoEventRepository mongoEventRepository;
     @Autowired private EventConversionService eventConversionService;
 
     @Override
     public OpenLRSEntity findById(String id) {
-        return mongoEventRepository.findBySourceId(id);
+        return mongoEventRepository.findById(id);
+    }
+
+    @Override
+    public OpenLRSEntity findBySourceId(String sourceId) {
+        return mongoEventRepository.findBySourceId(sourceId);
     }
 
     @Override
@@ -89,13 +96,15 @@ public class NormalizedMongoTierTwoStorage implements TierTwoStorage<OpenLRSEnti
     }
 
     @Override
+    @Query
     public List<OpenLRSEntity> findWithFilters(Map<String, String> filters) {
-        throw new UnsupportedOperationException("OpenLRS searching by filters not yet implemented for MongoDB");
+        Sort sortSpec = new Sort(Sort.Direction.DESC, "id"); // Most recent events first
+        return (List<OpenLRSEntity>) (List<?>) mongoEventRepository.findAll(sortSpec);
     }
 
     @Override
     public Page<OpenLRSEntity> findByContext(String context, Pageable pageable) {
-        return (Page<OpenLRSEntity>) (Page<?>) mongoEventRepository.findByContext(context, pageable);
+        return (Page<OpenLRSEntity>) (Page<?>) mongoEventRepository.findBySourceId(context, pageable);
     }
 
     @Override
