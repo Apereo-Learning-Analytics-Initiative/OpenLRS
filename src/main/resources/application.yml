@@ -76,16 +76,16 @@ spring:
       #uri: mongodb://localhost/openlrs
       
 # IF USING DATABASE KEY MANAGER
-  datasource:
-    username: root
-    password: uni.dev
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/openlrs
-    testOnBorrow: true
-    validationQuery: SELECT 1
-  jpa:
-    show-sql: true
-    generate-ddl: true
+  #datasource:
+   #username: root
+    #password: uni.dev
+    #driver-class-name: com.mysql.jdbc.Driver
+    #url: jdbc:mysql://localhost:3306/openlrs
+    #testOnBorrow: true
+    #validationQuery: SELECT 1
+  #jpa:
+    #show-sql: true
+    #generate-ddl: true
 # END DATABASE KEY MANAGER
 
 # AWS
