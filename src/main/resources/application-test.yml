@@ -1,0 +1,2 @@
+openlrs:
+  keyManager: PropertiesFileKeyManager

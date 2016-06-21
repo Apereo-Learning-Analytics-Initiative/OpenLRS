@@ -1,0 +1,101 @@
+logging:
+  level:
+    org.apereo.openlrs: 'DEBUG'
+
+
+# Instance name
+# NOTE: If running in a multi-instance environment / cluster this value must be different for each instance/node
+instance:
+  name: ${random.value}
+
+# xAPI
+xapi:
+  version: 1.0.1
+
+# IMS Global Caliper
+caliper:
+  version: Caliper specification 1.0.0
+
+# Spring Actuator
+# See https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+# Disable by default all but info
+
+endpoints:
+  enabled: false
+  env:
+    enabled: false
+  pause:
+    enabled: false
+  resume:
+    enabled: false
+  info:
+    enabled: true
+    
+info:
+  build:
+    artifact: ${project.artifactId}
+    name: ${project.name}
+    description: ${project.description}
+    version: ${project.version}
+    
+openlrs:
+  # options - PropertiesFileKeyManager,DatabaseKeyManager
+  keyManager: PropertiesFileKeyManager
+  # reader options: InMemoryReaderWriter, AwsElasticsearchReader, ElasticsearchReader, MongoReader
+  reader: InMemoryReaderWriter
+  # writer options: InMemoryReaderWriter, AwsKinesisWriter, RedisPubSubWriter, MongoWriter
+  writer: InMemoryReaderWriter
+  
+# IF USING PROPERTIES FILE KEY MANAGER
+auth:
+  enabled: true
+  basic:
+    username: openlrs
+    password: openlrs
+  oauth:
+    key: openlrs
+    secret: openlrs
+# END PROPERTIES FILE KEY MANAGER
+
+spring:
+# IF USING REDIS
+  #redis:
+    # uncomment this line if you are using password protected redis
+    #password: somepassword
+    # uncomment these lines if you are using redis sentinel for HA
+    #sentinel:
+      #master: openlrsmaster
+      #nodes: 127.0.0.1:26379,127.0.0.1:26380,127.0.0.1:26381
+# END REDIS
+
+# IF USING ELASTICSEARCH OR MONGODB
+  #data:
+    #elasticsearch:
+      #cluster-nodes: localhost:9300
+    #mongodb:
+      #uri: mongodb://localhost/openlrs
+      
+# IF USING DATABASE KEY MANAGER
+  datasource:
+    username: root
+    password: uni.dev
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/openlrs
+    testOnBorrow: true
+    validationQuery: SELECT 1
+  jpa:
+    show-sql: true
+    generate-ddl: true
+# END DATABASE KEY MANAGER
+
+# AWS
+#aws:
+  # AWS Elasticsearch service
+  #es:
+    #connectionUrl: 
+  # AWS Kinesis
+  #kinesis:
+    #endpoint: kinesis.us-east-1.amazonaws.com
+    #stream: openlrs
+
+  

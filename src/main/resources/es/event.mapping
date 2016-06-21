@@ -1,0 +1,282 @@
+{
+  "mappings" : {
+  "lrs_event": {
+    "_ttl": {
+        "enabled": true,
+        "default": "14d"
+      },
+      "properties": {
+          "id": {
+                "type": "string"
+            },
+          "@content": {
+                "type": "string"
+            },
+          "@type": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+          "eventTime": {
+                "type": "date",
+                "format": "basic_date_time_no_millis"
+            },
+            "actor": {
+                "type": "nested",
+                "properties": {
+              "@id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@content": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "name": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "description": {
+                    "type": "string"
+                },
+                "extensions": {
+                  "type": "nested"
+                }
+                }
+            },
+          "action": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+             "object": {
+                "type": "nested",
+                "properties": {
+              "@id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@content": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "name": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "description": {
+                    "type": "string"
+                },
+                "extensions": {
+                  "type": "nested"
+                }
+                }
+            },
+            "target": {
+                "type": "nested",
+                "properties": {
+              "@id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@content": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "name": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "description": {
+                    "type": "string"
+                },
+                "extensions": {
+                  "type": "nested"
+                }
+                }
+            },
+            "generated": {
+                "type": "nested",
+                "properties": {
+              "@id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@content": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "name": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "description": {
+                    "type": "string"
+                },
+                "extensions": {
+                  "type": "nested"
+                },
+                "actor": {
+                    "type": "nested",
+                    "properties": {
+                  "@id": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "@content": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "@type": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "name": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "description": {
+                        "type": "string"
+                    },
+                    "extensions": {
+                      "type": "nested"
+                    }
+                    }
+                },
+              "startedAtTime": {
+                    "type": "date",
+                    "format": "basic_date_time_no_millis"
+                },
+              "endedAtTime": {
+                    "type": "date",
+                    "format": "basic_date_time_no_millis"
+                },
+              "duration": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                }
+                }
+            },
+             "group": {
+                "type": "nested",
+                "properties": {
+              "@id": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@content": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "@type": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "name": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+              "description": {
+                    "type": "string"
+                },
+                "extensions": {
+                  "type": "nested"
+                },
+                "subOrganizationOf": {
+                  "type":"nested",
+                  "properties": {
+                  "@id": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "@content": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "@type": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "name": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                  "description": {
+                        "type": "string"
+                    },
+                    "extensions": {
+                      "type": "nested"
+                    },
+                    "subOrganizationOf": {
+                      "type":"nested",
+                      "properties": {
+                      "@id": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                      "@content": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                      "@type": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                      "name": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                      "description": {
+                            "type": "string"
+                        },
+                        "extensions": {
+                          "type": "nested"
+                        },
+                        "courseNumber": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "academicSession": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "category": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                      }
+                    },
+                    "courseNumber": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "academicSession": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "category": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
+                  }
+                }
+                }
+            }
+      }
+  }
+  }
+}

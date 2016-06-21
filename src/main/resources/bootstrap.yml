@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: openlrs
+  cloud:
+    config:
+      uri: http://localhost:8083
+      username: apereo
+      password: openanalytics
