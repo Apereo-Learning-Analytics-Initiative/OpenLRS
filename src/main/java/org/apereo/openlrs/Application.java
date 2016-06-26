@@ -90,6 +90,9 @@ public class Application {
 		List<String> urls = new ArrayList<String>(2);
 		urls.add("/xAPI/statements");
 		urls.add("/xAPI/statements/*");
+		// All Caliper URLs except "/caliper/about"
+		urls.add("/caliper");
+		urls.add("/caliper/");
 		urls.add("/api/*");
 		registrationBean.setUrlPatterns(urls);
 		registrationBean.setOrder(2);
