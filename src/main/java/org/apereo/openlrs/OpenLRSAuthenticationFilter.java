@@ -111,11 +111,24 @@ public class OpenLRSAuthenticationFilter extends OncePerRequestFilter {
 						normalizedParams.put(key, value);
 					}
 				}
-				
+
+				StringBuffer requestURL = request.getRequestURL();
+				String requestScheme = request.getScheme();
+				String originalScheme = request.getHeader("x-forwarded-proto");
+
+				// If original request scheme (maybe through load-balancer) is different, use it instead.
+				if ((originalScheme != null ) && (!originalScheme.equalsIgnoreCase(requestScheme))) {
+					requestURL.replace(0, requestScheme.length(), originalScheme);
+					if (log.isDebugEnabled()) {
+						log.debug(String.format("Replaced scheme '%s', making new OAuth requestURL '%s'.",
+							requestScheme, requestURL.toString()));
+					}
+				}
+
 				final String signature = oauth_parameters.get("oauth_signature");
-				final String calculatedSignature = OAuthUtils.sign(secret, normalizedParams, 
-						OAuthUtils.mapToJava(oauth_parameters.get("oauth_signature_method")), request.getMethod(), request.getRequestURL().toString());
-				
+				final String calculatedSignature = OAuthUtils.sign(secret, normalizedParams,
+						OAuthUtils.mapToJava(oauth_parameters.get("oauth_signature_method")), request.getMethod(), requestURL.toString());
+
 				if (signature.equals(calculatedSignature)) {
 					filterChain.doFilter(request, response);
 				}
