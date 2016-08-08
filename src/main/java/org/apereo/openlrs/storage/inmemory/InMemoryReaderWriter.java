@@ -40,6 +40,35 @@ public class InMemoryReaderWriter implements Writer, Reader {
   }
 
   @Override
+  public Page<Event> findByTenantIdAndContext(String tenantId, String contextId, Pageable pageable) {
+    List<Event> events = store.get(tenantId);
+    if (events == null) return null;
+    
+    List<Event> eventResultList = events.stream()
+    .filter(event -> (event.getGroup() != null && event.getGroup().getId().equals(contextId)))
+    .collect(Collectors.toList());
+    
+    if (eventResultList == null) return null;
+    
+    return new PageImpl<>(eventResultList, pageable, eventResultList.size());
+  }
+  
+  @Override
+  public Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable) {
+    List<Event> events = store.get(tenantId);
+    if (events == null) return null;
+    
+    List<Event> eventResultList = events.stream()
+    .filter(event -> (event.getActor() != null && event.getActor().getId().equals(user)))
+    .collect(Collectors.toList());
+    
+    if (eventResultList == null) return null;
+    
+    return new PageImpl<>(eventResultList, pageable, eventResultList.size());
+  }
+
+
+  @Override
   public Event findByTenantIdAndEventId(String tenantId, String eventId) {
     List<Event> events = store.get(tenantId);
     if (events == null) return null;

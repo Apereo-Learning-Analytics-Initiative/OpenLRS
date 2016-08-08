@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author ggilbert
@@ -18,5 +17,8 @@ import org.springframework.stereotype.Repository;
 @Component
 public interface ElasticsearchEventRepository extends ElasticsearchRepository<EventElasticsearch, String> {
   Page<EventElasticsearch> findByTenantId(String tenantId, Pageable pageable);
+  Page<EventElasticsearch> findByTenantIdAndEventGroupId(String tenantId, String context, Pageable pageable);
+  Page<EventElasticsearch> findByTenantIdAndEventGroupIdAndActorId(String tenantId, String context, String user, Pageable pageable);
+  Page<EventElasticsearch> findByTenantIdAndActorId(String tenantId, String user, Pageable pageable);
   EventElasticsearch findByTenantIdAndEventId(String tenantId, String eventId);
 }

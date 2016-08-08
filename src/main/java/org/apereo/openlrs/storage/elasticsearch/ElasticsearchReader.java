@@ -41,7 +41,37 @@ public class ElasticsearchReader implements Reader {
       page = new PageImpl<>(events);
     }
     
-     return page;
+    return page;
+  }
+
+  @Override
+  public Page<Event> findByTenantIdAndContext(String tenantId, String context, Pageable pageable) {
+    Page<Event> page = null;
+    Page<EventElasticsearch> wrappedPageOfEvents = repository.findByTenantIdAndEventGroupId(tenantId, context, pageable);
+    if (wrappedPageOfEvents != null && wrappedPageOfEvents.hasContent()) {
+      List<Event> events = new LinkedList<>();
+      for (EventElasticsearch ee : wrappedPageOfEvents.getContent()) {
+        events.add(ee.getEvent());
+      }
+      page = new PageImpl<>(events);
+    }
+    
+    return page;
+  }
+
+  @Override
+  public Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable) {
+    Page<Event> page = null;
+    Page<EventElasticsearch> wrappedPageOfEvents = repository.findByTenantIdAndActorId(tenantId, user, pageable);
+    if (wrappedPageOfEvents != null && wrappedPageOfEvents.hasContent()) {
+      List<Event> events = new LinkedList<>();
+      for (EventElasticsearch ee : wrappedPageOfEvents.getContent()) {
+        events.add(ee.getEvent());
+      }
+      page = new PageImpl<>(events);
+    }
+    
+    return page;
   }
 
   @Override

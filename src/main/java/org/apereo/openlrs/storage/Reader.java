@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
  */
 public interface Reader {
   Page<Event> findByTenantId(String tenantId, Pageable pageable);
+  Page<Event> findByTenantIdAndContext(String tenantId, String context, Pageable pageable);
+  Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable);
   Event findByTenantIdAndEventId(String tenantId, String eventId);
   Event save(Event event, String tenantId);
   List<Event> saveAll(Collection<Event> events, String tenantId);

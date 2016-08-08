@@ -59,7 +59,6 @@ public class AwsElasticsearchReader implements Reader {
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-    
 
     Search search = new Search.Builder(searchSourceBuilder.toString())
     .addIndex(tenantId)
@@ -116,12 +115,113 @@ public class AwsElasticsearchReader implements Reader {
   }
 
   @Override
+  public Page<Event> findByTenantIdAndContext(String tenantId, String context, Pageable pageable) {
+    Page<Event> page = null;
+    
+    int offset = (pageable == null) ? 0 : pageable.getOffset();
+    int pagesize = (pageable == null) ? 1000 : pageable.getPageSize();
+    
+    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+    searchSourceBuilder.query(QueryBuilders.matchPhraseQuery("group.id", context));
+
+    Search search = new Search.Builder(searchSourceBuilder.toString())
+    .addIndex(tenantId)
+    .setParameter("from", offset)
+    .setParameter(Parameters.SIZE, pagesize)
+    .build();
+    
+    try {
+      SearchResult result = jestClient.execute(search);
+      if (result != null) {
+        log.info(result.getJsonString());
+        
+        JsonNode resultsNode = objectMapper.readTree(result.getJsonString());
+        if (resultsNode != null) {
+          JsonNode hitsNode = resultsNode.get("hits");
+          int total = hitsNode.get("total").intValue();
+          if (total > 0) {
+            JsonNode hitsArrayNode = hitsNode.get("hits");
+            if (hitsArrayNode != null && hitsArrayNode.isArray()) {
+              List<Event> events = new ArrayList<>();
+              Iterator<JsonNode> i = hitsArrayNode.elements();
+              while(i.hasNext()) {
+                JsonNode hit = i.next();
+                JsonNode source = hit.get("_source");
+                log.info(source.toString());
+                Event event = objectMapper.readValue(source.toString(), Event.class);
+                events.add(event);
+              }
+              page = new PageImpl<Event>(events, pageable, events.size());
+            }
+          }
+        }
+                
+      }
+    } 
+    catch (IOException e) {
+      log.error(e.getMessage(),e);
+    }
+
+    return page;
+  }
+
+  @Override
+  public Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable) {
+    Page<Event> page = null;
+    
+    int offset = (pageable == null) ? 0 : pageable.getOffset();
+    int pagesize = (pageable == null) ? 1000 : pageable.getPageSize();
+    
+    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+    searchSourceBuilder.query(QueryBuilders.matchPhraseQuery("actor.id", user));
+
+    Search search = new Search.Builder(searchSourceBuilder.toString())
+    .addIndex(tenantId)
+    .setParameter("from", offset)
+    .setParameter(Parameters.SIZE, pagesize)
+    .build();
+    
+    try {
+      SearchResult result = jestClient.execute(search);
+      if (result != null) {
+        log.info(result.getJsonString());
+        
+        JsonNode resultsNode = objectMapper.readTree(result.getJsonString());
+        if (resultsNode != null) {
+          JsonNode hitsNode = resultsNode.get("hits");
+          int total = hitsNode.get("total").intValue();
+          if (total > 0) {
+            JsonNode hitsArrayNode = hitsNode.get("hits");
+            if (hitsArrayNode != null && hitsArrayNode.isArray()) {
+              List<Event> events = new ArrayList<>();
+              Iterator<JsonNode> i = hitsArrayNode.elements();
+              while(i.hasNext()) {
+                JsonNode hit = i.next();
+                JsonNode source = hit.get("_source");
+                log.info(source.toString());
+                Event event = objectMapper.readValue(source.toString(), Event.class);
+                events.add(event);
+              }
+              page = new PageImpl<Event>(events, pageable, events.size());
+            }
+          }
+        }
+                
+      }
+    } 
+    catch (IOException e) {
+      log.error(e.getMessage(),e);
+    }
+
+    return page;
+  }
+
+  @Override
   public Event findByTenantIdAndEventId(String tenantId, String eventId) {
     Event event = null;
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-    searchSourceBuilder.query(QueryBuilders.matchPhraseQuery("id", eventId));
-    
+    searchSourceBuilder.query(QueryBuilders.matchPhraseQuery("id", eventId));    
 
     Search search = new Search.Builder(searchSourceBuilder.toString())
     .addIndex(tenantId)
