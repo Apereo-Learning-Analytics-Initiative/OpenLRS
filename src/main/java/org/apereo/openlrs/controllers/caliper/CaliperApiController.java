@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,7 +21,8 @@ import org.apereo.openlrs.exceptions.NotFoundException;
 import org.apereo.openlrs.exceptions.caliper.InvalidCaliperFormatException;
 import org.apereo.openlrs.model.event.Event;
 import org.apereo.openlrs.model.event.EventEnvelope;
-import org.apereo.openlrs.model.event.Stats;
+import org.apereo.openlrs.model.event.EventStats;
+import org.apereo.openlrs.model.event.StudentEventStats;
 import org.apereo.openlrs.storage.Reader;
 import org.apereo.openlrs.storage.Writer;
 import org.apereo.openlrs.utils.AuthorizationUtils;
@@ -139,10 +141,10 @@ public class CaliperApiController {
   @RequestMapping(value = { "/stats" },
       method = RequestMethod.GET,
       consumes = "application/json", produces = "application/json;charset=utf-8")
-  public Stats stats(@RequestHeader(value="Authorization") String authorizationHeader,
+  public EventStats stats(@RequestHeader(value="Authorization") String authorizationHeader,
       @RequestParam(value = "groupId", required = true) String course)
         throws JsonProcessingException, IOException, InvalidCaliperFormatException, InvalidRequestException {
-    Stats stats = new Stats();
+    EventStats eventStats = new EventStats();
     String key = AuthorizationUtils.getKeyFromHeader(authorizationHeader);
     
     if (StringUtils.isNotBlank(key)) {
@@ -154,11 +156,56 @@ public class CaliperApiController {
         if (events != null) {
           List<Event> content = events.getContent();
           if (content != null) {
-            stats.setTotal(content.size());
+            eventStats.setTotal(content.size());
             
-            Map<LocalDate,Long> totalsByDate = content.stream().collect(Collectors.groupingBy(event -> ((Event)event).getEventTime().toLocalDate(), Collectors.counting()));
             
-            stats.setTotalByDate(totalsByDate);
+            //LocalDate startOfWeek = new LocalDate().weekOfWeekyear().roundFloorCopy();
+            Map<String,Long> totalByWeekNumber = content.stream().collect(
+            		Collectors.groupingBy(event -> ((Event)event).getEventTime().toLocalDate().weekOfWeekyear().roundFloorCopy().toString(), Collectors.counting())
+            );
+                                   
+            eventStats.setTotalByWeekNumber(totalByWeekNumber);
+            
+            Map<String, StudentEventStats> studentEventStats= new HashMap<String, StudentEventStats>();
+            
+            
+            Long maxValue = (long) 0;            
+            for(Event e: content){     
+            	
+            	StudentEventStats studentEventStat = (StudentEventStats)studentEventStats.get(e.getActor().getId());
+            	if(studentEventStat == null) {            	
+            		studentEventStat = new StudentEventStats();
+            		Map<String, Long> totalStudentByWeekNumber = new HashMap<String,Long>();
+            		studentEventStat.setTotalByWeekNumber(totalStudentByWeekNumber);
+            	}
+            	
+            	String firstDayOfEventWeek = e.getEventTime().toLocalDate().weekOfWeekyear().roundFloorCopy().toString();
+            	
+            	Map<String, Long> totalStudentByWeekNumber = studentEventStat.getTotalByWeekNumber();
+            	
+            	Long numberOfStudentEventsForWeek = totalStudentByWeekNumber.get(firstDayOfEventWeek);  
+            	if(numberOfStudentEventsForWeek == null) {
+            		//this is the first one
+            		totalStudentByWeekNumber.put(firstDayOfEventWeek, (long) 1);
+            	} else {
+            		//increment what we have
+            		totalStudentByWeekNumber.put(firstDayOfEventWeek, numberOfStudentEventsForWeek + 1);
+            	}          		            	
+            	
+            	long newTotal = studentEventStat.getTotal() + 1;
+            	
+            	studentEventStat.setStudentId(e.getActor().getId());
+            	studentEventStat.setStudentName(e.getActor().getName());
+            	studentEventStats.put(e.getActor().getId(), studentEventStat);
+            	studentEventStat.setTotal(newTotal);
+            	
+            	if(maxValue < newTotal) {
+            		maxValue = newTotal;
+            	}
+            }
+            
+            eventStats.setStudentActivityStats(studentEventStats);
+            eventStats.setMax(maxValue);
           }
         }
         
@@ -170,7 +217,7 @@ public class CaliperApiController {
     else {
       throw new InvalidRequestException("Tenant Key is required");
     }
-    return stats;
+    return eventStats;
   }
   
 

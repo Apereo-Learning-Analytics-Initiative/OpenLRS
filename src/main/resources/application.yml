@@ -98,4 +98,7 @@ spring:
     #endpoint: kinesis.us-east-1.amazonaws.com
     #stream: openlrs
 
+server:
+    port: 8090
+
   
