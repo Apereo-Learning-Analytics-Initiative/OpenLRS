@@ -30,5 +30,8 @@ import org.springframework.stereotype.Component;
 @Component
 public interface MongoEventRepository extends MongoRepository<EventMongo, String> {
   EventMongo findByTenantIdAndEventId(String tenantId, String eventId);
+  Page<EventMongo> findByTenantIdAndEventGroupId(String tenantId, String context, Pageable pageable);
+  Page<EventMongo> findByTenantIdAndEventGroupIdAndActorId(String tenantId, String context, String user, Pageable pageable);
+  Page<EventMongo> findByTenantIdAndActorId(String tenantId, String user, Pageable pageable);
   Page<EventMongo> findByTenantId(String tenantId, Pageable pageable);
 }

@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.openlrs.model.event.Event;
 import org.apereo.openlrs.storage.Reader;
-import org.apereo.openlrs.storage.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
@@ -33,6 +32,36 @@ public class MongoReader implements Reader {
   public Page<Event> findByTenantId(String tenantId, Pageable pageable) {
     Page<Event> events = null;
     Page<EventMongo> eventMongos = mongoEventRepository.findByTenantId(tenantId, pageable);
+    if (eventMongos != null && eventMongos.hasContent()) {
+      List<Event> eventList = new ArrayList<>();
+      for (EventMongo em : eventMongos.getContent()) {
+        eventList.add(em.getEvent());
+      }
+      
+      events = new PageImpl<>(eventList);
+    }
+    return events;
+  }
+
+  @Override
+  public Page<Event> findByTenantIdAndContext(String tenantId, String context, Pageable pageable) {
+    Page<Event> events = null;
+    Page<EventMongo> eventMongos = mongoEventRepository.findByTenantIdAndEventGroupId(tenantId, context, pageable);
+    if (eventMongos != null && eventMongos.hasContent()) {
+      List<Event> eventList = new ArrayList<>();
+      for (EventMongo em : eventMongos.getContent()) {
+        eventList.add(em.getEvent());
+      }
+      
+      events = new PageImpl<>(eventList);
+    }
+    return events;
+  }
+
+  @Override
+  public Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable) {
+    Page<Event> events = null;
+    Page<EventMongo> eventMongos = mongoEventRepository.findByTenantIdAndActorId(tenantId, user, pageable);
     if (eventMongos != null && eventMongos.hasContent()) {
       List<Event> eventList = new ArrayList<>();
       for (EventMongo em : eventMongos.getContent()) {

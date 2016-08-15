@@ -358,7 +358,6 @@ public class XapiToCaliperConversionService {
     Group caliperGroup = null;
     XApiContext xapiContext = statement.getContext();
     if (xapiContext != null) {
-      
       Map<String,String> contextExtensions = null;
       Map<URI,java.lang.Object> extensions = xapiContext.getExtensions();
       if (extensions != null && !extensions.isEmpty()) {
@@ -370,6 +369,8 @@ public class XapiToCaliperConversionService {
 
       XApiContextActivities xapiContextActivities = xapiContext.getContextActivities();
       if (xapiContextActivities != null) {
+        xapiContextActivities.getParent();
+        
         List<XApiObject> groupings = xapiContextActivities.getGrouping();
         // TODO - handle multiple groupings
         if (groupings != null && groupings.size() == 1) {
@@ -460,7 +461,46 @@ public class XapiToCaliperConversionService {
               description, 
               contextExtensions, 
               subOrganizationOf);
-          
+        }
+        else if (xapiContextActivities.getParent() != null) {
+          XApiObject parent = xapiContextActivities.getParent().get(0);
+          String type = null;
+          String name = null;
+          String description = null;
+          XApiObjectDefinition xapiObjectDefinition = parent.getDefinition();
+          if (xapiObjectDefinition != null) {
+            type = xapiObjectDefinition.getType();
+            
+            Map<String,String> names =xapiObjectDefinition.getName();
+            if (names != null) {
+              if (names.size() == 1) {
+                name = CollectionUtils.get(names, 0).getValue();
+              }
+              else {
+                // default to en?
+                name = names.get("en");
+              }
+            }
+
+            Map<String,String> descriptions = xapiObjectDefinition.getDescription();
+            if (descriptions != null) {
+              if (descriptions.size() == 1) {
+                description = CollectionUtils.get(descriptions, 0).getValue();
+              }
+              else {
+                // default to en?
+                description = descriptions.get("en");
+              }
+            }
+          }
+
+          caliperGroup = new Group(parent.getId(), 
+              Context.CONTEXT.getValue(), 
+              type, 
+              name, 
+              description, 
+              contextExtensions, 
+              null);
         }
       }
     }
