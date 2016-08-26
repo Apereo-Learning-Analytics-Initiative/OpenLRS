@@ -42,9 +42,12 @@ openlrs:
   # options - PropertiesFileKeyManager,DatabaseKeyManager
   keyManager: PropertiesFileKeyManager
   # reader options: InMemoryReaderWriter, AwsElasticsearchReader, ElasticsearchReader, MongoReader
-  reader: InMemoryReaderWriter
+  # reader: InMemoryReaderWriter
   # writer options: InMemoryReaderWriter, AwsKinesisWriter, RedisPubSubWriter, MongoWriter
-  writer: InMemoryReaderWriter
+  # writer: InMemoryReaderWriter
+  reader: MongoReader
+  # writer options: InMemoryReaderWriter, AwsKinesisWriter, RedisPubSubWriter, MongoWriter
+  writer: MongoWriter
   
 # IF USING PROPERTIES FILE KEY MANAGER
 auth:
@@ -69,11 +72,11 @@ spring:
 # END REDIS
 
 # IF USING ELASTICSEARCH OR MONGODB
-  #data:
+  data:
     #elasticsearch:
       #cluster-nodes: localhost:9300
-    #mongodb:
-      #uri: mongodb://localhost/openlrs
+    mongodb:
+      uri: mongodb://localhost/openlrs
       
 # IF USING DATABASE KEY MANAGER
   #datasource:

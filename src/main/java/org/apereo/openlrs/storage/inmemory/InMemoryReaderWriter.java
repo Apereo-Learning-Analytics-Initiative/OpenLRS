@@ -45,7 +45,7 @@ public class InMemoryReaderWriter implements Writer, Reader {
     if (events == null) return null;
     
     List<Event> eventResultList = events.stream()
-    .filter(event -> (event.getGroup() != null && event.getGroup().getId().equals(contextId)))
+    .filter(event -> (event.getGroup() != null && event.getGroup().getId().contains(contextId)))//event.getGroup().getId().equals(contextId)))
     .collect(Collectors.toList());
     
     if (eventResultList == null) return null;

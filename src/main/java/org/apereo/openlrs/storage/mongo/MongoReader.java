@@ -32,6 +32,7 @@ public class MongoReader implements Reader {
   public Page<Event> findByTenantId(String tenantId, Pageable pageable) {
     Page<Event> events = null;
     Page<EventMongo> eventMongos = mongoEventRepository.findByTenantId(tenantId, pageable);
+    
     if (eventMongos != null && eventMongos.hasContent()) {
       List<Event> eventList = new ArrayList<>();
       for (EventMongo em : eventMongos.getContent()) {
@@ -46,7 +47,7 @@ public class MongoReader implements Reader {
   @Override
   public Page<Event> findByTenantIdAndContext(String tenantId, String context, Pageable pageable) {
     Page<Event> events = null;
-    Page<EventMongo> eventMongos = mongoEventRepository.findByTenantIdAndEventGroupId(tenantId, context, pageable);
+    Page<EventMongo> eventMongos = mongoEventRepository.findByTenantIdAndEventGroupIdIn(tenantId, context, pageable);
     if (eventMongos != null && eventMongos.hasContent()) {
       List<Event> eventList = new ArrayList<>();
       for (EventMongo em : eventMongos.getContent()) {
@@ -61,7 +62,7 @@ public class MongoReader implements Reader {
   @Override
   public Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable) {
     Page<Event> events = null;
-    Page<EventMongo> eventMongos = mongoEventRepository.findByTenantIdAndActorId(tenantId, user, pageable);
+    Page<EventMongo> eventMongos = mongoEventRepository.findByTenantIdAndEventActorId(tenantId, user, pageable);
     if (eventMongos != null && eventMongos.hasContent()) {
       List<Event> eventList = new ArrayList<>();
       for (EventMongo em : eventMongos.getContent()) {

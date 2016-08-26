@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,7 +32,14 @@ import org.springframework.stereotype.Component;
 public interface MongoEventRepository extends MongoRepository<EventMongo, String> {
   EventMongo findByTenantIdAndEventId(String tenantId, String eventId);
   Page<EventMongo> findByTenantIdAndEventGroupId(String tenantId, String context, Pageable pageable);
-  Page<EventMongo> findByTenantIdAndEventGroupIdAndActorId(String tenantId, String context, String user, Pageable pageable);
-  Page<EventMongo> findByTenantIdAndActorId(String tenantId, String user, Pageable pageable);
+  Page<EventMongo> findByTenantIdAndEventGroupIdAndEventActorId(String tenantId, String context, String user, Pageable pageable);
+  
+  
+  //@Query("select event from EventMongo event where event.Tenantid = ?1 and event.group.id = %?2%")
+  @Query(value="{ 'tenantId' : { $regex: ?0 } ,'event.group.id' : { $regex: ?1 }}")
+  Page<EventMongo> findByTenantIdAndEventGroupIdIn(String tenantId, String context, Pageable pageable);
+  
+  
+  Page<EventMongo> findByTenantIdAndEventActorId(String tenantId, String user, Pageable pageable);
   Page<EventMongo> findByTenantId(String tenantId, Pageable pageable);
 }
