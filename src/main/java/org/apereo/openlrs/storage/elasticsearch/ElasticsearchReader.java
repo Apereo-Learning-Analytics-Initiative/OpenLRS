@@ -45,9 +45,9 @@ public class ElasticsearchReader implements Reader {
   }
 
   @Override
-  public Page<Event> findByTenantIdAndContext(String tenantId, String context, Pageable pageable) {
-    Page<Event> page = null;
-    Page<EventElasticsearch> wrappedPageOfEvents = repository.findByTenantIdAndEventGroupId(tenantId, context, pageable);
+  public Page<Event> findByTenantIdAndContext(String tenantId, String groupId, Pageable pageable) {
+    Page<Event> page = null;  
+    Page<EventElasticsearch> wrappedPageOfEvents = repository.findByTenantIdAndEventGroupIdWhereGroupIdContains(tenantId, groupId, pageable);
     if (wrappedPageOfEvents != null && wrappedPageOfEvents.hasContent()) {
       List<Event> events = new LinkedList<>();
       for (EventElasticsearch ee : wrappedPageOfEvents.getContent()) {
@@ -62,7 +62,7 @@ public class ElasticsearchReader implements Reader {
   @Override
   public Page<Event> findByTenantIdAndUser(String tenantId, String user, Pageable pageable) {
     Page<Event> page = null;
-    Page<EventElasticsearch> wrappedPageOfEvents = repository.findByTenantIdAndActorId(tenantId, user, pageable);
+    Page<EventElasticsearch> wrappedPageOfEvents = repository.findByTenantIdAndEventActorId(tenantId, user, pageable);
     if (wrappedPageOfEvents != null && wrappedPageOfEvents.hasContent()) {
       List<Event> events = new LinkedList<>();
       for (EventElasticsearch ee : wrappedPageOfEvents.getContent()) {

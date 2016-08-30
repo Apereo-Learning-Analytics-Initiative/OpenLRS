@@ -5,6 +5,7 @@ package org.apereo.openlrs.storage.elasticsearch;
 
 import java.io.Serializable;
 
+
 import javax.persistence.Id;
 
 import org.apereo.openlrs.model.event.Event;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class EventElasticsearch implements Serializable {
-
+	
   private static final long serialVersionUID = 1L;
   
   @Id private String id;

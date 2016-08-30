@@ -41,7 +41,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Statement {
 	
 	@Transient private Logger log = Logger.getLogger(Statement.class);
-    private static final long serialVersionUID = 1L;
+    @SuppressWarnings("unused")
+	private static final long serialVersionUID = 1L;
     @JsonIgnore public static final String OBJECT_KEY = "STATEMENT";
 
     /**

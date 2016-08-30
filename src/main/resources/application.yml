@@ -2,7 +2,6 @@ logging:
   level:
     org.apereo.openlrs: 'DEBUG'
 
-
 # Instance name
 # NOTE: If running in a multi-instance environment / cluster this value must be different for each instance/node
 instance:
@@ -45,9 +44,10 @@ openlrs:
   # reader: InMemoryReaderWriter
   # writer options: InMemoryReaderWriter, AwsKinesisWriter, RedisPubSubWriter, MongoWriter
   # writer: InMemoryReaderWriter
-  reader: MongoReader
+  reader: InMemoryReaderWriter
+  #reader: MongoReader
   # writer options: InMemoryReaderWriter, AwsKinesisWriter, RedisPubSubWriter, MongoWriter
-  writer: MongoWriter
+  writer: InMemoryReaderWriter
   
 # IF USING PROPERTIES FILE KEY MANAGER
 auth:
@@ -73,10 +73,11 @@ spring:
 
 # IF USING ELASTICSEARCH OR MONGODB
   data:
-    #elasticsearch:
-      #cluster-nodes: localhost:9300
-    mongodb:
-      uri: mongodb://localhost/openlrs
+    elasticsearch:
+      cluster-nodes: localhost:9300
+
+    #mongodb:
+      #uri: mongodb://localhost/openlrs
       
 # IF USING DATABASE KEY MANAGER
   #datasource:

@@ -3,12 +3,12 @@
  */
 package org.apereo.openlrs.storage.elasticsearch;
 
-import org.apereo.openlrs.storage.mongo.EventMongo;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.data.mongodb.repository.Query;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,11 +19,14 @@ import org.springframework.stereotype.Component;
 @Component
 public interface ElasticsearchEventRepository extends ElasticsearchRepository<EventElasticsearch, String> {
   Page<EventElasticsearch> findByTenantId(String tenantId, Pageable pageable);
-  Page<EventElasticsearch> findByTenantIdAndEventGroupId(String tenantId, String context, Pageable pageable);
-  Page<EventElasticsearch> findByTenantIdAndEventGroupIdAndActorId(String tenantId, String context, String user, Pageable pageable);
-  Page<EventElasticsearch> findByTenantIdAndActorId(String tenantId, String user, Pageable pageable);
-  EventElasticsearch findByTenantIdAndEventId(String tenantId, String eventId);
   
-  //@Query("select event from EventMongo event where event.Tenantid = ?1 and event.context = %?2%")
-  //Page<EventMongo> findByTenantIdAndEventGroupIdIn(String tenantId, String context, Pageable pageable);
+  @Query("{ \"bool\":{ \"must\":[ {\"query_string\":{\"query\":\"?0\",\"fields\":[\"tenantId\"]}},{\"query_string\":{\"query\":\"?1\",\"fields\":[\"event.group.@id\"]}}]}}")
+  Page<EventElasticsearch> findByTenantIdAndEventGroupIdWhereGroupIdContains(String tenantId, String context, Pageable pageable);
+                           
+  Page<EventElasticsearch> findByTenantIdAndEventGroupIdAndEventActorId(String tenantId, String context, String user, Pageable pageable);
+  Page<EventElasticsearch> findByTenantIdAndEventActorId(String tenantId, String user, Pageable pageable);
+  EventElasticsearch findByTenantIdAndEventId(String tenantId, String eventId);
 }
+
+
+
