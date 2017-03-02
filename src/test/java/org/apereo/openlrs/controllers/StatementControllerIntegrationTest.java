@@ -24,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.apache.commons.codec.binary.Base64;
 import org.apereo.openlrs.Application;
 import org.apereo.openlrs.OpenLRSAuthenticationFilter;
-import org.apereo.openlrs.controllers.xapi.XAPIHeaderFilter;
-import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.XApiHeaderFilter;
+import org.apereo.openlrs.controllers.xapi.XApiRequestValidationFilter;
 import org.apereo.openlrs.controllers.xapi.XApiConstants;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,8 +54,8 @@ public class StatementControllerIntegrationTest {
 	
 	@Autowired WebApplicationContext wac;
 	@Autowired OpenLRSAuthenticationFilter filter;
-	@Autowired XAPIHeaderFilter xapiHeaderFilter;
-	@Autowired XAPIRequestValidationFilter xapiRequestValidationFilter;
+	@Autowired XApiHeaderFilter xapiHeaderFilter;
+	@Autowired XApiRequestValidationFilter xapiRequestValidationFilter;
 	
 	@Before
 	public void setup() {

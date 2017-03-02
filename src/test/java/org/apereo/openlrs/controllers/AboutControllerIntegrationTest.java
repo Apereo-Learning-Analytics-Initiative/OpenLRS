@@ -24,8 +24,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 import org.apereo.openlrs.Application;
 import org.apereo.openlrs.controllers.xapi.AboutController;
-import org.apereo.openlrs.controllers.xapi.XAPIHeaderFilter;
-import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.XApiHeaderFilter;
+import org.apereo.openlrs.controllers.xapi.XApiRequestValidationFilter;
 import org.apereo.openlrs.controllers.xapi.XApiConstants;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +47,8 @@ import org.springframework.test.web.servlet.MockMvc;
 public class AboutControllerIntegrationTest {
 	MockMvc mockMvc;
 	@Autowired AboutController controller;
-	@Autowired XAPIHeaderFilter xapiHeaderFilter;
-	@Autowired XAPIRequestValidationFilter xapiRequestValidationFilter;
+	@Autowired XApiHeaderFilter xapiHeaderFilter;
+	@Autowired XApiRequestValidationFilter xapiRequestValidationFilter;
 	
 	@Before
 	public void setup() {

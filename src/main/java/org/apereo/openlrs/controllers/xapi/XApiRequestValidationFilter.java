@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,27 +32,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  */
 @Component
-public class XAPIHeaderFilter extends OncePerRequestFilter {
-	
-	@Value("${xapi.version}")
-	private String version;
+public class XApiRequestValidationFilter extends OncePerRequestFilter {
 
+	private Logger log = Logger.getLogger(XApiRequestValidationFilter.class);
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
-		String allowedRequestHeaders = request.getHeader("Access-Control-Request-Headers");
-		String responseHeader = XApiConstants.XAPI_VERSION_HEADER;
-		
-		if (StringUtils.isNotBlank(allowedRequestHeaders)) {
-			if (StringUtils.contains(allowedRequestHeaders, XApiConstants.XAPI_VERSION_HEADER.toLowerCase())) {
-				responseHeader = responseHeader.toLowerCase();
-			}
+		String versionHeader = request.getHeader(XApiConstants.XAPI_VERSION_HEADER);
+		log.debug(String.format("versionHeader {}",versionHeader));
+		if (StringUtils.isNotBlank(versionHeader)) {
+			// for now we are just checking for the header
+			// in the future we'll deal with specific versioning checking
+			filterChain.doFilter(request, response);
+		}
+		else {
+			log.warn("Request missing XAPI VERSION HEADER");
+			response.sendError(400, "Missing "+XApiConstants.XAPI_VERSION_HEADER+" Header");
 		}
 		
-		response.addHeader(responseHeader, version);
-		filterChain.doFilter(request, response);
 	}
 
 }

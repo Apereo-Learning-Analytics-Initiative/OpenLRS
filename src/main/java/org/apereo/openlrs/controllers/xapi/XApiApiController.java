@@ -44,12 +44,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @RequestMapping("/v1/xAPI/statements")
-public class XapiApiController {
-  private final Logger logger = LoggerFactory.getLogger(XapiApiController.class);
+public class XApiApiController {
+  private final Logger logger = LoggerFactory.getLogger(XApiApiController.class);
   
   @Autowired private ObjectMapper objectMapper;
   @Autowired private Validator validator;
-  @Autowired private XapiToCaliperConversionService xapiToCaliperConversionService;
+  @Autowired private XApiToCaliperConversionService xapiToCaliperConversionService;
   @Autowired private Writer writer;
   @Autowired private Reader reader;
   @Autowired KeyManager keyManager;

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Class used to hold info for a XAPI-call-related error.  This object will be JSONified and returned as the XAPI call response.
  * @author Gary Roybal, groybal@unicon.net
  */
-public class XAPIErrorInfo {
+public class XApiErrorInfo {
 
     @JsonProperty private int status;
     @JsonProperty private String reason;
@@ -40,24 +40,24 @@ public class XAPIErrorInfo {
     @JsonProperty private Map<String, String[]> parameters;
     @JsonProperty private List<String> messages = new ArrayList<String>();
 
-    public XAPIErrorInfo(final HttpStatus status, final HttpServletRequest request) {
+    public XApiErrorInfo(final HttpStatus status, final HttpServletRequest request) {
         this.getDataFromHttpStatus(status);
         this.getDataFromRequest(request);
     }
 
-    public XAPIErrorInfo(final HttpStatus status, final HttpServletRequest request, final Exception resultingException) {
+    public XApiErrorInfo(final HttpStatus status, final HttpServletRequest request, final Exception resultingException) {
         this(status, request);
         this.messages.add(ExceptionUtils.getRootCauseMessage(resultingException));
     }
 
-    public XAPIErrorInfo(final HttpStatus status, final HttpServletRequest request, final String errorMessage) {
+    public XApiErrorInfo(final HttpStatus status, final HttpServletRequest request, final String errorMessage) {
         this(status, request);
         if (errorMessage != null) {
             this.messages.add(errorMessage);
         }
     }
 
-    public XAPIErrorInfo(final HttpStatus status, final HttpServletRequest request, final List<String> errorMessages) {
+    public XApiErrorInfo(final HttpStatus status, final HttpServletRequest request, final List<String> errorMessages) {
         this(status, request);
         if (errorMessages != null) {
             this.messages.addAll(errorMessages);

@@ -50,7 +50,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class XapiToCaliperConversionService {
+public class XApiToCaliperConversionService {
   
   private BidiMap<Action, String> verbActionMap;
   private BidiMap<Type, String> objectEntityMap;

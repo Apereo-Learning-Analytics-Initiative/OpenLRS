@@ -26,7 +26,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apereo.openlrs.exceptions.NotFoundException;
 import org.apereo.openlrs.exceptions.xapi.InvalidXAPIRequestException;
 import org.apereo.openlrs.exceptions.xapi.StatementStateConflictException;
-import org.apereo.openlrs.model.xapi.XAPIErrorInfo;
+import org.apereo.openlrs.model.xapi.XApiErrorInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -49,18 +49,18 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
  * @author Gary Roybal, groybal@unicon.net
  */
 @ControllerAdvice(annotations = RestController.class)
-public class XAPIExceptionHandlerAdvice {
+public class XApiExceptionHandlerAdvice {
 
-    private Logger logger = LoggerFactory.getLogger(XAPIExceptionHandlerAdvice.class);
+    private Logger logger = LoggerFactory.getLogger(XApiExceptionHandlerAdvice.class);
 
-    public XAPIExceptionHandlerAdvice() {
+    public XApiExceptionHandlerAdvice() {
     }
 
     @ExceptionHandler(NotImplementedException.class)
     @ResponseStatus(value = HttpStatus.NOT_IMPLEMENTED)
     @ResponseBody
-    public XAPIErrorInfo handleNotImplementedException(final HttpServletRequest request, final NotImplementedException e) {
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.NOT_IMPLEMENTED, request, e.getLocalizedMessage());
+    public XApiErrorInfo handleNotImplementedException(final HttpServletRequest request, final NotImplementedException e) {
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.NOT_IMPLEMENTED, request, e.getLocalizedMessage());
         this.logException(e);
         this.logError(result);
         return result;
@@ -69,8 +69,8 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
-    public XAPIErrorInfo handleNotImplementedException(final HttpServletRequest request, final NotFoundException e) {
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.NOT_FOUND, request, e.getLocalizedMessage());
+    public XApiErrorInfo handleNotImplementedException(final HttpServletRequest request, final NotFoundException e) {
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.NOT_FOUND, request, e.getLocalizedMessage());
         this.logException(e);
         this.logError(result);
         return result;
@@ -79,8 +79,8 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(InvalidXAPIRequestException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public XAPIErrorInfo handleInvalidRestRequestException(final HttpServletRequest request, final InvalidXAPIRequestException e) {
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.BAD_REQUEST, request, e.getLocalizedMessage());
+    public XApiErrorInfo handleInvalidRestRequestException(final HttpServletRequest request, final InvalidXAPIRequestException e) {
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.BAD_REQUEST, request, e.getLocalizedMessage());
         this.logException(e);
         this.logError(result);
         return result;
@@ -89,8 +89,8 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(StatementStateConflictException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ResponseBody
-    public XAPIErrorInfo handleStatementStateConflictException(final HttpServletRequest request, final HttpServletResponse response, final StatementStateConflictException e) {
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.CONFLICT, request, e.getLocalizedMessage());
+    public XApiErrorInfo handleStatementStateConflictException(final HttpServletRequest request, final HttpServletResponse response, final StatementStateConflictException e) {
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.CONFLICT, request, e.getLocalizedMessage());
         this.logException(e);
         this.logError(result);
         return result;
@@ -99,7 +99,7 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public XAPIErrorInfo handleMethodArgumentNotValidException(final HttpServletRequest request, MethodArgumentNotValidException e) {
+    public XApiErrorInfo handleMethodArgumentNotValidException(final HttpServletRequest request, MethodArgumentNotValidException e) {
         final List<String> errorMessages = new ArrayList<String>();
         for (ObjectError oe : e.getBindingResult().getAllErrors()) {
             if (oe instanceof FieldError) {
@@ -111,7 +111,7 @@ public class XAPIExceptionHandlerAdvice {
                 errorMessages.add(oe.toString());
             }
         }
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.BAD_REQUEST, request, errorMessages);
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.BAD_REQUEST, request, errorMessages);
         this.logException(e);
         this.logError(result);
         return result;
@@ -120,9 +120,9 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(UnrecognizedPropertyException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public XAPIErrorInfo handleUnrecognizedPropertyException(final HttpServletRequest request, UnrecognizedPropertyException e) {
+    public XApiErrorInfo handleUnrecognizedPropertyException(final HttpServletRequest request, UnrecognizedPropertyException e) {
         final String errorMessage = String.format("Unrecognized property: [%s].", e.getPropertyName());
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.BAD_REQUEST, request, errorMessage);
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.BAD_REQUEST, request, errorMessage);
         this.logException(e);
         this.logError(result);
         return result;
@@ -131,16 +131,16 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public XAPIErrorInfo handleHttpMessageNotReadableException(final HttpServletRequest request, HttpMessageNotReadableException e) {
+    public XApiErrorInfo handleHttpMessageNotReadableException(final HttpServletRequest request, HttpMessageNotReadableException e) {
         if (e.getCause() instanceof UnrecognizedPropertyException) {
             return this.handleUnrecognizedPropertyException(request, (UnrecognizedPropertyException)e.getCause());
         } else {
-            XAPIErrorInfo result;
+            XApiErrorInfo result;
             if (e.getCause() instanceof JsonProcessingException) {
                 final JsonProcessingException jpe = (JsonProcessingException)e.getCause();
-                result = new XAPIErrorInfo(HttpStatus.BAD_REQUEST, request, jpe.getOriginalMessage());
+                result = new XApiErrorInfo(HttpStatus.BAD_REQUEST, request, jpe.getOriginalMessage());
             } else {
-                result = new XAPIErrorInfo(HttpStatus.BAD_REQUEST, request, e);
+                result = new XApiErrorInfo(HttpStatus.BAD_REQUEST, request, e);
             }
             this.logException(e);
             this.logError(result);
@@ -157,9 +157,9 @@ public class XAPIExceptionHandlerAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public XAPIErrorInfo exception(final HttpServletRequest request, Exception e) throws Exception {
+    public XApiErrorInfo exception(final HttpServletRequest request, Exception e) throws Exception {
         final String logMessageReferenceId = RandomStringUtils.randomAlphanumeric(8);
-        final XAPIErrorInfo result = new XAPIErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected error [reference ID: " + logMessageReferenceId + "].");
+        final XApiErrorInfo result = new XApiErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR, request, "Unexpected error [reference ID: " + logMessageReferenceId + "].");
         logger.debug("Unexpected XAPI exception [refId: {}]: {}", logMessageReferenceId, e);
         this.logError(result);
         return result;
@@ -169,7 +169,7 @@ public class XAPIExceptionHandlerAdvice {
         logger.debug("Exception message: {}", e.getMessage());
     }
 
-    private void logError(final XAPIErrorInfo error) {
+    private void logError(final XApiErrorInfo error) {
         logger.debug("Returning error: {}", error);
     }
 

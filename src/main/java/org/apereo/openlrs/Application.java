@@ -20,7 +20,7 @@ import java.util.List;
 
 import lti.oauth.OAuthFilter;
 
-import org.apereo.openlrs.controllers.xapi.XAPIRequestValidationFilter;
+import org.apereo.openlrs.controllers.xapi.XApiRequestValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
@@ -55,7 +55,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 public class Application {
 	
 	@Autowired private OpenLRSAuthenticationFilter openLRSAuthenticationFilter;
-	@Autowired private XAPIRequestValidationFilter xapiRequestValidationFilter;
+	@Autowired private XApiRequestValidationFilter xapiRequestValidationFilter;
 	@Autowired private CORSFilter corsFilter;
 	@Autowired private OAuthFilter oAuthFilter;
 	
